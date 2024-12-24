@@ -4,7 +4,7 @@ import styled from "styled-components";
 function Header() {
   return (
     <HeaderContainer>
-      <Hamberger src='/Menu.png' alt='Menu'/>
+      <Hamberger src='./Menu.png' alt='Menu'/>
       <LogoImg src='/.png' alt='LogoImg' />
       <LogoText src='/Link.png' alt='LogoText' />
       <Search src='/Search.png' alt='Search' />
