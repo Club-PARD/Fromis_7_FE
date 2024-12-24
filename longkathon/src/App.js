@@ -1,5 +1,5 @@
 import React from "react";
-import Header from "./components/Header";
+import Lender from "./pages/Lender";
 
 
 //import MainSmallCard from "./components/MainSmallCard";
@@ -7,7 +7,7 @@ import Header from "./components/Header";
 function App() {
   return (
     <div className = "App" >
-      <Header/>
+      <Lender/>
     </div>
   );
 }

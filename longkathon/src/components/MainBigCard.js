@@ -3,8 +3,7 @@ import styled from "styled-components";
 
 const MainBigCard = () => {
     return (
-      <Card>
-      </Card>
+      <Card />
     );
   };
 

@@ -4,11 +4,11 @@ import styled from "styled-components";
 function Header() {
   return (
     <HeaderContainer>
-      <Hamberger src='./Menu.png' alt='Menu'/>
-      <LogoImg src='/.png' alt='LogoImg' />
-      <LogoText src='/Link.png' alt='LogoText' />
-      <Search src='/Search.png' alt='Search' />
-      <User src='/User.png' alt='User' />
+      <Hamberger src='./components/Menu.png' alt='Menu'/>
+      <LogoImg src='./components/LogoImg.png' alt='LogoImg' />
+      <LogoText src='./components/LogoText.png' alt='LogoText' />
+      <Search src='./components/Search.png' alt='Search' />
+      <User src='./components/User.png' alt='User' />
     </HeaderContainer>
   );
 }
