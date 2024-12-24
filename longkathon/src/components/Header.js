@@ -30,6 +30,7 @@ const HeaderContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background:red;
 `;
 
 const Hamberger = styled.img`
