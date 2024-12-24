@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import AddLinkImage from "../image/SideBarImage.png";
+import AddLinkImage from "../Image/SideBarImage.png";
 // Styled Components
 const SidebarContainer = styled.div`
   position: fixed;

@@ -3,14 +3,12 @@ import styled from "styled-components";
 
 const SmallBigCard = () => {
     return(
-        <Card>
-        </Card>
+        <Card />
     );
 };
 
 const Card = styled.div`
     box-sizing: border-box;
-
     position: absolute;
     width: 264px;
     height: 264px;
