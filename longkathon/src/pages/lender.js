@@ -1,11 +1,13 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import LenderLogo from "../Image/LenderLogo.png";
-import ConnectButtonImage from "../Image/ConnectButton.png"; 
+import ConnectButtonImage from "../Image/ConnectButton.png";
+import AirPlaneImage from "../Image/AirPlane.png";
 
 function LenderPage() {
   return (
     <AppContainer>
+      <AirPlane src={AirPlaneImage} alt="AirPlane" />
       <Container>
         <Header>
           <LogoImage src={LenderLogo} alt="Link Logo" />
@@ -50,17 +52,43 @@ function LenderPage() {
   );
 }
 
-// 스타일 정의
+// 비행기 애니메이션 효과
+const flyAnimation = keyframes`
+  0% {
+    transform: translate(0, 0) scale(1); /* 왼쪽 상단에서 시작, 기본 크기 */
+    opacity: 1;
+  }
+  80% {
+    transform: translate(100vw, 100vh) scale(3); /* 오른쪽 하단으로 이동하며 크기 커짐 */
+    opacity: 1;
+  }
+  100% {
+    transform: translate(100vw, 120vh) scale(3); /* 화면 바깥으로 이동 */
+    opacity: 0; /* 점점 사라짐 */
+  }
+`;
+
 const AppContainer = styled.div`
   text-align: center;
   background: linear-gradient(to bottom, #5ba8fb, white);
   min-height: 100vh;
+  height: auto;
   font-family: 'Arial', sans-serif;
   color: #333;
 `;
 
+const AirPlane = styled.img`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100px; 
+  height: auto;
+  animation: ${flyAnimation} 5s linear 1; /* 7초 동안 1회 실행 */
+  animation-fill-mode: forwards;
+`;
+
 const Container = styled.div`
-  max-width: 1200px;
+  max-width: 1440px;
   margin: 0 auto;
   padding: 20px;
 `;
@@ -72,22 +100,41 @@ const Header = styled.div`
 `;
 
 const LogoImage = styled.img`
-  width: 360px;
-  height: 408px;
-  margin-top: 200px;
+  width: 100%; 
+  max-width: 360px; 
+  height: auto; 
+  margin-top: 150px;
+
+  @media (max-width: 864px) {
+    max-width: 200px; 
+    margin-top: 50px; 
+  }
 `;
 
 const ConnectButton = styled.div`
   margin: 50px 0;
 
   img {
-    width: 380px;
-    height: 80px;
+    width: 100%; 
+    max-width: 380px; 
+    height: auto; 
     cursor: pointer;
     transition: transform 0.2s;
 
     &:hover {
-      transform: scale(1.1);
+      transform: scale(1.1); 
+    }
+  }
+
+  @media (max-width: 768px) {
+    img {
+      max-width: 300px; 
+    }
+  }
+
+  @media (max-width: 480px) {
+    img {
+      max-width: 200px; 
     }
   }
 `;
@@ -96,7 +143,8 @@ const MainContent = styled.div`
   display: flex;
   align-items: flex-start;
   gap: 20px; 
-  margin-top: 200px;
+  margin-top: 800px;
+  margin-bottom: 150px;
 
   @media (max-width: 768px) {
     flex-direction: column; /* 화면이 작아지면 세로로 배치 */
@@ -109,13 +157,13 @@ const ImageContainer = styled.div`
 `;
 
 const ContentImage = styled.img`
-  width: 100%; /* 이미지가 컨테이너에 맞게 조정 */
-  max-width: 300px; /* 이미지 최대 크기 */
+  width: 100%; 
+  max-width: 300px; 
   height: auto;
 `;
 
 const TextContainer = styled.div`
-  flex: 2; /* 텍스트가 컨테이너의 2/3 차지 */
+  flex: 1;
   text-align: left;
 `;
 
