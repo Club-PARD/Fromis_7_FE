@@ -1,5 +1,5 @@
 import React from "react";
-import Lender from "./pages/Lender";
+import LenderPage from "./pages/Lender";
 
 
 //import MainSmallCard from "./components/MainSmallCard";
@@ -7,7 +7,7 @@ import Lender from "./pages/Lender";
 function App() {
   return (
     <div className = "App" >
-      <Lender/>
+      <LenderPage/>
     </div>
   );
 }
