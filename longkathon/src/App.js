@@ -1,12 +1,13 @@
 import React from "react";
-import Header from "./components/Header";
+import LenderPage from "./pages/Lender";
+
 
 //import MainSmallCard from "./components/MainSmallCard";
 
 function App() {
   return (
     <div className = "App" >
-      <Header/>
+      <LenderPage/>
     </div>
   );
 }
