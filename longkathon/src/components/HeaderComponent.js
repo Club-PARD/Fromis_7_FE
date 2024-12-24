@@ -6,7 +6,7 @@ import search from '../Image/Search.png';
 import user from '../Image/User.png';
 import styled from "styled-components";
 
-function Header() {
+function HeaderComponent() {
   return (
     <HeaderContainer>
       <Hamberger src={menu} alt='Menu'/>
@@ -84,4 +84,4 @@ const User = styled.img`
   height: 40px;
 `;
 
-export default Header;
+export default HeaderComponent;
