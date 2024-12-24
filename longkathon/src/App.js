@@ -1,11 +1,12 @@
 import React from "react";
-import SideBar from "./components/SideBar";
+import Header from "./components/Header";
+
 //import MainSmallCard from "./components/MainSmallCard";
 
 function App() {
   return (
-    <div className="App">
-      <SideBar />
+    <div className = "App" >
+      <Header/>
     </div>
   );
 }
