@@ -4,19 +4,30 @@ import { HamburgerIcon } from "./components/HamburgerButton";
 import CategoryButton from "./components/CategoryButton";
 import LenderPage from "./pages/Lender";
 import HeaderComponent from "./components/HeaderComponent";
+import LikeButton from "./components/LikeButton";
+import LoginbuttonHeader from "./components/LoginbuttonHeader";
+import styled from "styled-components";
 
 function App() {
   return (
-    <div className="App">
+    <Div className="App">
+      {/* <LikeButton /> */}
+      {/* <LoginbuttonHeader /> */}
       <HeaderComponent />
+      {/* <HeaderComponent /> */}
             {/* <LenderPage/> */}
-        {/* <SideBar />
-        <HamburgerIcon />
-        <CategoryButton></CategoryButton> */}
-    </div>
+        <SideBar />
+        {/* <HamburgerIcon /> */}
+        {/* <CategoryButton></CategoryButton> */}
+
+    </Div>
   );
 }
 
+
+const Div = styled.div`
+ /* border: 1px solid black; */
+`;
 // const Div = styled.div`
 // border: 1px solid black;
 // `;
