@@ -3,8 +3,8 @@ import styled from "styled-components";
 
 function LoginPage() {
   const handleGoogleLogin = () => {
-    // Spring Boot의 Google OAuth 엔드포인트로 이동
-    window.location.href = "http://localhost:8080/oauth2/authorization/google";
+    const oauthUrl = `http://172.18.152.39:8080/oauth2/authorization/google`;
+    window.location.href = oauthUrl; // Google OAuth 로그인 페이지로 이동
   };
 
   return (

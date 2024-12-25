@@ -1,51 +1,19 @@
-//Login.js
 import axios from "axios";
 
-//경로 지정
-const server = "http://localhost:8080"; //.env에 넣기
+const axiosInstance = axios.create({
+  baseURL: "http://172.18.152.39:8080", // Spring Boot 서버 URL
+  withCredentials: true, // 쿠키를 포함하여 요청
+});
 
-//get
-export const getLogin = async (userId) => {
-    try{
-        const response = await axios.get(`${server}/api/login/${userId}`);
-    return response.data;
-    } catch(error){
-        console.error("Error fetching() user data: ", error);  
-        throw error;
-    } 
-};
-
-//post
-export const postLogin = async (data) => {
-    try{
-        console.log(data);
-        const response = await axios.post(`${server}/api/login`, data);
-        return data;
-    } catch(error){
-        console.error("Error fetching() user data: ", error);
-        throw error;
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      alert("Session expired. Please log in again.");
+      window.location.href = "/login"; // 인증 실패 시 로그인 페이지로 리디렉션
     }
-};
+    return Promise.reject(error);
+  }
+);
 
-//patch
-export const patchLogin = async (data, userId) => {
-    try{
-        console.log(data);
-        const response = await axios.patch(`${server}/api/login/${userId}`, data);
-        return data;
-    } catch(error){
-        console.error("Error fetching() user data: ", error);
-        throw error;
-    }
-};
-
-//delete
-export const deleteLogin = async (userId) => {
-    try{
-        const response = await axios.delete(`${server}/api/login/${userId}`);
-        return response.data;
-    } catch(error){
-        console.error("Error fetching() user data: ", error);
-        throw error;
-    }
-};
+export default axiosInstance;

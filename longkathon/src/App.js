@@ -1,12 +1,11 @@
 import React from "react";
-import Header from "./components/Header";
-
-//import MainSmallCard from "./components/MainSmallCard";
+import LoginPage from "./pages/Login";
+import LandPage from "./pages/Land";
 
 function App() {
   return (
-    <div className = "App" >
-      <Header/>
+    <div className="App">
+      <LandPage />
     </div>
   );
 }
