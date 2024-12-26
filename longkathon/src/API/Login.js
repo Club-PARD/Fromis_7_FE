@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "http://172.18.152.39:8080", // Spring Boot 서버 URL
+  baseURL: "http://13.124.86.133:8080/test", // Spring Boot 서버 URL
   withCredentials: true, // 쿠키를 포함하여 요청
 });
 

@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 function LoginPage() {
   const handleGoogleLogin = () => {
-    const oauthUrl = `http://172.18.152.39:8080/oauth2/authorization/google`;
+    const oauthUrl = `http://13.124.86.133:8080/test`;
     window.location.href = oauthUrl; // Google OAuth 로그인 페이지로 이동
   };
 
