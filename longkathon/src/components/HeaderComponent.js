@@ -1,61 +1,89 @@
-import React from "react";
-import menu from '../Image/Menu.png';
+import React, { useState } from "react";
 import logoImg from '../Image/Logo.png';
-import logoText from '../Image/LogoText.png';
 import search from '../Image/Search.png';
-import user from '../Image/User.png';
 import styled from "styled-components";
+import HamburgerIcon from "./HamburgerButton";
 
 function HeaderComponent() {
+  const [searchText, setSearchText] = useState("");
+
+  const handleSearchClick = () => {
+    console.log("Search clicked with text:", searchText);
+    // 여기에 검색 처리 로직을 추가할 수 있습니다.
+  };
+
   return (
     <HeaderContainer>
-      <Hamberger src={menu} alt='Menu'/>
+      <HamburgerContainer>
+        <HamburgerIcon />
+      </HamburgerContainer>
+
       <LogoGroup>
         <LogoImg src={logoImg} alt='LogoImg' />
-        <LogoText src={logoText} alt='LogoText' />
+        <LogoText> L:nk</LogoText>
       </LogoGroup>
-      <SearchBox>
-      <Search type="text" placeholder="Search"/>
-      <SearchIcon src={search} alt="search" />
-      </SearchBox>
-    
-      <User src={user} alt='User' />
+      <RightContainer>
+        <SearchBox>
+          <Search
+            type="text"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            placeholder="Search"
+          />
+          <SearchButton onClick={handleSearchClick}>
+            <SearchIcon />
+          </SearchButton>
+        </SearchBox>
+        <User />
+      </RightContainer>
     </HeaderContainer>
   );
 }
 
 const HeaderContainer = styled.div`
+  border: none;
   width: 1440px;
-  height: 80px;
+  height: 60px;
+  padding-top: 10px;
+  padding-bottom: 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
 `;
 
-const Hamberger = styled.img`
-  margin-left: 7.64vw;
-  margin-right: 640px;
-  width: 40px;
-  height: 40px;
+const HamburgerContainer = styled.div`
+  margin-left: 82px;
 `;
 
 const LogoGroup = styled.div`
-  margin: 0px;
   display: flex;
+  justify-content: center;
   align-items: center;
-  justify-content: left;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 `;
 
 const LogoImg = styled.img`
   width: 60px;
   height: 60px;
+  margin-right: 8px;
 `;
 
-const LogoText = styled.img`
-  width: 83px;
-  height: 40px;
-  margin-left: 0.5555vw; 
-  margin-right: 500px;
+const LogoText = styled.span`
+  font-family: 'Inter', sans-serif;
+  font-weight: bold;
+  font-size: 40px;
+  line-height: 40px;
+  letter-spacing: 0%;
+`;
+
+const RightContainer = styled.div`
+  /* border: 1px solid black; */
+  margin-right: 103px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 const SearchBox = styled.div`
@@ -64,24 +92,54 @@ const SearchBox = styled.div`
   justify-content: center;
   width: 12.71vw;
   height: 2.64vw;
-  margin-right: 30px;
+  margin-right: 46px;
 `;
 
 const Search = styled.input`
+  border: 1px solid #afb8c1;
+  border-radius: 10px;
   width: 155px;
   height: 38px;
+  padding-left: 12px;
+  /* font-size: 14px;
+  color: #afb8c1; */
+
+  &::placeholder {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    line-height: 20px;
+    letter-spacing: 0%;
+    color: #afb8c1;
+  }
 `;
 
-const SearchIcon = styled.img`
-  margin-left: 0px;
-  width: 20px;
-  height: 20px;
-  margin-right: 8px;
+const SearchButton = styled.button`
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  margin-left: -32px;
+  border: none;
 `;
 
-const User = styled.img`
-  width: 40px;
-  height: 40px;
-`;
+const SearchIcon = () => {
+  return (
+    <lord-icon
+      src="https://cdn.lordicon.com/kkvxgpti.json"
+      trigger="hover"
+      colors="primary:#afb8c1"
+      style={{ width: "20px", height: "20px" }}
+    ></lord-icon>
+  );
+};
+
+const User = () => {
+  return (
+    <lord-icon
+      src="https://cdn.lordicon.com/kthelypq.json"
+      trigger="hover"
+      style={{ width: "40px", height: "40px" }}
+    ></lord-icon>
+  );
+};
 
 export default HeaderComponent;

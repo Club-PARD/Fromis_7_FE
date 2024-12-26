@@ -1,13 +1,19 @@
 import React from "react";
+import styled from "styled-components";
+import EmptyMainPage from "./pages/EmptyMain";
 import LoginPage from "./pages/Login";
-import LandPage from "./pages/Land";
 
 function App() {
   return (
-    <div className="App">
-      <LandPage />
-    </div>
+    <Div className="App">
+      <LoginPage />
+    </Div>
   );
 }
+
+
+const Div = styled.div`
+ /* border: 1px solid black; */
+`;
 
 export default App;

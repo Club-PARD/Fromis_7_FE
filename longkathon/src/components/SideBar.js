@@ -4,7 +4,7 @@ import AddLinkImage from "../Image/SideBarImage.png";
 // Styled Components
 const SidebarContainer = styled.div`
   position: fixed;
-  right: 400px;
+  right: 79px;
   top: 76px;
   width: 85px;
   height: 265px;
