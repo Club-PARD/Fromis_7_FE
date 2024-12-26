@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import logoImg from '../Image/Logo.png';
-import search from '../Image/Search.png';
 import styled from "styled-components";
 import HamburgerIcon from "./HamburgerButton";
 
@@ -34,18 +33,20 @@ function HeaderComponent() {
             <SearchIcon />
           </SearchButton>
         </SearchBox>
+        <UserBox>
         <User />
+        </UserBox>
       </RightContainer>
     </HeaderContainer>
   );
 }
 
 const HeaderContainer = styled.div`
-  border: none;
+  /* border: 1px solid black; */
   width: 1440px;
   height: 60px;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  /* padding-top: 10px;
+  padding-bottom: 10px; */
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -65,8 +66,8 @@ const LogoGroup = styled.div`
 `;
 
 const LogoImg = styled.img`
-  width: 60px;
-  height: 60px;
+  width: 40px;
+  height: 40px;
   margin-right: 8px;
 `;
 
@@ -80,7 +81,7 @@ const LogoText = styled.span`
 
 const RightContainer = styled.div`
   /* border: 1px solid black; */
-  margin-right: 103px;
+  /* margin-right: 103px; */
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -131,6 +132,11 @@ const SearchIcon = () => {
     ></lord-icon>
   );
 };
+
+const UserBox=styled.div`
+/* border: 1px solid black; */
+margin-right: 103px;
+`;
 
 const User = () => {
   return (
