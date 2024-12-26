@@ -4,8 +4,8 @@ import AddLinkImage from "../Image/SideBarImage.png";
 // Styled Components
 const SidebarContainer = styled.div`
   position: fixed;
-  right: 79px;
-  top: 76px;
+  right: 82px;
+  top: 62px;
   width: 85px;
   height: 265px;
   display: flex;
@@ -15,6 +15,7 @@ const SidebarContainer = styled.div`
   border: 1px solid #afb8c1;
   border-radius: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 200;
 `;
 
 const MenuList = styled.ul`

@@ -7,19 +7,12 @@ import HeaderComponent from "./components/HeaderComponent";
 import LikeButton from "./components/LikeButton";
 import LoginbuttonHeader from "./components/LoginbuttonHeader";
 import styled from "styled-components";
+import MainPage from "./pages/MainPage";
 
 function App() {
   return (
     <Div className="App">
-      {/* <LikeButton /> */}
-      {/* <LoginbuttonHeader /> */}
-      <HeaderComponent />
-      {/* <HeaderComponent /> */}
-            {/* <LenderPage/> */}
-        <SideBar />
-        {/* <HamburgerIcon /> */}
-        {/* <CategoryButton></CategoryButton> */}
-
+      <MainPage />
     </Div>
   );
 }
@@ -28,12 +21,5 @@ function App() {
 const Div = styled.div`
  /* border: 1px solid black; */
 `;
-// const Div = styled.div`
-// border: 1px solid black;
-// `;
 
-// const Div2 = styled.div`
-// border: 1px solid black;
-// top:300px;
-// `;
 export default App;
