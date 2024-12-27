@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import Header from "../components/HeaderComponent";
 import SideBar from "../components/SideBar";
+import ColorPalette from "../components/ColorPalette";
 
 const EmptyMainPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 관리
@@ -45,20 +46,20 @@ const EmptyMainPage = () => {
             {/* 약속 제목 */}
             <ModalGroup>
               <Label>약속 제목: </Label>
-              <Input type="text" placeholder="약속 제목을 입력해주세요" />
+              <InputTitle type="text" placeholder="약속 제목을 입력해주세요" />
             </ModalGroup>
 
             {/* 약속 날짜 */}
             <ModalGroup>
                 <Label>약속 날짜: </Label>
                 <DateField>
-                    <Input placeholder="년도" />
-                    <Input placeholder="월" />
-                    <Input placeholder="일" />
-                    <Dash>-</Dash>
-                    <Input placeholder="년도" />
-                    <Input placeholder="월" />
-                    <Input placeholder="일" />
+                    <InputDate placeholder="년도" />
+                    <InputDate placeholder="월" />
+                    <InputDate placeholder="일" />
+                    <Dash>__</Dash>
+                    <InputDate placeholder="년도" />
+                    <InputDate placeholder="월" />
+                    <InputDate placeholder="일" />
                 </DateField>
             </ModalGroup>
 
@@ -66,8 +67,12 @@ const EmptyMainPage = () => {
             <ModalGroup>
               <Label>약속 멤버: </Label>
               <DateField>
-                <Input placeholder="예) 김링크" />
+                <InputMember placeholder="예) 김링크" />
               </DateField>
+            </ModalGroup>
+
+            <ModalGroup>
+                <ColorPalette/>
             </ModalGroup>
 
             {/* 하단 버튼 */}
@@ -160,6 +165,21 @@ const CategotyTitle = styled.div`
   line-height: 16px;
 `;
 
+const InputTitle = styled.input`        // 약속 제목 입력 필드
+    width: 506px;
+    height: 58px;
+    border-radius: 20px;
+    border: 1px solid #AFB8C1;
+    
+`;
+
+const InputMember = styled.input`       // 약속 멤버 입력 필드
+    width: 153px;
+    height: 58px;
+    border-radius: 20px;
+    border: 1px solid #AFB8C1;
+`;
+
 const AddButton = styled.div`
   position: absolute;
   width: 133.945px;
@@ -174,14 +194,14 @@ const AddButton = styled.div`
 const Dash = styled.div`
     display: flex;
     font-size: 20px;
-    font-color: #AFB8C1;
+    align-items: center;
+    margin-bottom: 10px;
+    color: #AFB8C1;
 `;
 
 // 모달 관련 스타일
 const ModalOverlay = styled.div`
   position: fixed;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
@@ -194,15 +214,14 @@ const ModalOverlay = styled.div`
 const ModalContent = styled.div`
     width: 1110px;
     height: 711px;
-    flex-shrink: 0;
-  border-radius: 20px;
-  border: 1px solid #afb8c1;
-  background: #fff;
-  text-align: left;
-  padding: 30px;
-  position: relative;
-  display: flex;
-  flex-direction: column;
+    border-radius: 20px;
+    border: 1px solid #afb8c1;
+    background: #fff;
+    text-align: left;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+
   /* 반응형 스타일 */
   @media (max-width: 768px) {
     width: 90%; /* 화면의 90% 너비 */
@@ -212,26 +231,29 @@ const ModalContent = styled.div`
 `;
 
 const ModalGroup = styled.div`
-  margin-bottom: 20px;
+    margin-top: 42px;
+    margin-left: 64px;
 `;
 
 const Label = styled.label`
-  display: block;
-  font-family: "Inter", sans-serif;
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 10px;
-  color: #040404;
+    display: block;
+    font-family: "Product Sans", sans-serif;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #040404;
+    font-weight: bold;
 `;
 
-const Input = styled.input`
-  width: 100%;
-  height: 40px;
-  border-radius: 8px;
+const InputDate = styled.input`
+  width: 151px;
+  height: 58px;
+  border-radius: 20px;
   border: 1px solid #afb8c1;
-  padding: 0 10px;
   font-size: 16px;
   color: #555;
+  margin: 0px;
+  padding: 0px;
 
   /* 반응형 스타일 */
   @media (max-width: 768px) {
@@ -240,23 +262,25 @@ const Input = styled.input`
   }
 `;
 
-const DateField = styled.div`
-  display: flex;
-  gap: 10px;
-  justify-content: space-between;
+const DateField = styled.div`  // 날짜 입력 필드
+    height: 58px;
+    display: flex;
+    gap: 8px;
 
-  /* 반응형 스타일 */
-  @media (max-width: 768px) {
-    flex-direction: column;
-    gap: 5px;
-  }
+
+    /* 반응형 스타일 */
+    @media (max-width: 768px) {
+        flex-direction: column;
+        gap: 2px;
+    }
 `;
 
 const ModalActions = styled.div`
-  margin-top: 20px;
   display: flex;
   justify-content: flex-end;
+  margin-right: 64px;
   gap: 10px;
+  transform: translateY(-27px); 
 
   /* 반응형 스타일 */
   @media (max-width: 768px) {
@@ -266,28 +290,36 @@ const ModalActions = styled.div`
 `;
 
 const Button = styled.button`
-  padding: 10px 20px;
-  font-size: 16px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
+    width: 153px;
+    height: 58px;
 
-  ${(props) =>
-    props.primary
-      ? `
-      background-color: #3597ff;
-      color: #fff;
-    `
-      : `
-      background-color: #e0e0e0;
-      color: #555;
-    `}
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    border-radius: 20px;
+    background: #AFB8C1;    
+    color: #040404;
+    font-family: "Product Sans";
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    ${(props) =>
+        props.primary
+        ? `
+        background-color: #3597ff;
+        color: #fff;
+        `
+        : `
+        background-color: #e0e0e0;
+        color: #555;
+        `}
 
-  /* 반응형 스타일 */
-  @media (max-width: 768px) {
-    font-size: 14px;
-    padding: 8px 16px;
-  }
+    /* 반응형 스타일 */
+    @media (max-width: 768px) {
+        font-size: 14px;
+        padding: 8px 16px;
+    }
 `;
 
 export default EmptyMainPage;
