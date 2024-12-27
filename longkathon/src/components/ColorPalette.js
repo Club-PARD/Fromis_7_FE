@@ -1,15 +1,15 @@
 import styled from "styled-components";
 import { useState } from "react";
 
-import XRed from "./image/X_red.png";
-import XOrange from "./image/X_orange.png";
-import XGreen from "./image/X_green.png";
-import XBlue from "./image/X_blue.png";
-import XSkyblue from "./image/X_skyblue.png";
-import XPurple from "./image/X_purple.png";
-import XPink from "./image/X_pink.png";
-import XGray from "./image/X_gray.png";
-import XBlack from "./image/X_black.png";
+import XRed from "../Image/X_red.png";
+import XOrange from "../Image/X_orange.png";
+import XGreen from "../Image/X_green.png";
+import XBlue from "../Image/X_blue.png";
+import XSkyblue from "../Image/X_skyblue.png";
+import XPurple from "../Image/X_purple.png";
+import XPink from "../Image/X_pink.png";
+import XGray from "../Image/X_gray.png";
+import XBlack from "../Image/X_black.png";
 
 const colors = [
     { color: "#EA7E7A", image: XRed },

@@ -2,12 +2,10 @@ import React from "react";
 import styled, { keyframes } from "styled-components";
 import LenderLogo from "../Image/LenderLogo.png";
 import ConnectButtonImage from "../Image/ConnectButton.png";
-import AirPlaneImage from "../Image/AirPlane.png";
 
-function LenderPage() {
+function LandPage() {
   return (
     <AppContainer>
-      <AirPlane src={AirPlaneImage} alt="AirPlane" />
       <Container>
         <Header>
           <LogoImage src={LenderLogo} alt="Link Logo" />
@@ -52,21 +50,6 @@ function LenderPage() {
   );
 }
 
-// 비행기 애니메이션 효과
-const flyAnimation = keyframes`
-  0% {
-    transform: translate(0, 0) scale(1); /* 왼쪽 상단에서 시작, 기본 크기 */
-    opacity: 1;
-  }
-  80% {
-    transform: translate(100vw, 100vh) scale(3); /* 오른쪽 하단으로 이동하며 크기 커짐 */
-    opacity: 1;
-  }
-  100% {
-    transform: translate(100vw, 120vh) scale(3); /* 화면 바깥으로 이동 */
-    opacity: 0; /* 점점 사라짐 */
-  }
-`;
 
 const AppContainer = styled.div`
   text-align: center;
@@ -75,16 +58,6 @@ const AppContainer = styled.div`
   height: auto;
   font-family: 'Arial', sans-serif;
   color: #333;
-`;
-
-const AirPlane = styled.img`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100px; 
-  height: auto;
-  animation: ${flyAnimation} 5s linear 1; /* 7초 동안 1회 실행 */
-  animation-fill-mode: forwards;
 `;
 
 const Container = styled.div`
@@ -183,4 +156,4 @@ const Paragraph = styled.p`
   margin-top: 10px;
 `;
 
-export default LenderPage;
+export default LandPage;
