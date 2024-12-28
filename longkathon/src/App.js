@@ -1,11 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 import EmptyMainPage from "./pages/EmptyMain";
+import LoginPage from "./pages/Login";  
 
 function App() {
     return (
       <Div className="App">
-        <EmptyMainPage />
+        <LoginPage />
       </Div>
   );
 }

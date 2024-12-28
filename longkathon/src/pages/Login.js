@@ -1,5 +1,7 @@
 import React from "react";
 import styled from "styled-components";
+import GoogleLogoImage from "../Image/GoogleLogo.png";
+import LoginLogoImage from "../Image/LoginLogo.png";
 
 function LoginPage() {
   const handleGoogleLogin = () => {
@@ -9,45 +11,72 @@ function LoginPage() {
 
   return (
     <LoginContainer>
-      <InputContainer>
-        <GoogleLoginButton onClick={handleGoogleLogin}>
-          Sign in with Google
-        </GoogleLoginButton>
-      </InputContainer>
+      <LogoSection>
+        <LoginLogo src={LoginLogoImage} alt="Login Logo" />
+      </LogoSection>
+      <LoginTitle>로그인</LoginTitle>
+      <GoogleLoginButton onClick={handleGoogleLogin}>
+        <GoogleLogo src={GoogleLogoImage} alt="Google Logo" />
+        Google로 시작하기
+      </GoogleLoginButton>
     </LoginContainer>
   );
 }
-
-export default LoginPage;
 
 // 스타일 정의
 const LoginContainer = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
   height: 100vh;
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
+  background: #fff;
 `;
 
-const InputContainer = styled.div`
+const LogoSection = styled.div`
   display: flex;
-  flex-direction: column;
-  gap: 20px;
-  width: 300px;
+  align-items: center;
+  margin-bottom: 20px;
+  margin-left: 142px;
+`;
+
+const LoginLogo = styled.img`
+  width: 425px;
+  height: 160px;
+`;
+
+
+const LoginTitle = styled.h2`
+  font-size: 24px;
+  font-weight: 400;
+  color: #333;
+  margin-bottom: 40px;
 `;
 
 const GoogleLoginButton = styled.button`
-  width: 100%;
-  padding: 10px;
-  font-size: 16px;
-  color: white;
-  background-color: #4285f4;
-  border: none;
-  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 652px;
+  height: 80px;
+  border-radius: 20px;
+  border: 1px solid #afb8c1;
+  background: #fff;
+  box-shadow: 2px 2px 2px 0px rgba(217, 217, 217, 0.3),
+    -2px -2px 2px 0px rgba(217, 217, 217, 0.3);
+  font-size: 18px;
+  font-weight: 500;
+  color: #040404;
   cursor: pointer;
-
+  margin-left: 708px;
   &:hover {
-    background-color: #357ae8;
+    background: #f5f5f5;
   }
 `;
+
+const GoogleLogo = styled.img`
+  width: 24px;
+  height: 24px;
+`;
+
+export default LoginPage;

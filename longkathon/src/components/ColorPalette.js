@@ -71,7 +71,7 @@ function ColorPalette() {
 const Container = styled.div`
     width: 100%;
     max-width: 1060px;
-    margin: 0 auto;
+    // margin: 0 auto;
 `;
 
 const Title = styled.h1`
@@ -95,7 +95,7 @@ const LeftBox = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #f7f7f7;
+    background-color: #ffffff;
 `;
 
 const XShape = styled.img`

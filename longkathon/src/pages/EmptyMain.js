@@ -5,164 +5,288 @@ import SideBar from "../components/SideBar";
 import ColorPalette from "../components/ColorPalette";
 
 const EmptyMainPage = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 관리
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [dates, setDates] = useState({
+            startYear: "",
+            startMonth: "",
+            startDay: "",
+            endYear: "",
+            endMonth: "",
+            endDay: "",
+    });
 
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
+    const [members, setMembers] = useState([""]);
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
+    const openModal = () => {
+        setIsModalOpen(true);
+    };
 
-  return (
-    <PageWrapper>
-      <Header />
-      <MainContent>
-        <SideBarContainer>
-          <SideBar />
-        </SideBarContainer>
-        <CategoryFile src={require("../Image/CategoryFile.png")} alt="file-image" />
-        <ImageContainer>
-          <CenterImage src={require("../Image/MainIcon.png")} alt="centered-image" />
-          <Title>카테고리가 생성될 때마다 조각을 연결해요!!</Title>
-          <CategotyTitle>Categories: </CategotyTitle>
-          <AddButton onClick={openModal}>
-            <lord-icon
-              src="https://cdn.lordicon.com/nqtddedc.json"
-              trigger="hover"
-              colors="primary:#AFB8C1,secondary:#FF5733"
-              style={{ width: "100px", height: "100px" }}
-            ></lord-icon>
-          </AddButton>
-        </ImageContainer>
-      </MainContent>
+    const closeModal = () => {
+        setDates({
+            startYear: "",
+            startMonth: "",
+            startDay: "",
+            endYear: "",
+            endMonth: "",
+            endDay: "",
+        });
 
-      {isModalOpen && (
-        <ModalOverlay onClick={closeModal}>
-          <ModalContent onClick={(e) => e.stopPropagation()}>
+        setMembers([""]);
+        setIsModalOpen(false);
+    };
 
+    const handleBlur = (field, value) => {
+        let formattedValue = value;
 
-            {/* 약속 제목 */}
-            <ModalGroup>
-              <Label>약속 제목: </Label>
-              <InputTitle type="text" placeholder="약속 제목을 입력해주세요" />
-            </ModalGroup>
+    // 이미 "년", "월", "일"이 포함되어 있는 경우 포맷팅을 건너뜀
+    if (field.includes("Year") && value.endsWith("년")) {
+        return;
+    } else if (field.includes("Month") && value.endsWith("월")) {
+        return;
+    } else if (field.includes("Day") && value.endsWith("일")) {
+        return;
+    }
 
-            {/* 약속 날짜 */}
-            <ModalGroup>
-                <Label>약속 날짜: </Label>
-                <DateField>
-                    <InputDate placeholder="년도" />
-                    <InputDate placeholder="월" />
-                    <InputDate placeholder="일" />
-                    <Dash>__</Dash>
-                    <InputDate placeholder="년도" />
-                    <InputDate placeholder="월" />
-                    <InputDate placeholder="일" />
-                </DateField>
-            </ModalGroup>
+    // 년, 월, 일 포맷팅 처리
+    if (field.includes("Year")) {
+      formattedValue = `${value}년`;
+    } else if (field.includes("Month")) {
+      formattedValue = value.padStart(2, "0") + "월"; 
+    } else if (field.includes("Day")) {
+      formattedValue = value.padStart(2, "0") + "일"; 
+    }
 
-            {/* 약속 멤버 */}
-            <ModalGroup>
-              <Label>약속 멤버: </Label>
-              <DateField>
-                <InputMember placeholder="예) 김링크" />
-              </DateField>
-            </ModalGroup>
+    setDates((prevDates) => ({
+        ...prevDates,
+        [field]: formattedValue,
+        }));
+    };
 
-            <ModalGroup>
-                <ColorPalette/>
-            </ModalGroup>
+    const handleChange = (field, value) => {
+        setDates((prevDates) => ({
+        ...prevDates,
+        [field]: value,
+        }));
+    };
 
-            {/* 하단 버튼 */}
-            <ModalActions>
-              <Button>취소</Button>
-              <Button primary>저장</Button>
-            </ModalActions>
-          </ModalContent>
-        </ModalOverlay>
-      )}
-    </PageWrapper>
-  );
+    const addMemberField = () => {
+        setMembers([...members, ""]);
+    }
+
+    const handleMemberChange = (index, value) => {
+        const updatedMembers = [...members];
+        updatedMembers[index] = value;
+        setMembers(updatedMembers);
+    }
+
+    return (
+        <PageWrapper>
+        <Header />
+        <MainContent>
+            <SideBarContainer>
+                <SideBar />
+            </SideBarContainer>
+            <CategoryFile src={require("../Image/CategoryFile.png")} alt="file-image" />
+            <ImageContainer>
+                <CenterImage src={require("../Image/MainIcon.png")} alt="centered-image" />
+                <Title>카테고리가 생성될 때마다 조각을 연결해요!!</Title>
+                <CategotyTitle>Categories: </CategotyTitle>
+                <AddButton onClick={openModal}>
+                    <lord-icon
+                    src="https://cdn.lordicon.com/nqtddedc.json"
+                    trigger="hover"
+                    colors="primary:#AFB8C1,secondary:#FF5733"
+                    style={{ width: "100px", height: "100px" }}
+                    ></lord-icon>
+                </AddButton>
+            </ImageContainer>
+        </MainContent>
+
+        {isModalOpen && (
+            <ModalOverlay onClick={closeModal}>
+                <ModalContent onClick={(e) => e.stopPropagation()}>
+                    {/* 약속 제목 */}
+                    <ModalGroup>
+                    <Label>약속 제목: </Label>
+                    <InputTitle type="text" placeholder="약속 제목을 입력해주세요" />
+                    </ModalGroup>
+
+                    {/* 약속 날짜 */}
+                    <ModalGroup>
+                    <Label>약속 날짜: </Label>
+                        <DateField>
+                            <InputDate
+                                placeholder="년도"
+                                value={dates.startYear}
+                                onChange={(e) => handleChange("startYear", e.target.value)}
+                                onBlur={(e) => handleBlur("startYear", e.target.value)}
+                            />
+                            <InputDate
+                                placeholder="월"
+                                value={dates.startMonth}
+                                onChange={(e) => handleChange("startMonth", e.target.value)}
+                                onBlur={(e) => handleBlur("startMonth", e.target.value)}
+                            />
+                            <InputDate
+                                placeholder="일"
+                                value={dates.startDay}
+                                onChange={(e) => handleChange("startDay", e.target.value)}
+                                onBlur={(e) => handleBlur("startDay", e.target.value)}
+                            />
+                            <Dash>__</Dash>
+                            <InputDate
+                                placeholder="년도"
+                                value={dates.endYear}
+                                onChange={(e) => handleChange("endYear", e.target.value)}
+                                onBlur={(e) => handleBlur("endYear", e.target.value)}
+                            />
+                            <InputDate
+                                placeholder="월"
+                                value={dates.endMonth}
+                                onChange={(e) => handleChange("endMonth", e.target.value)}
+                                onBlur={(e) => handleBlur("endMonth", e.target.value)}
+                            />
+                            <InputDate
+                                placeholder="일"
+                                value={dates.endDay}
+                                onChange={(e) => handleChange("endDay", e.target.value)}
+                                onBlur={(e) => handleBlur("endDay", e.target.value)}
+                            />
+                        </DateField>
+                    </ModalGroup>
+
+                    {/* 약속 멤버 */}
+                    <ModalGroup>
+                        <Label>약속 멤버: </Label>
+                        <DateField>
+                            {members.map((member, index) => (
+                                <MemberContainer key={index}>
+                                    <CloseButton
+                                        onClick={() => {
+                                            if (members.length > 1) {
+                                                const updatedMembers = members.filter((_, i) => i !== index);
+                                                setMembers(updatedMembers);
+                                            }
+                                        }}
+                                    >
+                                        <lord-icon
+                                            src="https://cdn.lordicon.com/nqtddedc.json"
+                                            trigger="hover"
+                                            colors="primary:#040404,secondary:#FF5733"
+                                            style={{ width: "20px", height: "20px" }}
+                                        ></lord-icon>
+                                    </CloseButton>
+                                    <InputMember
+                                        placeholder={`예) 멤버 ${index + 1}`}
+                                        value={member}
+                                        onChange={(e) => handleMemberChange(index, e.target.value)}
+                                    />
+                                </MemberContainer>
+                    ))}
+                            <AddLordicon onClick={addMemberField}>
+                                <lord-icon
+                                    src="https://cdn.lordicon.com/nqtddedc.json"
+                                    trigger="hover"
+                                    colors="primary:#AFB8C1,secondary:#FF5733"
+                                    style={{ width: "60px", height: "60px" }}
+                                ></lord-icon>
+                            </AddLordicon>
+                        </DateField>
+                    </ModalGroup>
+
+                    {/* 색상 선택 */}
+                    <ModalGroup>
+                        <ColorPalette />
+                    </ModalGroup>
+
+                    {/* 하단 버튼 */}
+                    <ModalActions>
+                        <Button onClick={closeModal}>취소</Button>
+                        <Button primary>저장</Button>
+                    </ModalActions>
+                </ModalContent>
+            </ModalOverlay>
+        )}
+        </PageWrapper>
+    );
 };
 
 // 스타일 정의
 const PageWrapper = styled.div`
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100vh;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100vh;
 `;
 
 const MainContent = styled.div`
-  display: flex;
-  flex: 1;
-  position: relative;
+    display: flex;
+    flex: 1;
+    position: relative;
 `;
 
 const SideBarContainer = styled.div`
-  position: fixed;
-  top: 80px;
-  right: 20px;
-  z-index: 10;
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 10;
 `;
 
 const CategoryFile = styled.img`
-  position: absolute;
-  top: 172px;
-  left: 240px;
-  width: 217px;
-  height: 260px;
+    position: absolute;
+    top: 172px;
+    left: 240px;
+    width: 217px;
+    height: 260px;
 `;
 
 const ImageContainer = styled.div`
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
 `;
 
 const CenterImage = styled.img`
-  width: 467px;
-  height: auto;
-  border-radius: 12px;
+    width: 467px;
+    height: auto;
+    border-radius: 12px;
 `;
 
 const Title = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: #3597ff;
-  font-family: "Product Sans Thin";
-  font-size: 40px;
-  font-style: normal;
-  font-weight: 350;
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #3597ff;
+    font-family: "Product Sans Thin";
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 350;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
-  /* 반응형 스타일 */
-  @media (max-width: 768px) {
-    font-size: 24px;
-  }
+    /* 반응형 스타일 */
+    @media (max-width: 768px) {
+        font-size: 24px;
+    }
 `;
 
-const CategotyTitle = styled.div`
-  position: absolute;
-  top: 190px;
-  left: 260px;
-  color: #040404;
-  font-family: Inter;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: 16px;
+    const CategotyTitle = styled.div`
+    position: absolute;
+    top: 190px;
+    left: 260px;
+    color: #040404;
+    font-family: Inter;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 16px;
 `;
 
 const InputTitle = styled.input`        // 약속 제목 입력 필드
@@ -170,6 +294,7 @@ const InputTitle = styled.input`        // 약속 제목 입력 필드
     height: 58px;
     border-radius: 20px;
     border: 1px solid #AFB8C1;
+    text-indent: 30px;
     
 `;
 
@@ -178,17 +303,18 @@ const InputMember = styled.input`       // 약속 멤버 입력 필드
     height: 58px;
     border-radius: 20px;
     border: 1px solid #AFB8C1;
+    text-indent: 30px;
 `;
 
 const AddButton = styled.div`
-  position: absolute;
-  width: 133.945px;
-  height: 133.945px;
-  left: 305px;
-  top: 270px;
-  transform: rotate(-45deg);
-  flex-shrink: 0;
-  cursor: pointer;
+    position: absolute;
+    width: 133.945px;
+    height: 133.945px;
+    left: 305px;
+    top: 270px;
+    transform: rotate(-45deg);
+    flex-shrink: 0;
+    cursor: pointer;
 `;
 
 const Dash = styled.div`
@@ -201,19 +327,25 @@ const Dash = styled.div`
 
 // 모달 관련 스타일
 const ModalOverlay = styled.div`
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* 오버플로 방지 */
+    z-index: 1000;
 `;
 
+
 const ModalContent = styled.div`
+    margin-top: 4%;
     width: 1110px;
-    height: 711px;
+    max-height: 90vh; 
+    overflow-y: auto; 
     border-radius: 20px;
     border: 1px solid #afb8c1;
     background: #fff;
@@ -222,17 +354,19 @@ const ModalContent = styled.div`
     display: flex;
     flex-direction: column;
 
-  /* 반응형 스타일 */
-  @media (max-width: 768px) {
-    width: 90%; /* 화면의 90% 너비 */
-    height: auto; /* 높이를 자동으로 조정 */
-    padding: 20px;
-  }
+    /* 반응형 스타일 */
+    @media (max-width: 768px) {
+        width: 90%;
+        height: auto;
+        padding: 20px;
+    }
 `;
 
 const ModalGroup = styled.div`
     margin-top: 42px;
-    margin-left: 64px;
+    margin-left: 50px;
+    display: flex;
+    flex-direction: column;
 `;
 
 const Label = styled.label`
@@ -246,53 +380,71 @@ const Label = styled.label`
 `;
 
 const InputDate = styled.input`
-  width: 151px;
-  height: 58px;
-  border-radius: 20px;
-  border: 1px solid #afb8c1;
-  font-size: 16px;
-  color: #555;
-  margin: 0px;
-  padding: 0px;
-
-  /* 반응형 스타일 */
-  @media (max-width: 768px) {
-    height: 35px;
-    font-size: 14px;
-  }
-`;
-
-const DateField = styled.div`  // 날짜 입력 필드
+    width: 151px;
     height: 58px;
-    display: flex;
-    gap: 8px;
-
-
+    border-radius: 20px;
+    border: 1px solid #afb8c1;
+    text-indent: 30px;
+    color: #555;
+    margin: 0px;
     /* 반응형 스타일 */
     @media (max-width: 768px) {
-        flex-direction: column;
-        gap: 2px;
+        height: 35px;
+        font-size: 14px;
     }
 `;
 
-const ModalActions = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  margin-right: 64px;
-  gap: 10px;
-  transform: translateY(-27px); 
+const DateField = styled.div`
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 8px; 
+    align-items: flex-start; 
 
-  /* 반응형 스타일 */
-  @media (max-width: 768px) {
-    flex-direction: column;
-    gap: 5px;
-  }
+    @media (max-width: 768px) {
+        flex-direction: column;
+        gap: 4px;
+    }
+`;
+
+const MemberContainer = styled.div`
+    position: relative;
+    display: flex;
+    align-items: center;
+`;
+
+const CloseButton = styled.div`
+    position: absolute;
+    top: -5px; 
+    left: 145px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+
+    &:hover {
+        background: #f0f0f0; 
+    }   
+`;
+
+const ModalActions = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 64px;
+    gap: 10px;
+ 
+    @media (max-width: 768px) {
+        flex-direction: column;
+        gap: 5px;
+    }
 `;
 
 const Button = styled.button`
     width: 153px;
     height: 58px;
-
+    transform: translateY(-27px); 
+    z-index: 1;
     border-radius: 8px;
     border: none;
     cursor: pointer;
@@ -315,11 +467,22 @@ const Button = styled.button`
         color: #555;
         `}
 
-    /* 반응형 스타일 */
     @media (max-width: 768px) {
         font-size: 14px;
         padding: 8px 16px;
     }
+`;
+
+
+const AddLordicon = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    width: 60px;
+    height: 60px;
+    margin-left: 8px; 
+    rotate: 45deg;
 `;
 
 export default EmptyMainPage;
