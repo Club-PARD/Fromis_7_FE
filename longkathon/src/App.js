@@ -8,11 +8,13 @@ import LikeButton from "./components/LikeButton";
 import LoginbuttonHeader from "./components/LoginbuttonHeader";
 import styled from "styled-components";
 import MainPage from "./pages/MainPage";
+import AllCategoryPage from "./pages/AllCategoryPage";
 
 function App() {
   return (
     <Div className="App">
-      <MainPage />
+      {/* <MainPage /> */}
+      <AllCategoryPage Title="category_Title"/>
     </Div>
   );
 }

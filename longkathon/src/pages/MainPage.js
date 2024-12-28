@@ -26,11 +26,11 @@ const MainPage = () => {
           </ViewContainer>
           <CategoryContainer>
             <CategoryText1>L:nk</CategoryText1>
-                        <CategoryText2>highlight</CategoryText2>
-            <CategoryCard category="카테고리1" key="purple" />
-            <CategoryCard category="카테고리2" key="purple"/>
-            <CategoryCard category="카테고리3" key="purple"/>
-            <CategoryCard category="카테고리4" key="purple"/>
+            <CategoryText2>highlight</CategoryText2>
+            <CategoryCard category="카테고리1" colorKey="purple" />
+            <CategoryCard category="카테고리2" colorKey="pink"/>
+            <CategoryCard category="카테고리3" colorKey="red"/>
+            <CategoryCard category="카테고리4" colorKey="black"/>
             <DayCard targetDate="2025-01-05"/>
           </CategoryContainer>
         </MainContainer>
@@ -39,17 +39,17 @@ const MainPage = () => {
   );
 };
 
-const Container = styled.div`
+export const Container = styled.div`
 width: 1440px;
+position: relative;
 /* height: 813.45px; */
 /* border: 10px solid black; */
 `;
 
-const MainBenner = styled.div`
+export const MainBenner = styled.div`
 `;
 
 const MainContainer = styled.div`
-/* border: 1px solid black; */
 top:82px;
 margin-left: 82px;
 margin-right: 82px;
@@ -106,7 +106,7 @@ display: flex;
   position: relative;
 `;
 
-const CategoryText1 = styled.div`
+export const CategoryText1 = styled.div`
 color: #040404;
 font-family: Inter;
 font-size: 20px;
@@ -126,7 +126,7 @@ align-items: center;
 text-align: center;
 `;
 
-const CategoryText2 = styled.div`
+export const CategoryText2 = styled.div`
 color: #040404;
 font-family: Inter;
 font-size: 20px;
