@@ -5,7 +5,7 @@ import LoginLogoImage from "../Image/LoginLogo.png";
 
 function LoginPage() {
   const handleGoogleLogin = () => {
-    const oauthUrl = `http://13.124.86.133:8080/test`;
+    const oauthUrl = `http://localhost:8080/oauth2/authorization/google`;
     window.location.href = oauthUrl; // Google OAuth 로그인 페이지로 이동
   };
 
@@ -14,11 +14,13 @@ function LoginPage() {
       <LogoSection>
         <LoginLogo src={LoginLogoImage} alt="Login Logo" />
       </LogoSection>
-      <LoginTitle>로그인</LoginTitle>
-      <GoogleLoginButton onClick={handleGoogleLogin}>
-        <GoogleLogo src={GoogleLogoImage} alt="Google Logo" />
-        Google로 시작하기
-      </GoogleLoginButton>
+      <GoogleLoginSection>
+        <Title>로그인</Title>
+        <GoogleLoginButton onClick={handleGoogleLogin}>
+          <GoogleLogo src={GoogleLogoImage} alt="Google Logo" />
+          <Input>Google로 시작하기</Input>
+        </GoogleLoginButton>
+      </GoogleLoginSection>
     </LoginContainer>
   );
 }
@@ -26,8 +28,8 @@ function LoginPage() {
 // 스타일 정의
 const LoginContainer = styled.div`
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: center;
   height: 100vh;
   font-family: "Arial", sans-serif;
   background: #fff;
@@ -36,7 +38,6 @@ const LoginContainer = styled.div`
 const LogoSection = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
   margin-left: 142px;
 `;
 
@@ -45,18 +46,25 @@ const LoginLogo = styled.img`
   height: 160px;
 `;
 
+const GoogleLoginSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-right: 80px;
+  margin-top: -50px;
+`;
 
-const LoginTitle = styled.h2`
-  font-size: 24px;
+const Title = styled.div`
+  font-size: 32px;
   font-weight: 400;
-  color: #333;
-  margin-bottom: 40px;
+  color: #040404;
+  margin-bottom: 20px;
+  margin-left: 300px;
+  margin-right: 300px;
 `;
 
 const GoogleLoginButton = styled.button`
   display: flex;
   align-items: center;
-  justify-content: center;
   width: 652px;
   height: 80px;
   border-radius: 20px;
@@ -64,19 +72,28 @@ const GoogleLoginButton = styled.button`
   background: #fff;
   box-shadow: 2px 2px 2px 0px rgba(217, 217, 217, 0.3),
     -2px -2px 2px 0px rgba(217, 217, 217, 0.3);
-  font-size: 18px;
-  font-weight: 500;
+  font-weight: 400;
   color: #040404;
   cursor: pointer;
-  margin-left: 708px;
+
   &:hover {
     background: #f5f5f5;
   }
 `;
 
 const GoogleLogo = styled.img`
-  width: 24px;
-  height: 24px;
+  width: 40px;
+  height: 40px;
+  margin-left: 55px;
+`;
+
+const Input = styled.span`
+  font-size: 24px;
+  font-weight: 400;
+  color: #040404;
+  display: flex;
+  align-items: center;
+  margin-left: 177px;
 `;
 
 export default LoginPage;

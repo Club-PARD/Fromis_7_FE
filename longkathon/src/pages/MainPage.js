@@ -7,10 +7,10 @@ import DayCard from "../components/DayCard";
 import MainRightViewContainer from "../components/MainRightViewContainer";
 import CategoryCard from "../components/CategoryCard";
 import BackGround from "../components/BackGround";
+import PieceMap from "../components/PieceMap";
 
 
 const MainPage = () => {
-
   return (
     <Container>
       <MainBenner>
@@ -21,17 +21,20 @@ const MainPage = () => {
       <BackGround>
         <MainContainer>
           <ViewContainer>
+          <PieceMapWrapper>
+            <PieceMap />
+          </PieceMapWrapper>
             <ViewButton>전체 조각 보러가기</ViewButton>
-            <MainRightViewContainer users={["user1","user2","user3","user4","user5","user6","user7","user8"]}/>
+            <MainRightViewContainer users={["user1", "user2", "user3", "user4", "user5", "user6", "user7", "user8"]} />
           </ViewContainer>
           <CategoryContainer>
             <CategoryText1>L:nk</CategoryText1>
-                        <CategoryText2>highlight</CategoryText2>
+            <CategoryText2>highlight</CategoryText2>
             <CategoryCard category="카테고리1" key="purple" />
-            <CategoryCard category="카테고리2" key="purple"/>
-            <CategoryCard category="카테고리3" key="purple"/>
-            <CategoryCard category="카테고리4" key="purple"/>
-            <DayCard targetDate="2025-01-05"/>
+            <CategoryCard category="카테고리2" key="purple" />
+            <CategoryCard category="카테고리3" key="purple" />
+            <CategoryCard category="카테고리4" key="purple" />
+            <DayCard targetDate="2025-01-05" />
           </CategoryContainer>
         </MainContainer>
       </BackGround>
@@ -40,9 +43,9 @@ const MainPage = () => {
 };
 
 const Container = styled.div`
-width: 1440px;
 /* height: 813.45px; */
 /* border: 10px solid black; */
+border: 1px solid black;
 `;
 
 const MainBenner = styled.div`
@@ -89,6 +92,10 @@ border-radius: 20px;
 background: #5BA8FB;
 position: absolute;
 top: 102px;
+transition: transform 0.2s;
+&:hover {
+        transform: scale(1.1);
+    }
 `;
 
 
@@ -104,6 +111,7 @@ text-align: center;
 display: flex;
   align-items: flex-end; /* 내용물을 하단에 정렬 */
   position: relative;
+
 `;
 
 const CategoryText1 = styled.div`
@@ -146,6 +154,14 @@ display: flex;
 justify-content: center;
 align-items: center;
 text-align: center;
+`;
+
+const PieceMapWrapper = styled.div`
+  position: absolute; /* 절대 위치로 설정 */
+  top: 50%; /* 세로 중앙 정렬 */
+  left: 0; /* 왼쪽으로 이동 */
+  transform: translate(0, -50%); /* 세로 축 기준으로 정확히 중앙 정렬 */
+  margin-top: 20px;
 `;
 
 export default MainPage;
