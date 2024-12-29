@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
 export const HamburgerIcon = ({ color, width, height }) => {
@@ -8,8 +8,25 @@ export const HamburgerIcon = ({ color, width, height }) => {
     setShowBanners(!showBanners);
   };
 
+  const handleOutsideClick = (event) => {
+    if (!event.target.closest("#hamburger-menu")) {
+      setShowBanners(false);
+    }
+  };
+
+  useEffect(() => {
+    if (showBanners) {
+      document.addEventListener("click", handleOutsideClick);
+    } else {
+      document.removeEventListener("click", handleOutsideClick);
+    }
+    return () => {
+      document.removeEventListener("click", handleOutsideClick);
+    };
+  }, [showBanners]);
+
   return (
-    <Container>
+    <Container id="hamburger-menu">
       <LordIcon
         src="https://cdn.lordicon.com/lqxfrxad.json"
         trigger="hover"
@@ -19,7 +36,7 @@ export const HamburgerIcon = ({ color, width, height }) => {
         onClick={handleIconClick}
       ></LordIcon>
       <BannersContainer show={showBanners}>
-        {["마이 페이지", "진행 중 약속", "지난 약속", "설정"].map((category, index) => (
+        {["마이 페이지", "진행 중 링크", "지난 링크", "설정"].map((category, index) => (
           <Banner key={index}>{category}</Banner>
         ))}
       </BannersContainer>
@@ -61,9 +78,10 @@ const BannersContainer = styled.div`
   box-shadow: 2px 2px 4px 0px rgba(217, 217, 217, 1),
     -2px -2px 4px 0px rgba(217, 217, 217, 1);
   position: absolute;
-  top: 50px;
+  top: 45px;
   left: 0px;
   z-index: 5;
+
 `;
 
 const Banner = styled.div`

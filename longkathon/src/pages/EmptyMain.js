@@ -190,7 +190,6 @@ const EmptyMainPage = () => {
                         <ModalGroup>
                             <ColorPalette />
                         </ModalGroup>
-
                         {/* 하단 버튼 */}
                         <ModalActions>
                             <Button onClick={closeModal}>취소</Button>

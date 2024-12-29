@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import AddLinkImage from "../Image/SideBarImage.png";
+
 // Styled Components
 const SidebarContainer = styled.div`
   position: fixed;
-  right: 82px;
+  right: 80px;
   top: 62px;
   width: 85px;
   height: 265px;
@@ -15,18 +16,21 @@ const SidebarContainer = styled.div`
   border: 1px solid #afb8c1;
   border-radius: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  z-index: 200;
+  z-index: 100;
+
 `;
 
 const MenuList = styled.ul`
   list-style: none;
   padding: 0;
+
 `;
 
 const MenuItem = styled.li`
   margin-bottom: 21px;
   cursor: pointer;
   position: relative; /* 상대 위치로 설정 */
+
 `;
 
 const HoverImage = styled.div`
@@ -45,13 +49,14 @@ color: #ffffff;
 `;
 
 // Sidebar Component
-const SideBar = () => {
+const SideBar = ({ onCreateClick }) => {
   return (
     <SidebarContainer>
       <MenuList>
         <HoverableMenuItem
           icon={SideAddButton}
           imageSrc={AddLinkImage}
+          onClick={onCreateClick}
           color="primary:#5ba8fb"
           width={40}
           height={40}
@@ -71,18 +76,16 @@ const SideBar = () => {
 };
 
 // HoverableMenuItem Component
-const HoverableMenuItem = ({ icon: Icon, imageSrc, ...iconProps }) => {
+const HoverableMenuItem = ({ icon: Icon, onClick, color, width, height }) => {
   const [isHovered, setIsHovered] = useState(false);
-
-  const handleMouseEnter = () => setIsHovered(true);
-  const handleMouseLeave = () => setIsHovered(false);
 
   return (
     <MenuItem
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={onClick} // 전달받은 onClick 실행
     >
-      <Icon {...iconProps} />
+      <Icon color={color} width={width} height={height} />
       <HoverImage isVisible={isHovered}>
         <CenteredText>약속 생성하기</CenteredText>
       </HoverImage>

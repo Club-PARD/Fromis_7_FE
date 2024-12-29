@@ -44,7 +44,11 @@ const HeaderComponent = ({ disabled }) => { // 외부에서 disabled 값을 받�
 };
 
 const HeaderContainer = styled.div`
+<<<<<<< HEAD
   width: 1440px;
+=======
+  /* border: 1px solid black; */
+>>>>>>> 6a9b0e36c53a1094fe7eb35564fbc5afeba6cc54
   height: 60px;
   display: flex;
   align-items: center;
@@ -68,6 +72,7 @@ const LogoImg = styled.img`
   width: 40px;
   height: 40px;
   margin-right: 8px;
+  
 `;
 
 const LogoText = styled.span`
@@ -96,7 +101,7 @@ const SearchBox = styled.div`
 const Search = styled.input`
   border:${(props) => (props.disabled ? "1px solid rgba(4, 4, 4, 0.3)" : "1px solid #afb8c1")};
   border-radius: 10px;
-  width: 155px;
+  width: 192px;
   height: 38px;
   padding-left: 12px;
   background: ${(props) => (props.disabled ? "rgba(104,104,104)" : "#fff")};  /* 외부에서 받은 disabled 값에 따라 배경색 변경 */
@@ -129,7 +134,12 @@ const SearchIcon = () => {
 };
 
 const UserBox = styled.div`
+<<<<<<< HEAD
   margin-right: 103px;
+=======
+/* border: 1px solid black; */
+margin-right: 103px;
+>>>>>>> 6a9b0e36c53a1094fe7eb35564fbc5afeba6cc54
 `;
 
 const User = () => {
