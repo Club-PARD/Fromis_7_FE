@@ -42,10 +42,32 @@ export const BookMarkIcon = ({ onClick, isMarked, isDisabled }) => {
         width: "40px",
         height: "40px",
         cursor: isDisabled ? "not-allowed" : "pointer",
+        // zIndex:"0",
       }}
     ></lord-icon>
   );
 };
+
+export const DeleteIcon = ({ onClick }) => {
+  return (
+    <lord-icon
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        onClick();
+      }}
+      src="https://cdn.lordicon.com/nqtddedc.json"
+      trigger="hover"
+      state="hover-cross-3"
+      style={{
+        width: "40px",
+        height: "40px",
+        cursor: "pointer",
+      }}
+    ></lord-icon>
+  );
+};
+
 
 const CategoryCard_Check = ({
   category,
@@ -53,7 +75,9 @@ const CategoryCard_Check = ({
   onCountChange,
   isDisabled,
   isSelected,
-  totalCount,
+  clicked,
+  onDelete,
+  activateAlert, // AlertManager 활성화를 위한 함수 전달
 }) => {
   const [isMarked, setIsMarked] = useState(isSelected); // 초기 상태를 상위에서 전달받음
 
@@ -78,6 +102,12 @@ const CategoryCard_Check = ({
     });
   };
 
+    const handleDelete = () => {
+    onDelete(); // 삭제 함수 호출
+    activateAlert(); // Alert 활성화 함수 호출
+  };
+
+
   return (
     <CategoryBox>
       <StyledCard />
@@ -85,11 +115,9 @@ const CategoryCard_Check = ({
       <CategoryText>categories:</CategoryText>
       <DisplayedText>{category}</DisplayedText>
       <CategoryIcon>
-        <BookMarkIcon
-          onClick={toggleCountAndColor}
-          isMarked={isMarked}
-          isDisabled={isDisabled}
-        />
+        {clicked ? (
+          <DeleteIcon onClick={handleDelete}/>) : (<BookMarkIcon onClick={toggleCountAndColor}isMarked={isMarked}
+            isDisabled={isDisabled}/>)}
       </CategoryIcon>
     </CategoryBox>
   );
@@ -97,7 +125,9 @@ const CategoryCard_Check = ({
 
 // Styled Components
 const CategoryBox = styled.div`
+/* border: 1px solid black; */
   position: relative;
+  z-index: 302;
 `;
 
 const CategoryIcon = styled.div`
@@ -105,21 +135,6 @@ const CategoryIcon = styled.div`
   top: 4px;
   right: 4px;
   z-index: 200;
-`;
-
-const CustomCategoryText1 = styled.div`
-  color: #040404;
-  font-family: Inter;
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 20px;
-  position: absolute;
-  bottom: 8px;
-  left: 21px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
 `;
 
 const CategoryText = styled.div`
@@ -159,7 +174,7 @@ const DisplayedText = styled.div`
   text-align: center;
 `;
 
-const CategoryPiece = styled.div`
+export const CategoryPiece = styled.div`
   width: 217px;
   height: 260px;
   background-image: ${(props) => `url(${props.$image})`};
@@ -168,7 +183,7 @@ const CategoryPiece = styled.div`
   background-repeat: no-repeat;
   border-radius: 10px;
   position: absolute;
-  top: 0;
+  top: 20px;
   left: 0;
   z-index: 1;
 `;

@@ -1,73 +1,207 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Container, MainBenner } from "./MainPage";
 import SideBar from "../components/SideBar";
 import HeaderComponent from "../components/HeaderComponent";
 import styled from "styled-components";
 import CategoryCard_Check from "../components/CategoryCard_Check";
+import CategoryAddContainer from "../components/CategoryAddContainer";
+import AlertManager from "../components/AlertManager";
+import AlertManager_Delete from "../components/AlertManager_Delete";
 
 const AllCategoryPage = ({ Title }) => {
-  const [categoryCount, setCategoryCount] = useState(0);
+  const [categories, setCategories] = useState([
+    // { id: 1, category: "카테고리1", colorKey: "purple" },
+    // { id: 2, category: "카테고리2", colorKey: "green" },
+    // { id: 3, category: "카테고리3", colorKey: "pink" },
+    // { id: 4, category: "카테고리4", colorKey: "orange" },
+  ]);
+
+  const [categoryCount, setCategoryCount] = useState(0); // 카테고리 카드 개수
   const [totalCount, setTotalCount] = useState(0); // 카운트의 총합
   const [selectedCategories, setSelectedCategories] = useState({}); // 선택된 카테고리 상태
+  const [isButtonClicked, setIsButtonClicked] = useState(false); // New state for button click
+  const [alertActive, setAlertActive] = useState(false);
+  const [showDeleteAlert, setShowDeleteAlert] = useState(false); // 삭제 경고 상태
+  const [categoryToDelete, setCategoryToDelete] = useState(null); // 삭제할 카테고리
 
-  const handleCountChange = (change, index) => {
-    setTotalCount((prevTotal) => {
-      const newTotal = prevTotal + change;
 
-      // 디버깅 로그
-      console.log("Change:", change, "Previous Total:", prevTotal, "New Total:", newTotal);
+  useEffect(() => {
+    if (totalCount === 4) {
+      setAlertActive(true); // Alert 활성화
+    } else {
+      setAlertActive(false); // Alert 비활성화
+    }
+  }, [totalCount]);
 
-      // 선택 상태 업데이트
-      setSelectedCategories((prevSelected) => {
-        const newSelected = { ...prevSelected };
-        if (change > 0) {
-          newSelected[index] = true; // 선택됨
-        } else {
-          delete newSelected[index]; // 선택 해제
+  const activateAlert = () => {
+    setAlertActive(true); // Alert 활성화
+    setTimeout(() => setAlertActive(false), 300); // 3초 후 Alert 비활성화
+  };
+
+    // 이미지 매핑
+  const imageMap = {
+    purple: require('../Image/X_purple.png'),
+    green: require('../Image/X_green.png'),
+    pink: require('../Image/X_pink.png'),
+    orange: require('../Image/X_orange.png'),
+  };
+
+  const handleDelete = (id) => {
+    const category = categories.find((category) => category.id === id);
+    setCategoryToDelete(category); // 삭제할 카테고리 저장
+    setAlertActive(false); // "최대 4개 카테고리" 경고 비활성화
+    setShowDeleteAlert(true); // 삭제 경고창 활성화
+  };
+
+
+  const confirmDelete = () => {
+        // 삭제된 카테고리가 'isMarked' 상태인지 확인 후 'totalCount' 감소
+        if (selectedCategories[categoryToDelete.id]) {
+          setTotalCount((prevTotal) => prevTotal - 1); // 카운트 감소
         }
-        return newSelected;
-      });
+    setCategories((prevCategories) =>
+      prevCategories.filter((category) => category.id !== categoryToDelete.id)
+    );
+    setShowDeleteAlert(false); // 경고창 닫기
+  };
 
-      return newTotal;
+  const cancelDelete = () => {
+    setShowDeleteAlert(false); // 경고창 닫기
+  };
+
+  const handleCountChange = (change, id) => {
+    setTotalCount((prevTotal) => prevTotal + change);
+    setSelectedCategories((prevSelected) => {
+      const newSelected = { ...prevSelected };
+      if (change > 0) {
+        newSelected[id] = true; // 선택됨
+      } else {
+        delete newSelected[id]; // 선택 해제
+      }
+      return newSelected;
     });
   };
 
   const handleAddCard = () => {
-    if (categoryCount < 8) {
-      setCategoryCount((prevCount) => prevCount + 1);
+    if (categories.length < 8) {
+      setCategories((prev) => [
+        ...prev,
+        { id: Date.now(), category: `카테고리${prev.length + 1}`, colorKey: "purple" },
+      ]);
     }
   };
 
+  const getAddCardPosition = () => {
+    // 카드가 4개씩 한 줄에 배치되므로, categoryCount에 맞춰 적절한 위치 계산
+    const row = Math.floor(categoryCount / 4); // 한 줄에 4개의 카드
+    const column = categoryCount % 4; // 4개씩 새 행에 추가되므로, 4로 나눈 나머지
+    return { row, column };
+  };
+
+  const toggleButtonClick = () => {
+    setIsButtonClicked((prev) => !prev); // Toggle button clicked state
+  };
+
   return (
-    <Container>
+    <AllPageContainer >
+      {/* 삭제 경고창 */}
+      <AlertManager_Delete
+        triggerCondition={showDeleteAlert}
+        onTrigger={() => setShowDeleteAlert(false)} // 경고창 닫을 때 초기화
+        onDelete={confirmDelete} // 삭제 버튼 클릭 시 삭제 수행
+        onCancel={cancelDelete} // onCancel 프롭을 전달
+        backgroundImage={imageMap[categoryToDelete?.colorKey]}  // 해당 카테고리의 colorKey에 맞는 배경 이미지 전달
+        message={`${categoryToDelete?.category} 카드를 삭제할까요?`} // 직접 전달된 메시지
+        categoryToDelete={categoryToDelete} // 삭제할 카테고리 전달
+      />
+      {/* AlertManager: 최대 선택 개수 도달 시 경고 */}
+      {!showDeleteAlert && (
+        <AlertManager
+          triggerCondition={alertActive}
+          message="최대 4개 카테고리만 즐겨찾기 할 수 있습니다."
+        />
+      )}
+
       <MainBenner>
-        <SideBar />
+        <CategorySideBar />
         <HeaderComponent />
       </MainBenner>
       <AllCategoryContainer>
         <CategoryTitle>{Title}</CategoryTitle>
         <CustomCategoryText1>{totalCount}/4</CustomCategoryText1>
         <CustomCategoryText2>highlight</CustomCategoryText2>
-        <CustomCategoryText3>edit</CustomCategoryText3>
-        <CategoryContainer>
-          {Array.from({ length: categoryCount }).map((_, index) => (
-            <CategoryCard_Check
-              key={index}
-              index={index}
-              category={`카테고리${index + 1}`}
-              colorKey="purple"
-              totalCount={totalCount}
-              isSelected={!!selectedCategories[index]} // 선택 상태 전달
-              isDisabled={!selectedCategories[index] && totalCount >= 4} // 선택되지 않았고 totalCount가 4 이상이면 비활성화
-              onCountChange={(change) => handleCountChange(change, index)} // 카운트 변경 함수 전달
-            />
-          ))}
-        </CategoryContainer>
-        <AddButton onClick={handleAddCard}>+</AddButton>
+        <CustomCategoryButton onClick={toggleButtonClick} clicked={isButtonClicked} alertActive={alertActive} >
+          edit
+        </CustomCategoryButton>
+        <ContainerBox>
+          {isButtonClicked && <ModalOverlay />} {/* ModalOverlay가 활성화되었을 때만 보임 */}
+          <CategoryContainer>
+            {categories.map((item) => (
+              <CategoryCard_Check
+                key={item.id}
+                index={item.id}
+                category={item.category}
+                colorKey={item.colorKey}
+                totalCount={totalCount}
+                isSelected={!!selectedCategories[item.id]} // 선택 상태 전달
+                isDisabled={!selectedCategories[item.id] && totalCount >= 4} // 선택되지 않았고 totalCount가 4 이상이면 비활성화
+                onCountChange={(change) => handleCountChange(change, item.id)} // 카운트 변경 함수 전달
+                clicked={isButtonClicked} // 클릭 상태 전달
+                onDelete={() => handleDelete(item.id)} // 삭제 함수 전달
+                activateAlert={activateAlert} // Alert 활성화 함수 전달
+              />
+            ))}
+            {/* AddContainer 렌더링: categoryCount가 8 미만일 때만 */}
+            {categories.length < 8 && (
+              <CategoryAddContainer_AddCard
+                onClickHandler={handleAddCard}
+                position={getAddCardPosition()}
+                disabled={isButtonClicked}
+              />
+            )}
+          </CategoryContainer>
+        </ContainerBox>
       </AllCategoryContainer>
-    </Container>
+    </AllPageContainer>
   );
 };
+
+const CategorySideBar = styled(SideBar)`
+
+`;
+
+
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
+  pointer-events: auto; /* 모달 배경 클릭 가능 */
+  z-index: 300;
+`;
+
+const AllPageContainer = styled(Container)`
+  background: ${(props) => (props.$highlight ? "rgba(4, 4, 4, 0.6)" : "transparent")};
+  pointer-events: ${(props) => (props.$highlight ? "none" : "auto")};
+`;
+
+const CategoryAddContainer_AddCard = styled(CategoryAddContainer)`
+  width: 200px;
+  height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px dashed #ccc;
+  border-radius: 8px;
+  position: absolute;
+  top: 1000px;
+  left: ${(props) => props.position.column * 265 + "px"};
+`;
 
 const CustomCategoryText1 = styled.div`
   position: absolute;
@@ -84,40 +218,32 @@ const CustomCategoryText2 = styled.div`
   font-size: 20px;
   font-style: normal;
   font-weight: 700;
-  line-height: 20px; /* 100% */
+  line-height: 20px;
   position: absolute;
-  top: 0px;
+  top: 114px;
   left: 52px;
   border-radius: 20px;
   border: 1px solid #afb8c1;
-  background: #fff;
   width: 127px;
   height: 48px;
-  flex-shrink: 0;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
-  position: absolute;
-  top: 114px;
 `;
 
-const CustomCategoryText3 = styled.div`
-  color: #040404;
+const CustomCategoryButton = styled.button`
+  color: ${(props) => (props.clicked ? "#fff" : "#040404")};
+  background: ${(props) => (props.clicked ? "#5ba8fb" : "#fff")};
   font-family: Inter;
   font-size: 20px;
   font-style: normal;
   font-weight: 700;
-  line-height: 20px; /* 100% */
-  position: absolute;
-  top: 0px;
-  left: 52px;
+  line-height: 20px;
   border-radius: 20px;
-  border: 1px solid #afb8c1;
-  background: #fff;
+  border:1px solid #afb8c1;
   width: 127px;
   height: 48px;
-  flex-shrink: 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -125,29 +251,20 @@ const CustomCategoryText3 = styled.div`
   position: absolute;
   top: 114px;
   left: 887px;
-`;
+  cursor: pointer; /* 항상 클릭 가능 */
+  transition: background-color 0.2s, color 0.2s;
+  z-index: 301;
 
-const AddButton = styled.button`
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-  width: 50px;
-  height: 50px;
-  border-radius: 25px;
-  background-color: #4caf50;
-  color: white;
-  font-size: 24px;
-  border: none;
-  cursor: pointer;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   &:hover {
-    background-color: #45a049;
+    background:#5ba8fb;
+    border: solid 1px #afb8c1;
   }
 `;
 
+
+
 const AllCategoryContainer = styled.div`
   position: relative;
-  border: 1px solid black;
   top: 0px;
   margin-left: 210px;
   margin-right: 212px;
@@ -162,11 +279,10 @@ const CategoryTitle = styled.div`
   width: 412px;
   height: 88px;
   border-radius: 20px;
-  opacity: 0.7;
-  background: linear-gradient(149deg, #f0f8ff 0.77%, #f2f1f8 99.23%);
+  color: rgba(4,4,4,1);
+  background: linear-gradient(149deg, rgba(240, 248, 255, 0.7) 0.77%, rgba(242, 241, 248, 0.7) 99.23%);
   position: absolute;
   top: 36px;
-  color: #040404;
   font-family: Inter;
   font-size: 26px;
   font-weight: 700;
@@ -178,14 +294,21 @@ const CategoryTitle = styled.div`
 `;
 
 const CategoryContainer = styled.div`
-  border: 1px solid black;
   width: 100%;
-  position: absolute;
-  top: 188px;
+  position: relative;
   height: 614px;
   display: flex;
   flex-wrap: wrap;
   gap: 48px;
+  align-content: flex-start;
+`;
+
+const ContainerBox = styled.div`
+  position: relative;
+  width: 100%;
+  top: 188px;
+  height: 614px;
 `;
 
 export default AllCategoryPage;
+

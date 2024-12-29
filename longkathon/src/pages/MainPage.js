@@ -26,7 +26,7 @@ const MainPage = () => {
           </ViewContainer>
           <CategoryContainer>
             <CategoryText1>L:nk</CategoryText1>
-            <CategoryText2>highlight</CategoryText2>
+                        <CategoryText2>highlight</CategoryText2>
             <CategoryCard category="카테고리1" colorKey="purple" />
             <CategoryCard category="카테고리2" colorKey="pink"/>
             <CategoryCard category="카테고리3" colorKey="red"/>
@@ -42,7 +42,7 @@ const MainPage = () => {
 export const Container = styled.div`
 width: 1440px;
 position: relative;
-/* height: 813.45px; */
+height: 864px;
 /* border: 10px solid black; */
 `;
 
