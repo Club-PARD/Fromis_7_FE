@@ -1,9 +1,16 @@
 import React from "react";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
+import { useNavigate } from "react-router-dom"; 
 import LenderLogo from "../Image/LenderLogo.png";
 import ConnectButtonImage from "../Image/ConnectButton.png";
 
-function LandPage() {
+function LenderPage() {
+  const navigate = useNavigate(); 
+
+  const handleConnectClick = () => {
+    navigate("/login"); 
+  };
+
   return (
     <AppContainer>
       <Container>
@@ -11,7 +18,7 @@ function LandPage() {
           <LogoImage src={LenderLogo} alt="Link Logo" />
         </Header>
 
-        <ConnectButton>
+        <ConnectButton onClick={handleConnectClick}>
           <img src={ConnectButtonImage} alt="Connect Button" />
         </ConnectButton>
 
@@ -156,4 +163,4 @@ const Paragraph = styled.p`
   margin-top: 10px;
 `;
 
-export default LandPage;
+export default LenderPage;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled, { keyframes } from "styled-components";
 
 const Dropdown = () => {
@@ -14,8 +14,25 @@ const Dropdown = () => {
     setIsOpen(false);  // 선택 후 드롭다운 닫기
   };
 
+  const handleOutsideClick = (event) => {
+    if (!event.target.closest("#dropdown-menu")) {
+      setIsOpen(false);
+    }
+  }
+
+  useEffect(() => {
+    if (isOpen) {
+      document.addEventListener("click", handleOutsideClick);
+    } else {
+      document.removeEventListener("click", handleOutsideClick);
+    }
+    return () => {
+      document.removeEventListener("click", handleOutsideClick);
+    };
+  }, [isOpen]);
+  
   return (
-    <Container>
+    <Container id="dropdown-menu">
       <DropdownMenu isOpen={isOpen} onClick={toggleDropdown}>
         <MenuItem>
           {selectedItem}
@@ -25,8 +42,8 @@ const Dropdown = () => {
         </CategoryIcon>
         <DropdownItems isOpen={isOpen}>
           <MenuList>
-            <MenuItem onClick={() => handleItemClick("약속 생성순")}>약속 생성순</MenuItem>
-            <MenuItem onClick={() => handleItemClick("약속 가까운 순")}>약속 가까운 순</MenuItem>
+            <MenuItem onClick={() => handleItemClick("링크 생성순")}>링크 생성순</MenuItem>
+            <MenuItem onClick={() => handleItemClick("링크 가까운 순")}>링크 가까운 순</MenuItem>
           </MenuList>
         </DropdownItems>
       </DropdownMenu>

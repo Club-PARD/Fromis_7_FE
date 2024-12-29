@@ -7,12 +7,12 @@ import ColorPalette from "../components/ColorPalette";
 const EmptyMainPage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [dates, setDates] = useState({
-            startYear: "",
-            startMonth: "",
-            startDay: "",
-            endYear: "",
-            endMonth: "",
-            endDay: "",
+        startYear: "",
+        startMonth: "",
+        startDay: "",
+        endYear: "",
+        endMonth: "",
+        endDay: "",
     });
 
     const [members, setMembers] = useState([""]);
@@ -38,34 +38,34 @@ const EmptyMainPage = () => {
     const handleBlur = (field, value) => {
         let formattedValue = value;
 
-    // 이미 "년", "월", "일"이 포함되어 있는 경우 포맷팅을 건너뜀
-    if (field.includes("Year") && value.endsWith("년")) {
-        return;
-    } else if (field.includes("Month") && value.endsWith("월")) {
-        return;
-    } else if (field.includes("Day") && value.endsWith("일")) {
-        return;
-    }
+        // 이미 "년", "월", "일"이 포함되어 있는 경우 포맷팅을 건너뜀
+        if (field.includes("Year") && value.endsWith("년")) {
+            return;
+        } else if (field.includes("Month") && value.endsWith("월")) {
+            return;
+        } else if (field.includes("Day") && value.endsWith("일")) {
+            return;
+        }
 
-    // 년, 월, 일 포맷팅 처리
-    if (field.includes("Year")) {
-      formattedValue = `${value}년`;
-    } else if (field.includes("Month")) {
-      formattedValue = value.padStart(2, "0") + "월"; 
-    } else if (field.includes("Day")) {
-      formattedValue = value.padStart(2, "0") + "일"; 
-    }
+        // 년, 월, 일 포맷팅 처리
+        if (field.includes("Year")) {
+            formattedValue = `${value}년`;
+        } else if (field.includes("Month")) {
+            formattedValue = value.padStart(2, "0") + "월";
+        } else if (field.includes("Day")) {
+            formattedValue = value.padStart(2, "0") + "일";
+        }
 
-    setDates((prevDates) => ({
-        ...prevDates,
-        [field]: formattedValue,
+        setDates((prevDates) => ({
+            ...prevDates,
+            [field]: formattedValue,
         }));
     };
 
     const handleChange = (field, value) => {
         setDates((prevDates) => ({
-        ...prevDates,
-        [field]: value,
+            ...prevDates,
+            [field]: value,
         }));
     };
 
@@ -81,132 +81,123 @@ const EmptyMainPage = () => {
 
     return (
         <PageWrapper>
-        <Header />
-        <MainContent>
-            <SideBarContainer>
-                <SideBar />
-            </SideBarContainer>
-            <CategoryFile src={require("../Image/CategoryFile.png")} alt="file-image" />
-            <ImageContainer>
-                <CenterImage src={require("../Image/MainIcon.png")} alt="centered-image" />
-                <Title>카테고리가 생성될 때마다 조각을 연결해요!!</Title>
-                <CategotyTitle>Categories: </CategotyTitle>
-                <AddButton onClick={openModal}>
-                    <lord-icon
-                    src="https://cdn.lordicon.com/nqtddedc.json"
-                    trigger="hover"
-                    colors="primary:#AFB8C1,secondary:#FF5733"
-                    style={{ width: "100px", height: "100px" }}
-                    ></lord-icon>
-                </AddButton>
-            </ImageContainer>
-        </MainContent>
+            <Header />
+            <MainContent>
+                <SideBarContainer>
+                    <SideBar onCreateClick={openModal} />
+                </SideBarContainer>
 
-        {isModalOpen && (
-            <ModalOverlay onClick={closeModal}>
-                <ModalContent onClick={(e) => e.stopPropagation()}>
-                    {/* 약속 제목 */}
-                    <ModalGroup>
-                    <Label>약속 제목: </Label>
-                    <InputTitle type="text" placeholder="약속 제목을 입력해주세요" />
-                    </ModalGroup>
+                <ImageContainer>
+                    <CenterImage src={require("../Image/MainIcon.png")} alt="centered-image" />
+                    <Title>여행의 시작, 함께 링크해요!</Title>
+                </ImageContainer>
+            </MainContent>
 
-                    {/* 약속 날짜 */}
-                    <ModalGroup>
-                    <Label>약속 날짜: </Label>
-                        <DateField>
-                            <InputDate
-                                placeholder="년도"
-                                value={dates.startYear}
-                                onChange={(e) => handleChange("startYear", e.target.value)}
-                                onBlur={(e) => handleBlur("startYear", e.target.value)}
-                            />
-                            <InputDate
-                                placeholder="월"
-                                value={dates.startMonth}
-                                onChange={(e) => handleChange("startMonth", e.target.value)}
-                                onBlur={(e) => handleBlur("startMonth", e.target.value)}
-                            />
-                            <InputDate
-                                placeholder="일"
-                                value={dates.startDay}
-                                onChange={(e) => handleChange("startDay", e.target.value)}
-                                onBlur={(e) => handleBlur("startDay", e.target.value)}
-                            />
-                            <Dash>__</Dash>
-                            <InputDate
-                                placeholder="년도"
-                                value={dates.endYear}
-                                onChange={(e) => handleChange("endYear", e.target.value)}
-                                onBlur={(e) => handleBlur("endYear", e.target.value)}
-                            />
-                            <InputDate
-                                placeholder="월"
-                                value={dates.endMonth}
-                                onChange={(e) => handleChange("endMonth", e.target.value)}
-                                onBlur={(e) => handleBlur("endMonth", e.target.value)}
-                            />
-                            <InputDate
-                                placeholder="일"
-                                value={dates.endDay}
-                                onChange={(e) => handleChange("endDay", e.target.value)}
-                                onBlur={(e) => handleBlur("endDay", e.target.value)}
-                            />
-                        </DateField>
-                    </ModalGroup>
+            {isModalOpen && (
+                <ModalOverlay onClick={closeModal}>
+                    <ModalContent onClick={(e) => e.stopPropagation()}>
+                        {/* 약속 제목 */}
+                        <ModalGroup>
+                            <Label>약속 제목: </Label>
+                            <InputTitle type="text" placeholder="약속 제목을 입력해주세요" />
+                        </ModalGroup>
 
-                    {/* 약속 멤버 */}
-                    <ModalGroup>
-                        <Label>약속 멤버: </Label>
-                        <DateField>
-                            {members.map((member, index) => (
-                                <MemberContainer key={index}>
-                                    <CloseButton
-                                        onClick={() => {
-                                            if (members.length > 1) {
-                                                const updatedMembers = members.filter((_, i) => i !== index);
-                                                setMembers(updatedMembers);
-                                            }
-                                        }}
-                                    >
-                                        <lord-icon
-                                            src="https://cdn.lordicon.com/nqtddedc.json"
-                                            trigger="hover"
-                                            colors="primary:#040404,secondary:#FF5733"
-                                            style={{ width: "20px", height: "20px" }}
-                                        ></lord-icon>
-                                    </CloseButton>
-                                    <InputMember
-                                        placeholder={`예) 멤버 ${index + 1}`}
-                                        value={member}
-                                        onChange={(e) => handleMemberChange(index, e.target.value)}
-                                    />
-                                </MemberContainer>
-                    ))}
-                            <AddLordicon onClick={addMemberField}>
-                                <lord-icon
-                                    src="https://cdn.lordicon.com/nqtddedc.json"
-                                    trigger="hover"
-                                    colors="primary:#AFB8C1,secondary:#FF5733"
-                                    style={{ width: "60px", height: "60px" }}
-                                ></lord-icon>
-                            </AddLordicon>
-                        </DateField>
-                    </ModalGroup>
+                        {/* 약속 날짜 */}
+                        <ModalGroup>
+                            <Label>약속 날짜: </Label>
+                            <DateField>
+                                <InputDate
+                                    placeholder="년도"
+                                    value={dates.startYear}
+                                    onChange={(e) => handleChange("startYear", e.target.value)}
+                                    onBlur={(e) => handleBlur("startYear", e.target.value)}
+                                />
+                                <InputDate
+                                    placeholder="월"
+                                    value={dates.startMonth}
+                                    onChange={(e) => handleChange("startMonth", e.target.value)}
+                                    onBlur={(e) => handleBlur("startMonth", e.target.value)}
+                                />
+                                <InputDate
+                                    placeholder="일"
+                                    value={dates.startDay}
+                                    onChange={(e) => handleChange("startDay", e.target.value)}
+                                    onBlur={(e) => handleBlur("startDay", e.target.value)}
+                                />
+                                <Dash>__</Dash>
+                                <InputDate
+                                    placeholder="년도"
+                                    value={dates.endYear}
+                                    onChange={(e) => handleChange("endYear", e.target.value)}
+                                    onBlur={(e) => handleBlur("endYear", e.target.value)}
+                                />
+                                <InputDate
+                                    placeholder="월"
+                                    value={dates.endMonth}
+                                    onChange={(e) => handleChange("endMonth", e.target.value)}
+                                    onBlur={(e) => handleBlur("endMonth", e.target.value)}
+                                />
+                                <InputDate
+                                    placeholder="일"
+                                    value={dates.endDay}
+                                    onChange={(e) => handleChange("endDay", e.target.value)}
+                                    onBlur={(e) => handleBlur("endDay", e.target.value)}
+                                />
+                            </DateField>
+                        </ModalGroup>
 
-                    {/* 색상 선택 */}
-                    <ModalGroup>
-                        <ColorPalette />
-                    </ModalGroup>
+                        {/* 약속 멤버 */}
+                        <ModalGroup>
+                            <Label>약속 멤버: </Label>
+                            <DateField>
+                                {members.map((member, index) => (
+                                    <MemberContainer key={index}>
+                                        <CloseButton
+                                            onClick={() => {
+                                                if (members.length > 1) {
+                                                    const updatedMembers = members.filter((_, i) => i !== index);
+                                                    setMembers(updatedMembers);
+                                                }
+                                            }}
+                                        >
+                                            <lord-icon
+                                                src="https://cdn.lordicon.com/nqtddedc.json"
+                                                trigger="hover"
+                                                colors="primary:#040404,secondary:#FF5733"
+                                                style={{ width: "20px", height: "20px" }}
+                                            ></lord-icon>
+                                        </CloseButton>
+                                        <InputMember
+                                            placeholder={`예) 멤버 ${index + 1}`}
+                                            value={member}
+                                            onChange={(e) => handleMemberChange(index, e.target.value)}
+                                        />
+                                    </MemberContainer>
+                                ))}
+                                <AddLordicon onClick={addMemberField}>
+                                    <lord-icon
+                                        src="https://cdn.lordicon.com/nqtddedc.json"
+                                        trigger="hover"
+                                        colors="primary:#AFB8C1,secondary:#FF5733"
+                                        style={{ width: "60px", height: "60px" }}
+                                    ></lord-icon>
+                                </AddLordicon>
+                            </DateField>
+                        </ModalGroup>
 
-                    {/* 하단 버튼 */}
-                    <ModalActions>
-                        <Button onClick={closeModal}>취소</Button>
-                        <Button primary>저장</Button>
-                    </ModalActions>
-                </ModalContent>
-            </ModalOverlay>
-        )}
+                        {/* 색상 선택 */}
+                        <ModalGroup>
+                            <ColorPalette />
+                        </ModalGroup>
+
+                        {/* 하단 버튼 */}
+                        <ModalActions>
+                            <Button onClick={closeModal}>취소</Button>
+                            <Button primary>저장</Button>
+                        </ModalActions>
+                    </ModalContent>
+                </ModalOverlay>
+            )}
         </PageWrapper>
     );
 };
@@ -231,14 +222,6 @@ const SideBarContainer = styled.div`
     top: 80px;
     right: 20px;
     z-index: 10;
-`;
-
-const CategoryFile = styled.img`
-    position: absolute;
-    top: 172px;
-    left: 240px;
-    width: 217px;
-    height: 260px;
 `;
 
 const ImageContainer = styled.div`
@@ -277,18 +260,6 @@ const Title = styled.div`
     }
 `;
 
-    const CategotyTitle = styled.div`
-    position: absolute;
-    top: 190px;
-    left: 260px;
-    color: #040404;
-    font-family: Inter;
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: 16px;
-`;
-
 const InputTitle = styled.input`        // 약속 제목 입력 필드
     width: 506px;
     height: 58px;
@@ -304,17 +275,6 @@ const InputMember = styled.input`       // 약속 멤버 입력 필드
     border-radius: 20px;
     border: 1px solid #AFB8C1;
     text-indent: 30px;
-`;
-
-const AddButton = styled.div`
-    position: absolute;
-    width: 133.945px;
-    height: 133.945px;
-    left: 305px;
-    top: 270px;
-    transform: rotate(-45deg);
-    flex-shrink: 0;
-    cursor: pointer;
 `;
 
 const Dash = styled.div`
@@ -458,11 +418,11 @@ const Button = styled.button`
     line-height: normal;
     ${(props) =>
         props.primary
-        ? `
+            ? `
         background-color: #3597ff;
         color: #fff;
         `
-        : `
+            : `
         background-color: #e0e0e0;
         color: #555;
         `}

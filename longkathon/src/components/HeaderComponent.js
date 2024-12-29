@@ -34,7 +34,7 @@ function HeaderComponent() {
           </SearchButton>
         </SearchBox>
         <UserBox>
-        <User />
+          <User />
         </UserBox>
       </RightContainer>
     </HeaderContainer>
@@ -43,7 +43,6 @@ function HeaderComponent() {
 
 const HeaderContainer = styled.div`
   /* border: 1px solid black; */
-  width: 1440px;
   height: 60px;
   /* padding-top: 10px;
   padding-bottom: 10px; */
@@ -69,6 +68,7 @@ const LogoImg = styled.img`
   width: 40px;
   height: 40px;
   margin-right: 8px;
+  
 `;
 
 const LogoText = styled.span`
@@ -99,7 +99,7 @@ const SearchBox = styled.div`
 const Search = styled.input`
   border: 1px solid #afb8c1;
   border-radius: 10px;
-  width: 155px;
+  width: 192px;
   height: 38px;
   padding-left: 12px;
   /* font-size: 14px;
@@ -133,7 +133,7 @@ const SearchIcon = () => {
   );
 };
 
-const UserBox=styled.div`
+const UserBox = styled.div`
 /* border: 1px solid black; */
 margin-right: 103px;
 `;
