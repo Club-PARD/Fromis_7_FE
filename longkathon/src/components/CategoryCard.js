@@ -5,8 +5,14 @@ import CategoryCardImage from "../Image/CategoryCard.png";
 // 키와 이미지 경로를 매핑하는 객체
 const imageMap = {
   purple: require("../Image/CategoryPiece_Purple.png"),  // 이미지 경로 예시
-  // green: require("../Image/GreenPiece.png"),
-  // 추가적으로 다른 키와 이미지 경로를 설정할 수 있습니다.
+  green: require("../Image/CategoryPiece_Green.png"),
+  pink: require("../Image/CategoryPiece_Pink.png"),
+  lightblue: require("../Image/CategoryPiece_LightBlue.png"),
+  darkblue: require("../Image/CategoryPiece_DarkBlue.png"),
+  black: require("../Image/CategoryPiece_Black.png"),
+  orange: require("../Image/CategoryPiece_Orange.png"),
+  red: require("../Image/CategoryPiece_Red.png"),
+  white: require("../Image/CategoryPiece_White.png"),
 };
 
 const StyledCard = styled.div`
@@ -40,11 +46,12 @@ const CategoryIcon = styled.div`
   position: absolute;
   top: 4px;
   right: 4px;
+  z-index: 200;
 `;
 
-const CategoryCard = ({ category, key }) => {
-  // key에 맞는 이미지를 imageMap에서 가져오기
-  const imageKey = key ? key.toLowerCase() : "purple";
+const CategoryCard = ({ category, colorKey }) => {
+  // colorKey에 맞는 이미지를 imageMap에서 가져오기
+  const imageKey = colorKey ? colorKey.toLowerCase() : "purple";
   const image = imageMap[imageKey] || imageMap.purple;  // 기본값을 purple로 설정
 
   return (
@@ -98,7 +105,6 @@ const DisplayedText = styled.div`
 `;
 
 const CategoryPiece = styled.div`
-  /* border: 1px solid black; */
   width: 217px;
   height: 260px;
   background-image: ${(props) => `url(${props.image})`};  // image prop을 사용하여 배경 이미지 설정

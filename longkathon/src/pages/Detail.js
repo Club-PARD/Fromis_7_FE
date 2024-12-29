@@ -17,6 +17,9 @@ const DetailPage = () => {
                 <MemoContainer>
                     <h1>Memo Container</h1>
                 </MemoContainer>
+                <FunctionContainer>
+                    <h4>FunctionContainer</h4>
+                </FunctionContainer>
             </MainContainer>
         </Container>
     );
@@ -70,4 +73,10 @@ const MemoContainer = styled.div`
     background: rgba(255, 255, 255, 0.9);
 `;
 
+const FunctionContainer = styled.div`
+    width: 387px;
+    height: 42px;
+    border: 1px solid black;
+    background: rgba(255, 255, 255, 0.9);
+`;
 export default DetailPage;

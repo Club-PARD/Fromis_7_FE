@@ -6,6 +6,7 @@ import ColorPalette from "../components/ColorPalette";
 import Dropdown from "../components/CategoryButton";
 
 import { postPieceAPI } from "../API/Piece";
+import CategoryAddContainer from "../components/CategoryAddContainer";
 
 const EmptyMainPage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -144,12 +145,12 @@ const EmptyMainPage = () => {
             <Dropdown />
             <MainContent>
                 <SideBarContainer>
-                    <SideBar onCreateClick={openModal} />
+                    <SideBar />
                 </SideBarContainer>
-
                 <ImageContainer>
                     <CenterImage src={require("../Image/MainIcon.png")} alt="centered-image" />
                     <Title>여행의 시작, 함께 링크해요!</Title>
+                    {/* <CategoryAddContainer onClickHandler={openModal}/> */}
                 </ImageContainer>
             </MainContent>
 
@@ -254,7 +255,6 @@ const EmptyMainPage = () => {
                         <ModalGroup>
                             <ColorPalette selectedColor={color} onChange={handleColorChange} />
                         </ModalGroup>
-
                         {/* 하단 버튼 */}
                         <ModalActions>
                             <Button onClick={closeModal}>취소</Button>
