@@ -8,9 +8,16 @@ import MainRightViewContainer from "../components/MainRightViewContainer";
 import CategoryCard from "../components/CategoryCard";
 import BackGround from "../components/BackGround";
 import PieceMap from "../components/PieceMap";
-
+import { useNavigate } from "react-router-dom";
 
 const MainPage = () => {
+
+  const navigate = useNavigate();
+
+  const handleConnectCategory = () => {
+    navigate("/category");
+  };
+
   return (
     <Container>
       <MainBenner>
@@ -24,7 +31,7 @@ const MainPage = () => {
             <PieceMapWrapper>
               <PieceMap />
             </PieceMapWrapper>
-            <ViewButton>전체 조각 보러가기</ViewButton>
+            <ViewButton onClick={handleConnectCategory}>전체 조각 보러가기</ViewButton>
             <MainRightViewContainer users={["user1", "user2", "user3", "user4", "user5", "user6", "user7", "user8"]} />
           </ViewContainer>
           <CategoryContainer>
@@ -92,6 +99,7 @@ background: #5BA8FB;
 position: absolute;
 top: 102px;
 transition: transform 0.2s;
+  cursor: pointer;
 &:hover {
   transform: scale(1.1);
 }

@@ -2,8 +2,16 @@ import React, { useState } from "react";
 import logoImg from '../Image/Logo.png';
 import styled from "styled-components";
 import HamburgerIcon from "./HamburgerButton";
+import { useNavigate } from "react-router-dom";
 
 const HeaderComponent = ({ disabled }) => { // 외부에서 disabled 값을 받아옴
+
+  const navigate = useNavigate();
+
+  const handleConnectHome = () => {
+    navigate("/main");
+  };
+
   const [searchText, setSearchText] = useState("");
 
   const handleSearchClick = () => {
@@ -17,11 +25,11 @@ const HeaderComponent = ({ disabled }) => { // 외부에서 disabled 값을 받�
         <HamburgerIcon />
       </HamburgerContainer>
 
-      <LogoGroup>
+      <LogoGroup onClick={handleConnectHome}>
         <LogoImg src={logoImg} alt='LogoImg' />
         <LogoText> L:nk</LogoText>
       </LogoGroup>
-      
+
       <RightContainer>
         <SearchBox>
           <Search
@@ -32,7 +40,7 @@ const HeaderComponent = ({ disabled }) => { // 외부에서 disabled 값을 받�
             disabled={disabled} // 외부에서 받은 disabled 값으로 배경색을 변경
           />
           <SearchButton onClick={handleSearchClick}>
-            <SearchIcon disabled={disabled}/>
+            <SearchIcon disabled={disabled} />
           </SearchButton>
         </SearchBox>
         <UserBox>
@@ -61,6 +69,7 @@ const LogoGroup = styled.div`
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
+  cursor: pointer;
 `;
 
 const LogoImg = styled.img`
@@ -105,7 +114,7 @@ const Search = styled.input`
     font-family: 'Inter', sans-serif;
     font-size: 16px;
     line-height: 20px;
-    color: ${(props)=>(props.disabled? "rgba(4, 4, 4, 0.3)" : "#afb8c1")};
+    color: ${(props) => (props.disabled ? "rgba(4, 4, 4, 0.3)" : "#afb8c1")};
   }
 `;
 
