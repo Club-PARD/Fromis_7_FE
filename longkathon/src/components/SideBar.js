@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import AddLinkImage from "../Image/SideBarImage.png";
+import { useNavigate } from "react-router-dom";
+import ModalAdd from "./ModalAdd";
+
 
 // Styled Components
 const SidebarContainer = styled.div`
@@ -49,51 +52,90 @@ color: #ffffff;
 `;
 
 // Sidebar Component
-const SideBar = ({ onCreateClick }) => {
+const SideBar = () => {
+  const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleConnectHome = () => {
+    navigate("/main");
+  };
+
+  const handleConnectMakeTitle = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleSave = async (payload) => {
+    // Implement save logic here
+    console.log("Payload saved:", payload);
+    closeModal();
+  };
+
   return (
-    <SidebarContainer>
-      <MenuList>
-        <HoverableMenuItem
-          icon={SideAddButton}
-          imageSrc={AddLinkImage}
-          onClick={onCreateClick}
-          color="primary:#5ba8fb"
-          width={40}
-          height={40}
-        />
-        <MenuItem>
-          <SideHomeButton color="primary:#040404" width={40} height={40} />
-        </MenuItem>
-        <MenuItem>
-          <SideAlramButton color="primary:#040404" width={40} height={40} />
-        </MenuItem>
-        <MenuItem>
-          <SideShareButton color="primary:#040404" width={40} height={40} />
-        </MenuItem>
-      </MenuList>
-    </SidebarContainer>
+    <>
+      <SidebarContainer>
+        <MenuList>
+          <AddContainer onClick={handleConnectMakeTitle}>
+            <HoverableMenuItem
+              icon={SideAddButton}
+              imageSrc={AddLinkImage}
+              color="primary:#5ba8fb"
+              width={40}
+              height={40}
+            />
+          </AddContainer>
+          <MenuItem>
+            <HomeContainer onClick={handleConnectHome}>
+              <SideHomeButton color="primary:#040404" width={40} height={40} />
+            </HomeContainer>
+          </MenuItem>
+          <MenuItem>
+            <SideAlramButton color="primary:#040404" width={40} height={40} />
+          </MenuItem>
+          <MenuItem>
+            <SideShareButton color="primary:#040404" width={40} height={40} />
+          </MenuItem>
+        </MenuList>
+      </SidebarContainer>
+
+      <ModalAdd
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        onSave={handleSave}
+      />
+    </>
   );
 };
 
 // HoverableMenuItem Component
-const HoverableMenuItem = ({ icon: Icon, onClick, color, width, height }) => {
+const HoverableMenuItem = ({ icon: Icon, color, width, height }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
     <MenuItem
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      onClick={onClick} // 전달받은 onClick 실행
     >
       <Icon color={color} width={width} height={height} />
       <HoverImage isVisible={isHovered}>
-        <CenteredText>약속 생성하기</CenteredText>
+        <CenteredText>함께 링크하기</CenteredText>
       </HoverImage>
     </MenuItem>
   );
 };
 
 // Icon Components
+const AddContainer = styled.div`
+
+`;
+
+const HomeContainer = styled.div`
+
+`;
+
 export const SideAddButton = ({ color, width, height }) => {
   return (
     <lord-icon

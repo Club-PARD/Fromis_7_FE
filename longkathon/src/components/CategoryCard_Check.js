@@ -109,7 +109,7 @@ const CategoryCard_Check = ({
 
 
   return (
-    <CategoryBox>
+    <CategoryBox clicked={clicked}>
       <StyledCard />
       <CategoryPiece $image={image} />
       <CategoryText>categories:</CategoryText>
@@ -127,7 +127,8 @@ const CategoryCard_Check = ({
 const CategoryBox = styled.div`
 /* border: 1px solid black; */
   position: relative;
-  z-index: 302;
+  /* z-index: 300; */
+  z-index: ${(props)=>(props.clicked? "310": "298")};
 `;
 
 const CategoryIcon = styled.div`

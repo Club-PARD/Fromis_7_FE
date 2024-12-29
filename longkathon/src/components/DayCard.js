@@ -59,7 +59,9 @@ const DayCard = ({ width = "217px", height = "332px", style, targetDate }) => {
   );
 };
 
-const Container = styled.div``;
+const Container = styled.div` 
+cursor: pointer;
+`;
 
 const StyledCard = styled.div`
   width: 100%;

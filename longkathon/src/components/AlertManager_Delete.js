@@ -61,7 +61,7 @@ justify-content: center;
 text-align: center;
 `;
 
-const AlertMessage = styled.p`
+const AlertMessage = styled.div`
 position: absolute;
 top:102px;
 color: #3597FF;
@@ -118,7 +118,7 @@ const AlertBackGround = styled(CategoryPiece)`
 width: 294px;
 height: 165px;
 position: absolute;
-top:189px;
+top:169px;
 left: 111px;
 `;
 

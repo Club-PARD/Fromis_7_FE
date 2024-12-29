@@ -27,6 +27,7 @@ const MainRightViewContainer = ({ width = "411px", height = "383px", style, user
 };
 
 const StyledCard = styled.div`
+cursor: pointer;
   position: absolute;
   top: 0;
   right: 0;

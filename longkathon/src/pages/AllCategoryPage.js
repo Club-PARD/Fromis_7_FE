@@ -38,7 +38,7 @@ const AllCategoryPage = ({ Title }) => {
     setTimeout(() => setAlertActive(false), 300); // 3초 후 Alert 비활성화
   };
 
-    // 이미지 매핑
+  // 이미지 매핑
   const imageMap = {
     purple: require('../Image/X_purple.png'),
     green: require('../Image/X_green.png'),
@@ -55,10 +55,10 @@ const AllCategoryPage = ({ Title }) => {
 
 
   const confirmDelete = () => {
-        // 삭제된 카테고리가 'isMarked' 상태인지 확인 후 'totalCount' 감소
-        if (selectedCategories[categoryToDelete.id]) {
-          setTotalCount((prevTotal) => prevTotal - 1); // 카운트 감소
-        }
+    // 삭제된 카테고리가 'isMarked' 상태인지 확인 후 'totalCount' 감소
+    if (selectedCategories[categoryToDelete.id]) {
+      setTotalCount((prevTotal) => prevTotal - 1); // 카운트 감소
+    }
     setCategories((prevCategories) =>
       prevCategories.filter((category) => category.id !== categoryToDelete.id)
     );
@@ -241,7 +241,7 @@ const CustomCategoryButton = styled.button`
   font-weight: 700;
   line-height: 20px;
   border-radius: 20px;
-  border:1px solid #afb8c1;
+  border: ${(props) => (props.clicked ? "none" : "1px solid #afb8c1")};
   width: 127px;
   height: 48px;
   display: flex;
