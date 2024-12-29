@@ -10,10 +10,10 @@ import AlertManager_Delete from "../components/AlertManager_Delete";
 
 const AllCategoryPage = ({ Title }) => {
   const [categories, setCategories] = useState([
-    // { id: 1, category: "카테고리1", colorKey: "purple" },
-    // { id: 2, category: "카테고리2", colorKey: "green" },
-    // { id: 3, category: "카테고리3", colorKey: "pink" },
-    // { id: 4, category: "카테고리4", colorKey: "orange" },
+    { id: 1, category: "카테고리1", colorKey: "purple" },
+    { id: 2, category: "카테고리2", colorKey: "green" },
+    { id: 3, category: "카테고리3", colorKey: "pink" },
+    { id: 4, category: "카테고리4", colorKey: "orange" },
   ]);
 
   const [categoryCount, setCategoryCount] = useState(0); // 카테고리 카드 개수

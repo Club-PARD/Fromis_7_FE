@@ -3,8 +3,7 @@ import styled from "styled-components";
 import ColorPalette from "../components/ColorPalette";
 import { useNavigate } from "react-router-dom"; // useNavigate 추가
 
-
-const ModalAdd = ({ isOpen, onClose, onSave, initialData }) => {
+const ModalAdd = ({ isopen, onClose, onSave, initialData }) => {
     const [title, setTitle] = useState(initialData?.title || "");
     const [dates, setDates] = useState(
         initialData?.dates || {
@@ -94,21 +93,22 @@ const ModalAdd = ({ isOpen, onClose, onSave, initialData }) => {
         };
 
         setIsLoading(true);
-        // try {
-        //     await onSave(payload);
-        //     onClose();
-        //     navigate("/main"); // 'MainPage.js'로 네비게이션 추가
-        // } catch (error) {
-        //     console.error("저장 실패:", error);
-        //     alert("저장 중 오류가 발생했습니다.");
-        // } finally {
-        //     setIsLoading(false);
-        // }
-        onClose();
-        navigate("/main"); // 'MainPage.js'로 네비게이션 추가
+        try {
+            await onSave(payload);
+                    alert("저장");
+            onClose();
+            navigate("/main"); // 'MainPage.js'로 네비게이션 추가
+        } catch (error) {
+            console.error("저장 실패:", error);
+            alert("저장 중 오류가 발생했습니다.");
+        } finally {
+            setIsLoading(false);
+        }
+        // onClose();
+        // navigate("/main"); // 'MainPage.js'로 네비게이션 추가
     };
 
-    if (!isOpen) return null;
+    if (!isopen) return null;
 
     return (
         <ModalOverlay onClick={onClose}>

@@ -88,7 +88,7 @@ const CategoryCard_Check = ({
 
   const color = colorKey || "purple"; // 기본 색상 설정
   const imageKey = color.toLowerCase();
-  const image = imageMap[imageKey] || imageMap.purple;
+  const backgroundimage = imageMap[imageKey] || imageMap.purple;
 
   const toggleCountAndColor = () => {
     if (isDisabled && !isMarked) {
@@ -111,7 +111,7 @@ const CategoryCard_Check = ({
   return (
     <CategoryBox clicked={clicked}>
       <StyledCard />
-      <CategoryPiece $image={image} />
+      <CategoryPiece background={backgroundimage} />
       <CategoryText>categories:</CategoryText>
       <DisplayedText>{category}</DisplayedText>
       <CategoryIcon>
@@ -178,7 +178,7 @@ const DisplayedText = styled.div`
 export const CategoryPiece = styled.div`
   width: 217px;
   height: 260px;
-  background-image: ${(props) => `url(${props.$image})`};
+  background-image: ${(props) => `url(${props.background})`};
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
