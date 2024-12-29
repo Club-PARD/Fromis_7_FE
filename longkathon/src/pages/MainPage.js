@@ -1,18 +1,66 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 import SideBar from "../components/SideBar";
 import HeaderComponent from "../components/HeaderComponent";
 import Dropdown from "../components/CategoryButton";
-import styled from "styled-components";
 import DayCard from "../components/DayCard";
 import MainRightViewContainer from "../components/MainRightViewContainer";
 import CategoryCard from "../components/CategoryCard";
 import BackGround from "../components/BackGround";
 import PieceMap from "../components/PieceMap";
-import { useNavigate } from "react-router-dom";
+
+const generateRandomData = () => {
+  const colors = ["purple", "pink", "red", "black", "blue", "green"];
+  const users = Array.from({ length: 8 }, (_, i) => `user${Math.ceil(Math.random() * 100)}`);
+  const categories = Array.from({ length: 4 }, (_, i) => ({
+    category: `카테고리${i + 1}`,
+    colorKey: colors[Math.floor(Math.random() * colors.length)],
+  }));
+
+  return { users, categories };
+};
 
 const MainPage = () => {
-
   const navigate = useNavigate();
+  const [currentData, setCurrentData] = useState(generateRandomData());
+  const [pastData, setPastData] = useState([]);
+  const [futureData, setFutureData] = useState([]);
+
+  const handleScroll = (event) => {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+    if (event.deltaY < 0) {
+      // 위로 스크롤: 과거 데이터 표시
+      if (pastData.length > 0) {
+        const lastPast = pastData.pop();
+        setFutureData([currentData, ...futureData]);
+        setCurrentData(lastPast);
+        setPastData([...pastData]);
+      }
+    } else if (event.deltaY > 0) {
+      // 아래로 스크롤: 다음 데이터 표시
+      if (futureData.length > 0) {
+        const nextFuture = futureData.shift();
+        setPastData([...pastData, currentData]);
+        setCurrentData(nextFuture);
+        setFutureData([...futureData]);
+      } else {
+        const newData = generateRandomData();
+        setPastData([...pastData, currentData]);
+        setCurrentData(newData);
+      }
+    }
+
+    window.scrollTo(0, 0); // 화면 고정
+  };
+
+  useEffect(() => {
+    window.addEventListener("wheel", handleScroll, { passive: false });
+    return () => {
+      window.removeEventListener("wheel", handleScroll);
+    };
+  }, [currentData, pastData, futureData]);
 
   const handleConnectCategory = () => {
     navigate("/category");
@@ -31,16 +79,17 @@ const MainPage = () => {
             <PieceMapWrapper>
               <PieceMap />
             </PieceMapWrapper>
-            <ViewButton onClick={handleConnectCategory}>전체 조각 보러가기</ViewButton>
-            <MainRightViewContainer users={["user1", "user2", "user3", "user4", "user5", "user6", "user7", "user8"]} />
+            <ViewButton onClick={handleConnectCategory}>
+              전체 조각 보러가기
+            </ViewButton>
+            <MainRightViewContainer users={currentData.users} />
           </ViewContainer>
           <CategoryContainer>
             <CategoryText1>L:nk</CategoryText1>
             <CategoryText2>highlight</CategoryText2>
-            <CategoryCard category="카테고리1" colorKey="purple" />
-            <CategoryCard category="카테고리2" colorKey="pink" />
-            <CategoryCard category="카테고리3" colorKey="red" />
-            <CategoryCard category="카테고리4" colorKey="black" />
+            {currentData.categories.map((cat, index) => (
+              <CategoryCard key={index} category={cat.category} colorKey={cat.colorKey} />
+            ))}
             <DayCard targetDate="2025-01-05" />
           </CategoryContainer>
         </MainContainer>
@@ -49,126 +98,106 @@ const MainPage = () => {
   );
 };
 
+export const Container = styled.div``;
 
-export const Container = styled.div`
-/* height: 813.45px; */
-/* border: 10px solid black; */
-`;
-
-export const MainBenner = styled.div`
-  `;
+export const MainBenner = styled.div``;
 
 const MainContainer = styled.div`
-top: 82px;
-margin-left: 82px;
-margin-right: 82px;
-display: flex;
-flex-direction: column;
-align-items: center;
-text-align: center;
+  top: 82px;
+  margin-left: 82px;
+  margin-right: 82px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 `;
 
 const ViewContainer = styled.div`
-width: 100%;
-height: 440px;
-/* border: 1px solid black; */
-display: flex;
-align-items: center;
-/* justify-content: space-between; */
-text-align: center;
-flex-direction: column;
-position: relative; /* 자식의 절대 위치 기준을 설정 */
+  width: 100%;
+  height: 440px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  flex-direction: column;
+  position: relative;
 `;
-
 
 const ViewButton = styled.div`
-/* border: 1px solid black; */
-display: flex;
-align-items: center;
-font-family: "Product Sans", sans - serif;
-font-size: 20px; /* 글자 크기 */
-text-align: center; /* 텍스트 정렬 */
-justify-content: center;
-align-items: center;
-color: #ffffff;
-width: 217px;
-height: 48px;
-flex-shrink: 0;
-border-radius: 20px;
-background: #5BA8FB;
-position: absolute;
-top: 102px;
-transition: transform 0.2s;
+  display: flex;
+  align-items: center;
+  font-family: "Product Sans", sans-serif;
+  font-size: 20px;
+  text-align: center;
+  justify-content: center;
+  color: #ffffff;
+  width: 217px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: 20px;
+  background: #5ba8fb;
+  position: absolute;
+  top: 102px;
+  transition: transform 0.2s;
   cursor: pointer;
-&:hover {
-  transform: scale(1.1);
-}
+  &:hover {
+    transform: scale(1.1);
+  }
 `;
 
-
 const CategoryContainer = styled.div`
-padding-bottom: 20px;
-width: 100%;
-height: 332px;
-/* border: 1px solid black; */
-display: flex;
-/* align-items: center; */
-justify-content: space-between;
-text-align: center;
-display: flex;
-align-items: flex-end; /* 내용물을 하단에 정렬 */
-position: relative;
-
+  padding-bottom: 20px;
+  width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  text-align: center;
+  align-items: flex-end;
+  position: relative;
 `;
 
 export const CategoryText1 = styled.div`
-color: #040404;
-font-family: Inter;
-font-size: 20px;
-font-style: normal;
-font-weight: 700;
-line-height: 20px; /* 100% */
-position: absolute;
-top: 0px;
-left: 0px;
-border-radius: 20px;
-background: #FFF;
-height: 50px;
-flex-shrink: 0;
-display: flex;
-justify-content: center;
-align-items: center;
-text-align: center;
+  color: #040404;
+  font-family: Inter;
+  font-size: 20px;
+  font-weight: 700;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  border-radius: 20px;
+  background: #fff;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 `;
 
 export const CategoryText2 = styled.div`
-color: #040404;
-font-family: Inter;
-font-size: 20px;
-font-style: normal;
-font-weight: 700;
-line-height: 20px; /* 100% */
-position: absolute;
-top: 0px;
-left: 52px;
-border-radius: 20px;
-border: 1px solid #AFB8C1;
-background: #FFF;
-width: 127px;
-height: 48px;
-flex-shrink: 0;
-display: flex;
-justify-content: center;
-align-items: center;
-text-align: center;
+  color: #040404;
+  font-family: Inter;
+  font-size: 20px;
+  font-weight: 700;
+  position: absolute;
+  top: 0px;
+  left: 52px;
+  border-radius: 20px;
+  border: 1px solid #afb8c1;
+  background: #fff;
+  width: 127px;
+  height: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 `;
 
 const PieceMapWrapper = styled.div`
-position: absolute; /* 절대 위치로 설정 */
-top: 50%; /* 세로 중앙 정렬 */
-left: 0; /* 왼쪽으로 이동 */
-transform: translate(0, -50%); /* 세로 축 기준으로 정확히 중앙 정렬 */
-margin-top: 20px;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translate(0, -50%);
+  margin-top: 20px;
 `;
 
 export default MainPage;

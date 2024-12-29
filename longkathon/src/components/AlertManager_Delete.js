@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { CategoryPiece } from "./CategoryCard_Check";
-// import backgroundImage from "../Image/X_purple.png";
+// import background from "../Image/X_purple.png";
 
 const AlertManager_Delete = ({ triggerCondition, categoryToDelete, onTrigger, onDelete, onCancel, backgroundImage }) => {
   const [isVisible, setIsVisible] = useState(false);
@@ -120,6 +120,7 @@ height: 165px;
 position: absolute;
 top:169px;
 left: 111px;
+background-image: ${(props) => `url(${props.$image})`};
 `;
 
 const CancelButton = styled.button`

@@ -12,6 +12,10 @@ const HeaderComponent = ({ disabled }) => { // 외부에서 disabled 값을 받�
     navigate("/main");
   };
 
+  const handleConnectMyInfo = ( )=>{
+    navigate("/myinfo");
+  };
+
   const [searchText, setSearchText] = useState("");
 
   const handleSearchClick = () => {
@@ -43,7 +47,7 @@ const HeaderComponent = ({ disabled }) => { // 외부에서 disabled 값을 받�
             <SearchIcon disabled={disabled} />
           </SearchButton>
         </SearchBox>
-        <UserBox>
+        <UserBox onClick={handleConnectMyInfo}>
           <User />
         </UserBox>
       </RightContainer>
