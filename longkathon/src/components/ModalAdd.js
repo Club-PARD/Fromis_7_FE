@@ -3,6 +3,7 @@ import styled from "styled-components";
 import ColorPalette from "../components/ColorPalette";
 import { useNavigate } from "react-router-dom"; // useNavigate 추가
 
+import { postPieceAPI } from "../API/Piece.js";
 
 const ModalAdd = ({ isOpen, onClose, onSave, initialData }) => {
     const [title, setTitle] = useState(initialData?.title || "");
@@ -19,6 +20,8 @@ const ModalAdd = ({ isOpen, onClose, onSave, initialData }) => {
     const [members, setMembers] = useState(initialData?.members || [""]);
     const [color, setColor] = useState(initialData?.color || "#FFFFFF");
     const [isLoading, setIsLoading] = useState(false);
+
+    const navigate = useNavigate();
 
     const handleBlur = (field, value) => {
         let formattedValue = value;
@@ -62,8 +65,6 @@ const ModalAdd = ({ isOpen, onClose, onSave, initialData }) => {
         setColor(selectedColor);
     };
 
-    const navigate = useNavigate(); // useNavigate 훅 추가
-
     const handleSave = async () => {
         if (isLoading) return;
         if (!title.trim()) {
@@ -94,16 +95,18 @@ const ModalAdd = ({ isOpen, onClose, onSave, initialData }) => {
         };
 
         setIsLoading(true);
-        // try {
-        //     await onSave(payload);
-        //     onClose();
-        //     navigate("/main"); // 'MainPage.js'로 네비게이션 추가
-        // } catch (error) {
-        //     console.error("저장 실패:", error);
-        //     alert("저장 중 오류가 발생했습니다.");
-        // } finally {
-        //     setIsLoading(false);
-        // }
+        try {
+            const response = await postPieceAPI(1, payload); // userId를 1로 고정
+            console.log("Payload saved:", response.data);
+            alert("저장이 완료되었습니다.");
+            onClose(); // 모달 닫기
+            navigate("/main"); // 메인 페이지로 이동
+        } catch (error) {
+            console.error("저장 실패:", error);
+            alert("저장 중 오류가 발생했습니다.");
+        } finally {
+            setIsLoading(false);
+        }
         onClose();
         navigate("/main"); // 'MainPage.js'로 네비게이션 추가
     };
