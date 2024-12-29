@@ -3,7 +3,7 @@ import logoImg from '../Image/Logo.png';
 import styled from "styled-components";
 import HamburgerIcon from "./HamburgerButton";
 
-function HeaderComponent() {
+const HeaderComponent = ({ disabled }) => { // 외부에서 disabled 값을 받아옴
   const [searchText, setSearchText] = useState("");
 
   const handleSearchClick = () => {
@@ -21,6 +21,7 @@ function HeaderComponent() {
         <LogoImg src={logoImg} alt='LogoImg' />
         <LogoText> L:nk</LogoText>
       </LogoGroup>
+      
       <RightContainer>
         <SearchBox>
           <Search
@@ -28,9 +29,10 @@ function HeaderComponent() {
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
             placeholder="Search"
+            disabled={disabled} // 외부에서 받은 disabled 값으로 배경색을 변경
           />
           <SearchButton onClick={handleSearchClick}>
-            <SearchIcon />
+            <SearchIcon disabled={disabled}/>
           </SearchButton>
         </SearchBox>
         <UserBox>
@@ -39,13 +41,15 @@ function HeaderComponent() {
       </RightContainer>
     </HeaderContainer>
   );
-}
+};
 
 const HeaderContainer = styled.div`
+<<<<<<< HEAD
+  width: 1440px;
+=======
   /* border: 1px solid black; */
+>>>>>>> 6a9b0e36c53a1094fe7eb35564fbc5afeba6cc54
   height: 60px;
-  /* padding-top: 10px;
-  padding-bottom: 10px; */
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -80,8 +84,6 @@ const LogoText = styled.span`
 `;
 
 const RightContainer = styled.div`
-  /* border: 1px solid black; */
-  /* margin-right: 103px; */
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -97,20 +99,18 @@ const SearchBox = styled.div`
 `;
 
 const Search = styled.input`
-  border: 1px solid #afb8c1;
+  border:${(props) => (props.disabled ? "1px solid rgba(4, 4, 4, 0.3)" : "1px solid #afb8c1")};
   border-radius: 10px;
   width: 192px;
   height: 38px;
   padding-left: 12px;
-  /* font-size: 14px;
-  color: #afb8c1; */
-
+  background: ${(props) => (props.disabled ? "rgba(104,104,104)" : "#fff")};  /* 외부에서 받은 disabled 값에 따라 배경색 변경 */
+  
   &::placeholder {
     font-family: 'Inter', sans-serif;
     font-size: 16px;
     line-height: 20px;
-    letter-spacing: 0%;
-    color: #afb8c1;
+    color: ${(props)=>(props.disabled? "rgba(4, 4, 4, 0.3)" : "#afb8c1")};
   }
 `;
 
@@ -134,8 +134,12 @@ const SearchIcon = () => {
 };
 
 const UserBox = styled.div`
+<<<<<<< HEAD
+  margin-right: 103px;
+=======
 /* border: 1px solid black; */
 margin-right: 103px;
+>>>>>>> 6a9b0e36c53a1094fe7eb35564fbc5afeba6cc54
 `;
 
 const User = () => {

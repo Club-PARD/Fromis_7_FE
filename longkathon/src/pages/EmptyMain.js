@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Header from "../components/HeaderComponent";
 import SideBar from "../components/SideBar";
 import ColorPalette from "../components/ColorPalette";
+import CategoryAddContainer from "../components/CategoryAddContainer";
 
 const EmptyMainPage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -84,12 +85,12 @@ const EmptyMainPage = () => {
             <Header />
             <MainContent>
                 <SideBarContainer>
-                    <SideBar onCreateClick={openModal} />
+                    <SideBar />
                 </SideBarContainer>
-
                 <ImageContainer>
                     <CenterImage src={require("../Image/MainIcon.png")} alt="centered-image" />
-                    <Title>여행의 시작, 함께 링크해요!</Title>
+                    <Title>카테고리가 생성될 때마다 조각을 연결해요!!</Title>
+                    <CategoryAddContainer onClickHandler={openModal}/>
                 </ImageContainer>
             </MainContent>
 
@@ -189,7 +190,6 @@ const EmptyMainPage = () => {
                         <ModalGroup>
                             <ColorPalette />
                         </ModalGroup>
-
                         {/* 하단 버튼 */}
                         <ModalActions>
                             <Button onClick={closeModal}>취소</Button>
