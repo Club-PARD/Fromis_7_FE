@@ -177,11 +177,13 @@ const DetailPage = () => {
                                     <CommentItem key={comment.id}>
                                         <CommentItemContainer>
                                             <ProfileImage src={comment.profileImg} alt={`${comment.name}의 프로필`} />
-                                            <CommentContent>
-                                                <CommentUser>{comment.name}</CommentUser>
-                                                <CommentText>{comment.text}</CommentText>
-                                            </CommentContent>
-                                            <CommentTime>{comment.time}</CommentTime>
+                                            <CommentTextContainer>
+                                                <CommentHeader>
+                                                    <CommentUser>{comment.name}</CommentUser>
+                                                    <CommentText>{comment.text}</CommentText>
+                                                </CommentHeader>
+                                                <CommentTime>{comment.time}</CommentTime>
+                                            </CommentTextContainer>
                                         </CommentItemContainer>
                                     </CommentItem>
                                 ))}
@@ -461,7 +463,7 @@ const CommentList = styled.ul`
     border-radius: 20px;
     border: 1px solid #5BA8FB;
     background: #FFF;
-    padding: 10px; /* 내부 여백 추가 */
+    padding: 20px; /* 내부 여백 추가 */
     height: auto; /* 높이를 콘텐츠에 맞게 조정 */
     list-style: none;
 `;
@@ -504,12 +506,6 @@ const CommentItemContainer = styled.div`
     gap: 10px; /* 이미지와 텍스트 사이 간격 */
 `;
 
-const CommentContent = styled.div`
-    margin: 5px;
-    display: flex;
-    align-items: center; /* 이름과 댓글을 같은 줄에 배치 */
-`;
-
 const ProfileImage = styled.img`
     width: 32px;
     height: 32px;
@@ -517,4 +513,17 @@ const ProfileImage = styled.img`
     object-fit: cover; /* 이미지가 영역에 맞게 조정 */
     border: 1px solid black;
 `;
+
+const CommentTextContainer = styled.div`
+    display: flex;
+    flex-direction: column; /* 텍스트를 수직으로 정렬 */
+`;
+
+const CommentHeader = styled.div`
+    display: flex;
+    align-items: center; /* 이름과 댓글 내용을 가로로 배치 */
+    gap: 8px; /* 이름과 댓글 사이 간격 */
+    margin-bottom: 1px; /* 이름+댓글과 시간 사이 간격 */
+`;
+
 export default DetailPage;
