@@ -48,7 +48,7 @@ color: #ffffff;
   border-radius: 20px 0 20px 20px;
   justify-content: center;
   align-items: center;   
-  display: ${(props) => (props.isVisible ? "flex" : "none")}; /* 가시성 제어 */
+  display: ${(props) => (props.$isVisible ? "flex" : "none")}; /* 가시성 제어 */
 `;
 
 // Sidebar Component
@@ -120,7 +120,7 @@ const HoverableMenuItem = ({ icon: Icon, color, width, height }) => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <Icon color={color} width={width} height={height} />
-      <HoverImage isVisible={isHovered}>
+      <HoverImage $isVisible={isHovered}>
         <CenteredText>함께 링크하기</CenteredText>
       </HoverImage>
     </MenuItem>

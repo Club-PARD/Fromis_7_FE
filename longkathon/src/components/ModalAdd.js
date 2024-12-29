@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom"; // useNavigate 추가
 
 import { postPieceAPI } from "../API/Piece.js";
 
-const ModalAdd = ({ isOpen, onClose, onSave, initialData }) => {
+const ModalAdd = ({ isOpen, onClose, initialData }) => {
     const [title, setTitle] = useState(initialData?.title || "");
     const [dates, setDates] = useState(
         initialData?.dates || {

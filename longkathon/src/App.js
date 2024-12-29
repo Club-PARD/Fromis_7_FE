@@ -7,7 +7,8 @@ import MainPage from './pages/MainPage.js';
 import DetailPage from './pages/Detail.js';
 import EmptyMainPage from './pages/EmptyMain.js';
 import AllCategoryPage from './pages/AllCategoryPage.js';
-
+import ModalAdd from './components/ModalAdd.js';
+import MyInfoPage from './pages/MyInfoPage.js';
 
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
         <Route path="/emptymain" element={<EmptyMainPage/>} />
         <Route path="/detail" element={<DetailPage/>} />
         <Route path="/category" element={<AllCategoryPage  Title={"input_title"}/>} />
+        <Route path="/myinfo" element={<MyInfoPage />} />
       </Routes>
     </BrowserRouter>
 
