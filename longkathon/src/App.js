@@ -7,7 +7,7 @@ import MainPage from './pages/MainPage.js';
 import DetailPage from './pages/Detail.js';
 import EmptyMainPage from './pages/EmptyMain.js';
 import AllCategoryPage from './pages/AllCategoryPage.js';
-import ModalAdd from './components/ModalAdd.js';
+
 
 
 function App() {

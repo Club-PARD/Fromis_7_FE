@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Header from "../components/HeaderComponent";
 import SideBar from "../components/SideBar";
 import Dropdown from "../components/CategoryButton";
 import ModalAdd from "../components/ModalAdd";
 
+import { getPieceAPI } from "../API/Piece"; // API 함수 임포트
+
 const EmptyMainPage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [pieces, setPieces] = useState([]); // 약속 데이터를 저장할 상태
 
     const openModal = () => {
         console.log("openModal 함수가 호출되었습니다."); // 콘솔 출력 추가
@@ -16,8 +19,22 @@ const EmptyMainPage = () => {
     const closeModal = () => {
         console.log("closeModal 함수가 호출되었습니다."); // 콘솔 출력 추가
         setIsModalOpen(false);
+        fetchPieces();
     };
 
+    const fetchPieces = async () => {
+        try {
+            const data = await getPieceAPI(1); // userId를 동적으로 전달
+            setPieces(data);
+        } catch (error) {
+            console.error("Error fetching pieces:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchPieces(); // 컴포넌트 마운트 시 데이터 로드
+    }, []);
+        
     return (
         <PageWrapper>
             <Header />
