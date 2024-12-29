@@ -102,7 +102,7 @@ const SideBar = () => {
       </SidebarContainer>
 
       <ModalAdd
-        isopen={isModalOpen}
+        isOpen={isModalOpen}
         onClose={closeModal}
         onSave={handleSave}
       />

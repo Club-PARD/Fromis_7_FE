@@ -38,12 +38,12 @@ const LoginContainer = styled.div`
 const LogoSection = styled.div`
   display: flex;
   align-items: center;
-  margin-left: 142px;
+  margin-left: 144px;
 `;
 
 const LoginLogo = styled.img`
-  width: 425px;
-  height: 160px;
+  width: 479px;
+  height: 224px;
 `;
 
 const GoogleLoginSection = styled.div`
