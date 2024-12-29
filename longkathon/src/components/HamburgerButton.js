@@ -45,7 +45,7 @@ export const HamburgerIcon = ({ color, width, height }) => {
 };
 
 const Container = styled.div`
-  z-index: 100;
+  z-index: 299;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -80,7 +80,7 @@ const BannersContainer = styled.div`
   position: absolute;
   top: 45px;
   left: 0px;
-  z-index: 5;
+  z-index: 1000;
 
 `;
 

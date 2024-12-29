@@ -44,11 +44,6 @@ const HeaderComponent = ({ disabled }) => { // 외부에서 disabled 값을 받�
 };
 
 const HeaderContainer = styled.div`
-<<<<<<< HEAD
-  width: 1440px;
-=======
-  /* border: 1px solid black; */
->>>>>>> 6a9b0e36c53a1094fe7eb35564fbc5afeba6cc54
   height: 60px;
   display: flex;
   align-items: center;
@@ -133,13 +128,8 @@ const SearchIcon = () => {
   );
 };
 
-const UserBox = styled.div`
-<<<<<<< HEAD
+const UserBox = styled.div` 
   margin-right: 103px;
-=======
-/* border: 1px solid black; */
-margin-right: 103px;
->>>>>>> 6a9b0e36c53a1094fe7eb35564fbc5afeba6cc54
 `;
 
 const User = () => {

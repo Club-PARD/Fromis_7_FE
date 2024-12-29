@@ -43,10 +43,9 @@ const MainPage = () => {
 };
 
 
-const Container = styled.div`
+export const Container = styled.div`
 /* height: 813.45px; */
 /* border: 10px solid black; */
-border: 1px solid black;
 `;
 
 export const MainBenner = styled.div`
@@ -106,7 +105,7 @@ height: 332px;
 /* border: 1px solid black; */
 display: flex;
 /* align-items: center; */
-justify-content: space - between;
+justify-content: space-between;
 text-align: center;
 display: flex;
 align-items: flex-end; /* 내용물을 하단에 정렬 */
