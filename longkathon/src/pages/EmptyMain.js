@@ -3,9 +3,13 @@ import styled from "styled-components";
 import Header from "../components/HeaderComponent";
 import SideBar from "../components/SideBar";
 import ColorPalette from "../components/ColorPalette";
+import Dropdown from "../components/CategoryButton";
+
+import { postPieceAPI } from "../API/Piece";
 
 const EmptyMainPage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [title, setTitle] = useState(""); 
     const [dates, setDates] = useState({
         startYear: "",
         startMonth: "",
@@ -16,12 +20,15 @@ const EmptyMainPage = () => {
     });
 
     const [members, setMembers] = useState([""]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [color, setColor] = useState("#FFFFFF");
 
     const openModal = () => {
         setIsModalOpen(true);
     };
 
     const closeModal = () => {
+        setTitle(""); // 제목 초기화
         setDates({
             startYear: "",
             startMonth: "",
@@ -30,9 +37,57 @@ const EmptyMainPage = () => {
             endMonth: "",
             endDay: "",
         });
-
-        setMembers([""]);
+        setMembers([""]); // 멤버 초기화
+        setColor("#FFFFFF"); // 색상 초기화
         setIsModalOpen(false);
+    };
+
+    const saveDataToServer = async () => {
+        //const response = await postPieceAPI(userId, payload);
+        if (isLoading) return;
+        if (!title.trim()) {
+            alert("제목을 입력해주세요.");
+            return;
+        }
+
+        if (!dates.startYear || !dates.startMonth || !dates.startDay || !dates.endYear || !dates.endMonth || !dates.endDay) {
+            alert("날짜를 모두 입력해주세요.");
+            return;
+        }
+
+        if (!members.length || members.some((name) => !name.trim())) {
+            alert("멤버 이름을 입력해주세요.");
+            return;
+        }
+
+        const payload = {
+            title,
+            memberNames: members,
+            startYear: parseInt(dates.startYear, 10),
+            startMonth: parseInt(dates.startMonth, 10),
+            startDay: parseInt(dates.startDay, 10),
+            endYear: parseInt(dates.endYear, 10),
+            endMonth: parseInt(dates.endMonth, 10),
+            endDay: parseInt(dates.endDay, 10),
+            color,
+        };
+
+        setIsLoading(true);
+
+        try{
+            const response = await postPieceAPI(payload);
+            if (response?.status === 200) {
+                alert("저장 성공!");
+                closeModal();
+            } else{
+                alert(`저장 실패: ${response?.statusText}`);
+            } 
+        } catch (error) {
+            console.error("저장 실패:", error);
+            alert("저장 중 오류가 발생했습니다.");
+        } finally{
+            setIsLoading(false);
+        }
     };
 
     const handleBlur = (field, value) => {
@@ -79,9 +134,14 @@ const EmptyMainPage = () => {
         setMembers(updatedMembers);
     }
 
+    const handleColorChange = (selectedColor) => {
+        setColor(selectedColor); // 선택한 색상을 상태에 저장
+    };
+
     return (
         <PageWrapper>
             <Header />
+            <Dropdown />
             <MainContent>
                 <SideBarContainer>
                     <SideBar onCreateClick={openModal} />
@@ -99,7 +159,12 @@ const EmptyMainPage = () => {
                         {/* 약속 제목 */}
                         <ModalGroup>
                             <Label>약속 제목: </Label>
-                            <InputTitle type="text" placeholder="약속 제목을 입력해주세요" />
+                            <InputTitle 
+                                type="text" 
+                                placeholder="약속 제목을 입력해주세요" 
+                                value = {title}
+                                onChange = {(e) => setTitle(e.target.value)}
+                            />
                         </ModalGroup>
 
                         {/* 약속 날짜 */}
@@ -187,13 +252,15 @@ const EmptyMainPage = () => {
 
                         {/* 색상 선택 */}
                         <ModalGroup>
-                            <ColorPalette />
+                            <ColorPalette selectedColor={color} onChange={handleColorChange} />
                         </ModalGroup>
 
                         {/* 하단 버튼 */}
                         <ModalActions>
                             <Button onClick={closeModal}>취소</Button>
-                            <Button primary>저장</Button>
+                            <Button primary onClick={saveDataToServer} disabled={isLoading}>
+                                {isLoading ? "저장 중..." : "저장"}
+                            </Button>
                         </ModalActions>
                     </ModalContent>
                 </ModalOverlay>
