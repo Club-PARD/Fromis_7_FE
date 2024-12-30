@@ -9,11 +9,11 @@ import EmptyMainPage from './pages/EmptyMain.js';
 import AllCategoryPage from './pages/AllCategoryPage.js';
 import ModalAdd from './components/ModalAdd.js';
 import MyInfoPage from './pages/MyInfoPage.js';
-
+import AddCategory from './pages/AddCategory.js';
 
 function App() {
-
-  // const [isModalOpen, setIsModalOpen] = useState(true);
+  return (
+     // const [isModalOpen, setIsModalOpen] = useState(true);
 
   // const handleSave = (data) => {
   //     console.log("저장 데이터:", data);
@@ -24,19 +24,23 @@ function App() {
   //     setIsModalOpen(false);
   // };
 
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<LenderPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/main" element={<MainPage />} />
-        <Route path="/emptymain" element={<EmptyMainPage/>} />
-        <Route path="/detail" element={<DetailPage/>} />
-        <Route path="/category" element={<AllCategoryPage  Title={"input_title"}/>} />
-        <Route path="/myinfo" element={<MyInfoPage />} />
-      </Routes>
-    </BrowserRouter>
+    <>
+      {/* 상단의 AddCategory 컴포넌트 */}
 
+      {/* 라우팅 설정 */}
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<LenderPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/main" element={<MainPage />} />
+          <Route path="/emptymain" element={<EmptyMainPage />} />
+          <Route path="/detail" element={<DetailPage />} />
+          <Route path="/addcategory" element={<AddCategory />} />
+          <Route path="/category" element={<AllCategoryPage Title={"input_title"} />} />
+          <Route path="/myinfo" element={<MyInfoPage />} />
+        </Routes>
+      </BrowserRouter>
+    </>
   );
 }
 
