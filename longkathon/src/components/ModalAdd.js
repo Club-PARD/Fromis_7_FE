@@ -117,17 +117,17 @@ const ModalAdd = ({ isOpen, onClose, initialData }) => {
         <ModalOverlay onClick={onClose}>
             <ModalContent onClick={(e) => e.stopPropagation()}>
                 <ModalGroup>
-                    <Label>약속 제목: </Label>
+                    <Label>링크 제목: </Label>
                     <InputTitle
                         type="text"
-                        placeholder="약속 제목을 입력해주세요"
+                        placeholder="링크 제목을 입력해주세요"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                     />
                 </ModalGroup>
 
                 <ModalGroup>
-                    <Label>약속 날짜: </Label>
+                    <Label>링크 날짜: </Label>
                     <DateField>
                         <InputDate
                             placeholder="년도"
@@ -170,7 +170,7 @@ const ModalAdd = ({ isOpen, onClose, initialData }) => {
                 </ModalGroup>
 
                 <ModalGroup>
-                    <Label>약속 멤버: </Label>
+                    <Label>링크 멤버: </Label>
                     <DateField>
                         {members.map((member, index) => (
                             <MemberContainer key={index}>
@@ -190,7 +190,7 @@ const ModalAdd = ({ isOpen, onClose, initialData }) => {
                                     ></lord-icon>
                                 </CloseButton>
                                 <InputMember
-                                    placeholder={`예) 멤버 ${index + 1}`}
+                                    placeholder={`멤버 ${index + 1}`}
                                     value={member}
                                     onChange={(e) => handleMemberChange(index, e.target.value)}
                                 />

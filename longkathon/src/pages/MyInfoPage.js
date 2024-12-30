@@ -4,6 +4,8 @@ import SideBar from "../components/SideBar";
 import { CategoryText1, CategoryText2, Container, MainBenner } from "./MainPage";
 import { useNavigate } from "react-router-dom";
 
+import { postUserAPI } from "../API/User.js";
+
 const MyInfoPage = () => {
 const navigate = useNavigate();
 
