@@ -26,41 +26,70 @@ const MainPage = () => {
   const [currentData, setCurrentData] = useState(generateRandomData());
   const [pastData, setPastData] = useState([]);
   const [futureData, setFutureData] = useState([]);
+  const [isAtEnd, setIsAtEnd] = useState(false);
+  const [isAtStart, setIsAtStart] = useState(false);
 
-  const handleScroll = (event) => {
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+  const handleScroll = () => {
+    const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
 
-    if (event.deltaY < 0) {
-      // 위로 스크롤: 과거 데이터 표시
-      if (pastData.length > 0) {
-        const lastPast = pastData.pop();
-        setFutureData([currentData, ...futureData]);
-        setCurrentData(lastPast);
-        setPastData([...pastData]);
-      }
-    } else if (event.deltaY > 0) {
-      // 아래로 스크롤: 다음 데이터 표시
-      if (futureData.length > 0) {
-        const nextFuture = futureData.shift();
-        setPastData([...pastData, currentData]);
-        setCurrentData(nextFuture);
-        setFutureData([...futureData]);
-      } else {
-        const newData = generateRandomData();
-        setPastData([...pastData, currentData]);
-        setCurrentData(newData);
-      }
+    if (scrollTop + clientHeight >= scrollHeight) {
+      // 페이지 끝에서 추가 스크롤
+      setIsAtEnd(true);
+    } else {
+      setIsAtEnd(false);
     }
 
-    window.scrollTo(0, 0); // 화면 고정
+    if (scrollTop === 0) {
+      // 페이지 시작에서 추가 스크롤
+      setIsAtStart(true);
+    } else {
+      setIsAtStart(false);
+    }
   };
 
   useEffect(() => {
-    window.addEventListener("wheel", handleScroll, { passive: false });
-    return () => {
-      window.removeEventListener("wheel", handleScroll);
+    const updateData = (direction) => {
+      if (direction === "down" && isAtEnd) {
+        // 아래 스크롤: 다음 데이터 표시
+        if (futureData.length > 0) {
+          const nextFuture = futureData.shift();
+          setPastData([...pastData, currentData]);
+          setCurrentData(nextFuture);
+          setFutureData([...futureData]);
+        } else {
+          const newData = generateRandomData();
+          setPastData([...pastData, currentData]);
+          setCurrentData(newData);
+        }
+      }
+
+      if (direction === "up" && isAtStart) {
+        // 위 스크롤: 이전 데이터 표시
+        if (pastData.length > 0) {
+          const lastPast = pastData.pop();
+          setFutureData([currentData, ...futureData]);
+          setCurrentData(lastPast);
+          setPastData([...pastData]);
+        }
+      }
     };
-  }, [currentData, pastData, futureData]);
+
+    const handleWheel = (event) => {
+      if (event.deltaY > 0) {
+        updateData("down");
+      } else if (event.deltaY < 0) {
+        updateData("up");
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("wheel", handleWheel);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("wheel", handleWheel);
+    };
+  }, [isAtEnd, isAtStart, currentData, pastData, futureData]);
 
   const handleConnectCategory = () => {
     navigate("/category");
@@ -98,7 +127,11 @@ const MainPage = () => {
   );
 };
 
-export const Container = styled.div``;
+export const Container = styled.div`
+/* border:10px solid black; */
+  overflow-y: scroll;
+  height: 110vh;
+`;
 
 export const MainBenner = styled.div``;
 

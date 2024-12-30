@@ -23,13 +23,13 @@ const colors = [
     { color: "#424242", image: XBlack },
 ];
 
-function ColorPalette() {
-    const [selectedColor, setSelectedColor] = useState(null);
+function ColorPalette({ selectedColor, onChange }) {
+
     const [selectedImage, setSelectedImage] = useState(XBlue); 
 
     const handleColorClick = (index) => {
-        setSelectedColor(index);
-        setSelectedImage(colors[index].image); 
+        onChange(colors[index].color); // 부모 상태 업데이트
+        setSelectedImage(colors[index].image); // 이미지 상태 업데이트
     };
 
     return (
