@@ -72,6 +72,7 @@ const AppContainer = styled.div`
   // height: auto;
   font-family: 'Arial', sans-serif;
   color: #333;
+  background: linear-gradient(to bottom, )
 `;
 
 const Container = styled.div`
