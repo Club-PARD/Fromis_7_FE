@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, forwardRef, useImperativeHandle } from "react";
 import styled from "styled-components";
 
-const InfoCard = ({ id, onClose, isFirstCard }) => {
+const InfoCard = forwardRef(({ id, onClose, isFirstCard }, ref) => {
   const [formData, setFormData] = useState({
     url: "",
-    name: "",
     description: "",
   });
+
+  // 부모 컴포넌트에서 값을 참조할 수 있도록 useImperativeHandle 사용
+  useImperativeHandle(ref, () => ({
+    getValues: () => formData,
+  }));
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,7 +32,7 @@ const InfoCard = ({ id, onClose, isFirstCard }) => {
         <lord-icon
           src="https://cdn.lordicon.com/nqtddedc.json"
           trigger="hover"
-          style={{ width: "40px", height: "40px"}}
+          style={{ width: "40px", height: "40px" }}
         ></lord-icon>
       </CloseButton>
       <Form>
@@ -52,7 +56,7 @@ const InfoCard = ({ id, onClose, isFirstCard }) => {
       </Form>
     </InformationCard>
   );
-};
+});
 
 const InformationCard = styled.div`
   width: 519px;
@@ -128,8 +132,8 @@ const Input1 = styled.textarea`
   font-size: 12px;
   padding: 0px;
   border: transparent;
-  resize: none; 
-  overflow: hidden; 
+  resize: none;
+  overflow: hidden;
   ::placeholder {
     color: #aaa;
   }

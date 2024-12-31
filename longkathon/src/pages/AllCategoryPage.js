@@ -28,9 +28,9 @@ const AllCategoryPage = ({ Title }) => {
 
   useEffect(() => {
     if (totalCount === 4) {
-      setAlertActive(true); // Alert 활성화
+      setAlertActive(true); // Alert 활성화...
     } else {
-      setAlertActive(false); // Alert 비활성화
+      setAlertActive(false); // Alert 비활성화...
     }
   }, [totalCount]);
 
