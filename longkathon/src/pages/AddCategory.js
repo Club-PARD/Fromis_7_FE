@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom"; // useNavigate 추가
 import ColorPalette from "../components/ColorPalette";
 import InfoCard from "../components/InfoCard";
 import AddContentBox from "../components/AddContentBox";
@@ -10,9 +11,14 @@ function AddCategory({ buttons = [] }) {
   const [infoCards, setInfoCards] = useState([
     { id: 0, content: "첫 InfoCard" },
   ]);
+  const [title, setTitle] = useState("");
+  const [selectedButton, setSelectedButton] = useState(null);
+
+  const navigate = useNavigate();
 
   const handleClick = (index) => {
     setActiveIndex(index);
+    setSelectedButton(index);
   };
 
   const addInfoCard = () => {
@@ -21,6 +27,24 @@ function AddCategory({ buttons = [] }) {
 
   const removeInfoCard = (id) => {
     setInfoCards(infoCards.filter((card) => card.id !== id));
+  };
+
+  const handleSave = () => {
+    // 유효성 검사
+    // if (!title.trim()) {
+    //   alert("제목을 입력해주세요.");
+    //   return;
+    // }
+
+    // 버튼 선택 여부 검사
+    if (!selectedButton) {
+      alert("버튼을 선택해주세요.");
+      return;
+    }
+
+    // 저장 로직
+    console.log("저장 성공", { title, infoCards });
+    navigate("/detail");
   };
 
   return (
@@ -67,10 +91,19 @@ function AddCategory({ buttons = [] }) {
           </InfoCardContainer>
         </Content>
         <Footer>
-          <Buttons bgColor="#AFB8C1" hoverColor="#909090" activeColor="#757575">
+          <Buttons
+            bgColor="#AFB8C1"
+            hoverColor="#909090"
+            activeColor="#757575"
+          >
             취소
           </Buttons>
-          <Buttons bgColor="#5BA8FB" hoverColor="#479CE8" activeColor="#387DBE">
+          <Buttons
+            bgColor="#5BA8FB"
+            hoverColor="#479CE8"
+            activeColor="#387DBE"
+            onClick={handleSave}
+          >
             저장
           </Buttons>
         </Footer>
@@ -85,10 +118,8 @@ const BaseContainer = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: auto;
   min-height: 100vh;
-  background: rgba(0, 0, 0, 0.5);
-  overflow: auto;
+  background-color: gray;
 `;
 
 const TopSection = styled.div`
@@ -97,7 +128,6 @@ const TopSection = styled.div`
   align-items: center;
   width: 412px;
   height: 88px;
-  margin-top: 116px;
   border-radius: 20px;
   background: #fff;
   margin-bottom: 32px;
@@ -109,13 +139,11 @@ const TopSection = styled.div`
 
 const ModalContainer = styled.div`
   width: 1275.24px;
-  height: 1010px;
   padding-top: 26px;
   padding-bottom: 42px;
   background: #fff;
   border-radius: 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  overflow: auto;
   position: relative;
 `;
 
@@ -125,7 +153,6 @@ const Content = styled.div`
   gap: 20px;
   margin-left: 100px;
   margin-right: 100px;
-  overflow: auto;
 `;
 
 const StyledColorPalette = styled(ColorPalette)`
