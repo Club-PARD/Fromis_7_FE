@@ -10,6 +10,7 @@ import AllCategoryPage from './pages/AllCategoryPage.js';
 import ModalAdd from './components/ModalAdd.js';
 import MyInfoPage from './pages/MyInfoPage.js';
 import AddCategory from './pages/AddCategory.js';
+import HistoryPage from './pages/History.js';
 
 function App() {
   return (
@@ -37,7 +38,8 @@ function App() {
           <Route path="/detail" element={<DetailPage />} />
           <Route path="/addcategory" element={<AddCategory />} />
           <Route path="/category" element={<AllCategoryPage Title={"input_title"} />} />
-          <Route path="/myinfo" element={<MyInfoPage />} />
+          <Route path="/mypage" element={<MyInfoPage />} />
+          <Route path="/history" element={<HistoryPage />} />
         </Routes>
       </BrowserRouter>
     </>

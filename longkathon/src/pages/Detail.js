@@ -7,11 +7,14 @@ import BeforeShare from "../Image/BeforeShare.png";
 import AfterShare from "../Image/AfterShare.png";
 import SubmitButton from "../Image/SubmitButton.png";
 
+import { postLikeAPI } from "../API/Like";
+
 const DetailPage = () => {
     const [thumbUpColor, setThumbUpColor] = useState("#dcdcdc");
     const [thumbDownColor, setThumbDownColor] = useState("#dcdcdc");
     const [commentColor, setCommentColor] = useState("#dcdcdc")
     const [isShared, setIsShared] = useState(false);
+    const [sharedCount, setSharedCount] = useState(0); // 공유 카운트 상태 추가
 
     const [likeCount, setLikeCount] = useState(0);
     const [dislikeCount, setDislikeCount] = useState(0);
@@ -20,7 +23,6 @@ const DetailPage = () => {
     const [liked, setLiked] = useState(false);
     const [disliked, setDisliked] = useState(false);
 
-
     const [showCommentInput, setShowCommentInput] = useState(false);
     const [commentText, setCommentText] = useState("");
 
@@ -28,7 +30,7 @@ const DetailPage = () => {
         { id: 1, name: "김희민", text: "난 ISTP라고... ㅎ", time: "4시간 전", profileImg: "https://via.placeholder.com/50" },
         { id: 2, name: "김세현", text: "그냥 레전드", time: "1일 전", profileImg: "https://via.placeholder.com/50" },
         { id: 3, name: "김하진", text: "막이래", time: "1일 전", profileImg: "https://via.placeholder.com/50" },
-        { id: 4, name: "유수민", text: "1시간만 자고 올게요", time: "1일 전", profileImg: "https://via.placeholder.com/50" },
+        { id: 4, name: "유슈민", text: "1시간만 자고 올게요", time: "1일 전", profileImg: "https://via.placeholder.com/50" },
         { id: 5, name: "김우현", text: "과자 다 먹을 꼬야", time: "2일 전", profileImg: "https://via.placeholder.com/50" },
         { id: 6, name: "이수인", text: "럭키 비키가 돼...", time: "2일 전", profileImg: "https://via.placeholder.com/50" },
     ]);
@@ -41,22 +43,16 @@ const DetailPage = () => {
     const [image, setImage] = useState(null); // 업로드된 이미지를 저장
 
     const [isEditable, setIsEditable] = useState(false); // 수정 가능 여부를 나타내는 상태
-    const [infoData, setInfoData] = useState({ //Mockdata
+
+    const [infoData, setInfoData] = useState({
         url: "http://fromis_7.link",
         name: "숙소 이름 여기에...",
         memo: "메모를 입력해주세요",
     });
 
+    const [tempMemo, setTempMemo] = useState(infoData.memo); // tempMemo 상태 추가
     const handleEditToggle = () => {
         setIsEditable((prev) => !prev); // 수정 가능 여부를 토글
-    };
-
-    const handleInfoChange = (e) => {
-        const { name, value } = e.target;
-        setInfoData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
     };
 
 
@@ -67,8 +63,7 @@ const DetailPage = () => {
         return `${hours}:${minutes < 10 ? "0" : ""}${minutes}`;
     };
 
-
-    const handleLike = () => {
+    const handleLike = async() => {
         if (liked) {
             // 좋아요 상태 해제
             setLikeCount((prev) => prev - 1);
@@ -112,7 +107,9 @@ const DetailPage = () => {
 
     const handleSharedClick = () => {
         setIsShared((prevState) => !prevState);
-    }
+        setSharedCount((prevState) => (isShared ? prevState - 1 : prevState + 1)); // 공유 여부에 따라 증가/감소
+    };
+
 
     const handleCommentSubmit = () => {
         if (commentText.trim()) {
@@ -137,17 +134,20 @@ const DetailPage = () => {
         setCommentColor((prevColor) => (prevColor === "#dcdcdc" ? "#5BA8FB" : "#dcdcdc"));
     };
 
-    const handleImageUpload = (event) => {
-        if (!isEditable) return; // 수정 가능 여부 확인
+    // lordicon 클릭 시 수정 모드 활성화
+    const handleMemoEdit = () => {
+        setIsEditable(true); // 수정 모드 활성화
+        setTempMemo(infoData.memo); // 기존 메모를 tempMemo에 복사
+    };
 
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                setImage(e.target.result); // 업로드된 이미지 URL 저장
-            };
-            reader.readAsDataURL(file);
-        }
+
+    // 저장 버튼 클릭 시 tempMemo를 infoData.memo에 저장
+    const handleMemoSave = () => {
+        setInfoData((prev) => ({
+            ...prev,
+            memo: tempMemo, // tempMemo 내용을 infoData.memo에 저장
+        }));
+        setIsEditable(false); // 수정 모드 비활성화
     };
 
     return (
@@ -171,82 +171,90 @@ const DetailPage = () => {
                         <CategoryButton>숙소</CategoryButton>
                     </TitleButtonBox>
                     <EditButton onClick={handleEditToggle}>
-                        {isEditable ? "Save" : "Edit"}
+                        Add
                     </EditButton>
                 </CategoryRow>
                 <InfoContainer>
                     <InputLabel>URL:</InputLabel>
-                    <InputBox
-                        name="url"
-                        value={infoData.url}
-                        onChange={handleInfoChange}
-                        disabled={!isEditable} // 수정 가능 여부에 따라 입력 가능/불가능 설정
-                    />
+                    <InputBox placeholder="wwww.example.com" />
                     <ImageBox isEditable={isEditable}>
                         {image ? (
                             <UploadedImage src={image} alt="업로드된 이미지" />
                         ) : (
                             <PlaceholderText>이미지를 업로드 해주세요</PlaceholderText>
                         )}
-                        <FileInput
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImageUpload}
-                            disabled={!isEditable} // 수정 가능 여부에 따라 입력 가능/불가능 설정
-                        />
+
                     </ImageBox>
-                    <InputBox
-                        name="name"
-                        value={infoData.name}
-                        onChange={handleInfoChange}
-                        disabled={!isEditable} // 수정 가능 여부에 따라 입력 가능/불가능 설정
-                    />
+                    <InputBox placeholder="숙소 이름" />
                 </InfoContainer>
                 <MemoWrapper>
                     <MemoContainer>
-                        <MemoLabel>메모</MemoLabel>
+                        <MemoHeader>
+                            <MemoLabel>메모</MemoLabel>
+                            <MemoEdit onClick={handleMemoEdit}>
+                                <lord-icon
+                                    src="https://cdn.lordicon.com/uwbjfiwe.json"
+                                    trigger="click"
+                                    style={{ width: "40px", height: "40px" }}
+                                ></lord-icon>
+                            </MemoEdit>
+                            <MemoSave onClick={handleMemoSave}>
+                                저장
+                            </MemoSave>
+                        </MemoHeader>
+
+                        {/* 메모 입력 필드 */}
                         <InputMemo
                             name="memo"
-                            value={infoData.memo}
-                            onChange={handleInfoChange}
-                            disabled={!isEditable} // 수정 가능 여부에 따라 입력 가능/불가능 설정
+                            value={tempMemo} // tempMemo를 사용하여 수정 중인 내용 표시
+                            onChange={(e) => setTempMemo(e.target.value)} // tempMemo 업데이트
+                            disabled={!isEditable} // 수정 가능 여부에 따라 입력 비활성화
                         />
-
                     </MemoContainer>
                     <IconContainer>
-                        <ThumbUp onClick={handleLike}>
-                            <lord-icon
-                                src="https://cdn.lordicon.com/svtwhayb.json"
-                                trigger="hover"
-                                colors={`primary:${thumbUpColor}`}
-                                style={{ width: "40px", height: "40px" }}
-                            ></lord-icon>
-                            <CountText>{likeCount}</CountText>
-                        </ThumbUp>
-                        <ThumbDown onClick={handleDislike}>
-                            <lord-icon
-                                src="https://cdn.lordicon.com/wgquubqx.json"
-                                trigger="hover"
-                                colors={`primary:${thumbDownColor}`}
-                                style={{ width: "40px", height: "40px" }}
-                            ></lord-icon>
-                            <CountText>{dislikeCount}</CountText>
-                        </ThumbDown>
-                        <Comment onClick={toggleCommentInput}>
-                            <lord-icon
-                                src="https://cdn.lordicon.com/ayhtotha.json"
-                                trigger="hover"
-                                colors={`primary:${commentColor}`}
-                                style={{ width: "40px", height: "40px" }}
-                            ></lord-icon>
-                            <CountText>{commentCount}</CountText>
-                        </Comment>
-                        <Share onClick={handleSharedClick}>
-                            <ShareImg
-                                src={isShared ? AfterShare : BeforeShare}
-                                alt={isShared ? "after share" : "before share"}
-                            />
-                        </Share>
+                        <Div1>
+                            <ThumbUp onClick={handleLike}>
+                                <lord-icon
+                                    src="https://cdn.lordicon.com/svtwhayb.json"
+                                    trigger="hover"
+                                    colors={`primary:${thumbUpColor}`}
+                                    style={{ width: "40px", height: "40px" }}
+                                ></lord-icon>
+                            </ThumbUp>
+                            <Count>{likeCount}</Count>
+                        </Div1>
+                        <Div2>
+                            <ThumbDown onClick={handleDislike}>
+                                <lord-icon
+                                    src="https://cdn.lordicon.com/wgquubqx.json"
+                                    trigger="hover"
+                                    colors={`primary:${thumbDownColor}`}
+                                    style={{ width: "40px", height: "40px" }}
+                                ></lord-icon>
+                                <Count>{dislikeCount}</Count>
+                            </ThumbDown>
+                        </Div2>
+                        <Div3>
+                            <Comment onClick={toggleCommentInput}>
+                                <lord-icon
+                                    src="https://cdn.lordicon.com/ayhtotha.json"
+                                    trigger="hover"
+                                    colors={`primary:${commentColor}`}
+                                    style={{ width: "40px", height: "40px" }}
+                                ></lord-icon>
+                                <Count>{commentCount}</Count>
+                            </Comment>
+                        </Div3>
+                        <Div4>
+                            <Align onClick={handleSharedClick}>
+                                <ShareImg
+                                    src={isShared ? AfterShare : BeforeShare}
+                                    alt={isShared ? "after share" : "before share"}
+                                />
+                                <Count>{sharedCount}</Count>
+                            </Align>
+                        </Div4>
+
                     </IconContainer>
                     {showCommentInput && (
                         <>
@@ -373,7 +381,7 @@ const InputLabel = styled.div`
 
 const InputMemo = styled.textarea`
     width: 423px;
-    height: 243px;
+    height: 227px;
     border-radius: 20px;
     border: 1px solid #5ba8fb;
     margin-left: 35px;
@@ -389,7 +397,6 @@ const InputMemo = styled.textarea`
 const EditButton = styled.button`
     width: 100px;
     height: 48px;
-    flex-shrink: 0;
     border-radius: 20px;
     border: 1px solid #AFB8C1;
     background: #FFF;
@@ -401,6 +408,8 @@ const EditButton = styled.button`
     font-weight: 700;
     line-height: 20px;
     padding: 0px;
+    margin-left: 30px;
+
 `;
 
 const CategoryButton = styled.button`
@@ -431,6 +440,9 @@ const InfoContainer = styled.div`
     border-radius: 20px;
     border: 1px solid #5BA8FB;
     background: #FFF;
+
+    // 비활성화된 상태를 명시적으로 설정
+    pointer-events: none; /* 모든 자식 요소의 상호작용을 비활성화 */
 `;
 
 const MemoWrapper = styled.div`
@@ -445,11 +457,71 @@ const MemoContainer = styled.div`
     height: 362px;
     display: flex;
     flex-direction: column;
+    position: relative; /* 자식 요소 배치에 필요 */
     border-radius: 20px;
     border: 1px solid #5BA8FB;
     background: #FFF;   
 `;
+// ---------------------------Start------------------------------------------------
+const IconContainer = styled.div`
+    display: flex; 
+    width: 519px;
+    height: 40px;
+`;
 
+const Div1 = styled.div`
+    display: flex; 
+    width: 67px;
+    height:40px;
+`;
+const ThumbUp = styled.div`
+`;
+
+const Count = styled.div`
+    width: 27px;
+    height:27px;
+    backgorund: green;
+    margin-top:10px;
+    // margin-left:14px;
+    font-weight: bold;
+    margin-left:3px
+`;
+
+const Div2 = styled.div`
+    display: flex; 
+    width: 67px;
+    height:40px;
+`;
+const ThumbDown = styled.div`
+    display: flex; 
+`;
+
+
+const Div3 = styled.div`
+    display: flex; 
+    width: 67px;
+    height:40px;
+`;
+const Comment = styled.div`
+display: flex; 
+`;
+
+const Div4 = styled.div`
+    display: flex; 
+    width: 137px;
+    height:44px;
+`;
+
+const Align = styled.div`
+    display: flex; 
+    padding: 0px;
+`;
+
+const ShareImg = styled.img`
+    width: 110px;
+    height: 44px;
+    `; 
+//----------------------------End------------------------------------------------
 const MemoLabel = styled.div`
     color: #040404;
     font-family: "Product Sans";
@@ -457,10 +529,9 @@ const MemoLabel = styled.div`
     font-style: normal;
     font-weight: 700;
     line-height: 16px; 
-    margin-left: 42px;
-    margin-top: 42px;
-    margin-bottom: 8px;
+    display: inline-block; /* 가로 배치 가능하도록 설정 */
 `;
+
 
 const InputBox = styled.input`
     width: 423px;
@@ -470,10 +541,9 @@ const InputBox = styled.input`
     font-size: 14px;
     margin-left: 40px;
     background: #FFF;
-    color: ${(props) => (props.disabled ? "black" : "#a0a0a0")};
-    pointer-events: ${(props) => (props.disabled ? "none" : "auto")}; /* 비활성화 상태일 때 클릭 막기 */
-    padding-left: 16px; /* 왼쪽 여백 */
-
+    color: black; /* 비활성화된 텍스트 색상 */
+    pointer-events: none; /* 비활성화 상태에서 클릭 및 입력 불가 */
+    padding-left: 16px;
 `;
 
 const ImageBox = styled.div`
@@ -505,75 +575,12 @@ const UploadedImage = styled.img`
     object-fit: cover; /* 이미지가 박스에 맞도록 조정 */
 `;
 
-const PlaceholderText = styled.span`
+const PlaceholderText = styled.div`
+    width: 200px;
+    height: 15px;
     color: #a0a0a0;
-    font-size: 14px;
-    text-align: center;
-`;
-
-
-const FileInput = styled.input`
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    opacity: 0; /* 파일 입력을 숨김 */
-    cursor: ${(props) => (props.isEditable ? "pointer" : "not-allowed")};
-`;
-
-const IconContainer = styled.div`
-    width: 519px;
-    display: flex; 
-`;
-
-const ThumbUp = styled.button`
-    width: 40px;
-    height: 40px;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: none; 
-    border: none; 
-`;
-
-const ThumbDown = styled.button`
-    width: 40px;
-    height: 40px;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: none; 
-    border: none; 
-`;
-
-const Comment = styled.button`
-    width: 40px;
-    height: 40px;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: none; 
-    border: none; 
-`;
-
-const Share = styled.div`
-`;
-
-const ShareImg = styled.img`
-    width: 110px;
-    height: 44px;
-`;
-
-const CountText = styled.span`
-    color: #000;
-    text-align: center;
-    font-family: "Product Sans Black";
     font-size: 12px;
-    font-style: normal;
-    font-weight: 900;
-    line-height: 12px; /* 100% */
+    text-align: center;
 `;
 
 const CommentInputWrapper = styled.div`
@@ -604,7 +611,6 @@ const CommentList = styled.ul`
     height: auto; /* 높이를 콘텐츠에 맞게 조정 */
     list-style: none;
 `;
-
 
 const CommentItem = styled.li`
     padding: 10px 0;
@@ -678,10 +684,48 @@ const SubmitStyledButton = styled.button`
     background-color: #FFF;
     border: none;
     cursor: pointer;
+    padding: 0px;
 
     &:hover {
       transform: scale(1.1); 
     }
+`;
+
+const MemoEdit = styled.div`
+    display: flex; /* MemoLabel 옆에 가로로 배치 */
+    margin-left: 290px; /* 라벨과의 간격 */
+    cursor: pointer;
+`;
+
+
+const MemoSave = styled.button`
+    width: 52px;
+    height: 25px;
+    cursor: pointer;
+    margin-left: 10px;
+    border-radius: 20px;
+    background-color: #dcdcdc;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center; /* 텍스트를 중앙에 정렬 */
+    font-family: "Product Sans", sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #000;
+
+    &:hover {
+        background-color: #5ba8fb;
+        color: #fff; /* 호버 시 색상 변경 */
+    }
+`;
+
+const MemoHeader = styled.div`
+    display: flex; /* 가로 배치 */
+    align-items: center; /* 세로 중앙 정렬 */
+    margin-left: 42px;
+    margin-top: 42px;
+    // margin-bottom: 8px;
 `;
 
 export default DetailPage;
