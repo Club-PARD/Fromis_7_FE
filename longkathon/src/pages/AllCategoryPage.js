@@ -7,14 +7,16 @@ import CategoryCard_Check from "../components/CategoryCard_Check";
 import CategoryAddContainer from "../components/CategoryAddContainer";
 import AlertManager from "../components/AlertManager";
 import AlertManager_Delete from "../components/AlertManager_Delete";
+import AddCategory from "../pages/AddCategory";
 
 const AllCategoryPage = ({ Title }) => {
   const [categories, setCategories] = useState([
     { id: 1, category: "카테고리1", colorKey: "purple" },
-    { id: 2, category: "카테고리2", colorKey: "green" },
-    { id: 3, category: "카테고리3", colorKey: "pink" },
-    { id: 4, category: "카테고리4", colorKey: "orange" },
   ]);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   const [categoryCount, setCategoryCount] = useState(0); // 카테고리 카드 개수
   const [totalCount, setTotalCount] = useState(0); // 카운트의 총합
@@ -23,7 +25,6 @@ const AllCategoryPage = ({ Title }) => {
   const [alertActive, setAlertActive] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false); // 삭제 경고 상태
   const [categoryToDelete, setCategoryToDelete] = useState(null); // 삭제할 카테고리
-
 
   useEffect(() => {
     if (totalCount === 4) {
@@ -52,7 +53,6 @@ const AllCategoryPage = ({ Title }) => {
     setAlertActive(false); // "최대 4개 카테고리" 경고 비활성화
     setShowDeleteAlert(true); // 삭제 경고창 활성화
   };
-
 
   const confirmDelete = () => {
     // 삭제된 카테고리가 'isMarked' 상태인지 확인 후 'totalCount' 감소
@@ -83,12 +83,7 @@ const AllCategoryPage = ({ Title }) => {
   };
 
   const handleAddCard = () => {
-    if (categories.length < 8) {
-      setCategories((prev) => [
-        ...prev,
-        { id: Date.now(), category: `카테고리${prev.length + 1}`, colorKey: "purple" },
-      ]);
-    }
+    setIsModalOpen(true); // 모달 열기
   };
 
   const getAddCardPosition = () => {
@@ -102,8 +97,25 @@ const AllCategoryPage = ({ Title }) => {
     setIsButtonClicked((prev) => !prev); // Toggle button clicked state
   };
 
+  // 페이지 스크롤 비활성화
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = 'hidden'; // 전체 페이지 스크롤 비활성화
+    } else {
+      document.body.style.overflow = 'auto'; // 전체 페이지 스크롤 활성화
+    }
+  }, [isModalOpen]);
+
   return (
-    <AllPageContainer >
+    <AllPageContainer>
+      {/* AddCategory 모달 */}
+      {isModalOpen && (
+        <ModalOverlay onClick={closeModal}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <AddCategory buttons={categories} />
+          </ModalContent>
+        </ModalOverlay>
+      )}
       {/* 삭제 경고창 */}
       <AlertManager_Delete
         triggerCondition={showDeleteAlert}
@@ -130,11 +142,10 @@ const AllCategoryPage = ({ Title }) => {
         <CategoryTitle>{Title}</CategoryTitle>
         <CustomCategoryText1>{totalCount}/4</CustomCategoryText1>
         <CustomCategoryText2>highlight</CustomCategoryText2>
-        <CustomCategoryButton onClick={toggleButtonClick} clicked={isButtonClicked} alertActive={alertActive} >
+        <CustomCategoryButton onClick={toggleButtonClick} clicked={isButtonClicked} alertActive={alertActive}>
           edit
         </CustomCategoryButton>
         <ContainerBox>
-          {isButtonClicked && <ModalOverlay />} {/* ModalOverlay가 활성화되었을 때만 보임 */}
           <CategoryContainer>
             {categories.map((item) => (
               <CategoryCard_Check
@@ -154,7 +165,7 @@ const AllCategoryPage = ({ Title }) => {
             {/* AddContainer 렌더링: categoryCount가 8 미만일 때만 */}
             {categories.length < 8 && (
               <CategoryAddContainer_AddCard
-                onClickHandler={handleAddCard}
+                onClickHandler={handleAddCard} // 수정된 부분
                 position={getAddCardPosition()}
                 disabled={isButtonClicked}
               />
@@ -166,10 +177,7 @@ const AllCategoryPage = ({ Title }) => {
   );
 };
 
-const CategorySideBar = styled(SideBar)`
-
-`;
-
+const CategorySideBar = styled(SideBar)``;
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -183,6 +191,13 @@ const ModalOverlay = styled.div`
   background: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
   pointer-events: auto; /* 모달 배경 클릭 가능 */
   z-index: 300;
+`;
+
+const ModalContent = styled.div`
+  max-height: 95%; /* 모달 내용의 최대 높이 설정 */
+  overflow-y: auto; /* 스크롤 가능하도록 설정 */
+  background: red; /* 모달 배경색 */
+  border-radius: 20px; /* 모달 모서리 둥글게 */
 `;
 
 const AllPageContainer = styled(Container)`
@@ -253,15 +268,13 @@ const CustomCategoryButton = styled.button`
   left: 887px;
   cursor: pointer; /* 항상 클릭 가능 */
   transition: background-color 0.2s, color 0.2s;
-  z-index: 301;
+  z-index: 200;
 
   &:hover {
-    background:#5ba8fb;
+    background: #5ba8fb;
     border: solid 1px #afb8c1;
   }
 `;
-
-
 
 const AllCategoryContainer = styled.div`
   position: relative;
@@ -279,7 +292,7 @@ const CategoryTitle = styled.div`
   width: 412px;
   height: 88px;
   border-radius: 20px;
-  color: rgba(4,4,4,1);
+  color: rgba(4, 4, 4, 1);
   background: linear-gradient(149deg, rgba(240, 248, 255, 0.7) 0.77%, rgba(242, 241, 248, 0.7) 99.23%);
   position: absolute;
   top: 36px;
@@ -311,4 +324,3 @@ const ContainerBox = styled.div`
 `;
 
 export default AllCategoryPage;
-
