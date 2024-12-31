@@ -7,9 +7,14 @@ import BeforeShare from "../Image/BeforeShare.png";
 import AfterShare from "../Image/AfterShare.png";
 import SubmitButton from "../Image/SubmitButton.png";
 
-import { postLikeAPI } from "../API/Like";
+import axios from "axios";
 
-const DetailPage = () => {
+import { postLikeAPI, postUnlikeAPI, postAlignAPI } from "../API/State";
+
+const DetailPage = ({ propUserId, propListId }) => {
+    const [userId, setUserId] = useState(propUserId || null);
+    const [listId, setListId] = useState(propListId || null); // 동적 할당 가능하도록 설정
+
     const [thumbUpColor, setThumbUpColor] = useState("#dcdcdc");
     const [thumbDownColor, setThumbDownColor] = useState("#dcdcdc");
     const [commentColor, setCommentColor] = useState("#dcdcdc")
@@ -35,11 +40,6 @@ const DetailPage = () => {
         { id: 6, name: "이수인", text: "럭키 비키가 돼...", time: "2일 전", profileImg: "https://via.placeholder.com/50" },
     ]);
 
-    //댓글 개수 동기화
-    useEffect(() => {
-        setCommentCount(comments.length);
-    }, [comments]);
-
     const [image, setImage] = useState(null); // 업로드된 이미지를 저장
 
     const [isEditable, setIsEditable] = useState(false); // 수정 가능 여부를 나타내는 상태
@@ -63,28 +63,138 @@ const DetailPage = () => {
         return `${hours}:${minutes < 10 ? "0" : ""}${minutes}`;
     };
 
-    const handleLike = async() => {
-        if (liked) {
-            // 좋아요 상태 해제
-            setLikeCount((prev) => prev - 1);
-            setLiked(false);
-            setThumbUpColor("#dcdcdc");
-        } else {
-            // 좋아요 상태 설정
-            setLikeCount((prev) => prev + 1);
-            setLiked(true);
-            setThumbUpColor("#5BA8FB");
+    //댓글 개수 동기화
+    useEffect(() => {
+        setCommentCount(comments.length);
+    }, [comments]);
 
-            // 싫어요 상태 해제
-            if (disliked) {
-                setDislikeCount((prev) => prev - 1);
-                setDisliked(false);
-                setThumbDownColor("#dcdcdc");
+    useEffect(() => {
+        const fetchUserAndListIds = async () => {
+            try {
+                // userId가 없으면 fetch
+                if (!userId) {
+                    const userResponse = await axios.get(`${process.env.REACT_APP_API_URL}/users/1`);
+                    setUserId(userResponse.data.userId);
+                }
+    
+                // listId가 없으면 fetch
+                if (!listId) {
+                    const listResponse = await axios.get(`${process.env.REACT_APP_API_URL}/categories/1`);
+                    setListId(listResponse.data.listId);
+                }
+            } catch (error) {
+                console.error("Error fetching userId or listId:", error);
             }
+        };
+    
+        fetchUserAndListIds();
+    }, [userId, listId]); // userId와 listId를 의존성 배열에 추가
+    
+    
+    // const handleLike = async () => {
+        
+
+    //     const listId = 3; // 잇츠 하드코딩 동적 할당 안됨;;
+    //     const userId = 1;
+
+    //     try {
+    //         // listId와 userId 확인
+    //         if (!listId || !userId) {
+    //             console.error("listId 또는 userId가 정의되지 않았습니다.", listId, userId);
+    //             return;
+    //         }
+
+    //         // 좋아요 데이터 구성
+    //         const likeData = {
+    //             listId, // 현재 리스트 ID
+    //             userId, // 현재 사용자 ID
+    //         };
+
+    //         // 서버로 좋아요 요청 보내기
+    //         const response = await postLikeAPI(listId, userId, likeData);
+
+    //         // 서버 응답 처리
+    //         const isLiked = response.data; // 서버 응답이 true 또는 false라고 가정
+    //         if (liked) {
+    //             // 좋아요 상태 해제
+    //             setLikeCount((prev) => prev - 1);
+    //             setLiked(false);
+    //             setThumbUpColor("#dcdcdc");
+    //         } else {
+    //             // 좋아요 상태 설정
+    //             setLikeCount((prev) => prev + 1);
+    //             setLiked(true);
+    //             setThumbUpColor("#5BA8FB");
+
+    //             // 싫어요 상태 해제
+    //             if (disliked) {
+    //                 setDislikeCount((prev) => prev - 1);
+    //                 setDisliked(false);
+    //                 setThumbDownColor("#dcdcdc");
+    //             }
+    //         }
+    //     } catch (error) {
+    //         console.error("Error handling like:", error);
+    //     }
+    // };
+
+    const handleLike = async () => {    
+        try {
+            // listId와 userId 확인
+            if (!userId || !listId) {
+                console.error("User ID 또는 List ID가 없습니다.");
+                return;
+            }
+    
+            // 좋아요 데이터 구성
+            const likeData = {
+                listId, // 현재 리스트 ID
+                userId, // 현재 사용자 ID
+            };
+    
+            // 서버로 좋아요 요청 보내기
+            const response = await postLikeAPI(listId, userId, likeData);
+    
+            // 서버 응답 처리
+            const isLiked = response.data; // 서버 응답이 true 또는 false라고 가정
+            if (liked) {
+                // 좋아요 상태 해제
+                setLikeCount((prev) => prev - 1);
+                setLiked(false);
+                setThumbUpColor("#dcdcdc");
+            } else {
+                // 좋아요 상태 설정
+                setLikeCount((prev) => prev + 1);
+                setLiked(true);
+                setThumbUpColor("#5BA8FB");
+    
+                // 싫어요 상태 해제
+                if (disliked) {
+                    setDislikeCount((prev) => prev - 1);
+                    setDisliked(false);
+                    setThumbDownColor("#dcdcdc");
+                }
+            }
+        } catch (error) {
+            console.error("Error handling like:", error);
         }
     };
+    
 
     const handleDislike = () => {
+        const listId = 1;
+        const userId = 1;
+
+        try{
+            if(!listId || !userId){
+                console.error("listId 또는 userId가 정의되지 않았습니다.", listId, userId);
+                return;
+            }
+        } catch (error){
+
+        }
+
+
         if (disliked) {
             // 싫어요 상태 해제
             setDislikeCount((prev) => prev - 1);
@@ -520,7 +630,7 @@ const Align = styled.div`
 const ShareImg = styled.img`
     width: 110px;
     height: 44px;
-    `; 
+    `;
 //----------------------------End------------------------------------------------
 const MemoLabel = styled.div`
     color: #040404;
