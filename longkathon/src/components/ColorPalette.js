@@ -23,13 +23,15 @@ const colors = [
     { color: "#424242", image: XBlack },
 ];
 
-function ColorPalette() {
+//타 페이지에서 사용할 수 있도록 컬러 props로 저장
+function ColorPalette({ onColorSelect }) {
     const [selectedColor, setSelectedColor] = useState(null);
     const [selectedImage, setSelectedImage] = useState(XBlue); 
 
     const handleColorClick = (index) => {
         setSelectedColor(index);
         setSelectedImage(colors[index].image); 
+        onColorSelect(colors[index].color);
     };
 
     return (
