@@ -130,10 +130,10 @@ const AllCategoryPage = ({ Title }) => {
           <BackgroundTitle>카테고리가 생성될 때마다 조각을 링크해요!</BackgroundTitle>
         </>
       )}
-      <MainBenner>
+      <FixContainer>
         <CategorySideBar />
         <HeaderComponent />
-      </MainBenner>
+      </FixContainer>
       <AllCategoryContainer>
         <CategoryTitle>{Title}</CategoryTitle>
         <CustomCategoryText1>{totalCount}/4</CustomCategoryText1>
@@ -174,6 +174,9 @@ const AllCategoryPage = ({ Title }) => {
   );
 };
 
+const FixContainer =styled.div`
+  `;
+
 const CategorySideBar = styled(SideBar)`
 
 `;
@@ -190,7 +193,7 @@ const ModalOverlay = styled.div`
   align-items: center;
   background: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
   pointer-events: auto; /* 모달 배경 클릭 가능 */
-  z-index: 300;
+  z-index: 1100;
 `;
 
 const AllPageContainer = styled(Container)`

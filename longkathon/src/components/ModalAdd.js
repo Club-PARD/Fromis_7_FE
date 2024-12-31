@@ -5,7 +5,8 @@ import { useNavigate } from "react-router-dom"; // useNavigate 추가
 
 import { postPieceAPI } from "../API/Piece.js";
 
-const ModalAdd = ({ isOpen, onClose, initialData }) => {
+
+const ModalAdd = ({ isOpen, onClose, initialData, onAddPiece }) => {
     const [title, setTitle] = useState(initialData?.title || "");
     const [dates, setDates] = useState(
         initialData?.dates || {
@@ -99,6 +100,9 @@ const ModalAdd = ({ isOpen, onClose, initialData }) => {
             const response = await postPieceAPI(1, payload); // userId를 1로 고정
             console.log("Payload saved:", response.data);
             alert("저장이 완료되었습니다.");
+
+            onAddPiece(response.data);  // 새 데이터를 부모에게 전달
+
             onClose(); // 모달 닫기
             navigate("/main"); // 메인 페이지로 이동
         } catch (error) {
@@ -108,7 +112,6 @@ const ModalAdd = ({ isOpen, onClose, initialData }) => {
             setIsLoading(false);
         }
         onClose();
-        navigate("/main"); // 'MainPage.js'로 네비게이션 추가
     };
 
     if (!isOpen) return null;

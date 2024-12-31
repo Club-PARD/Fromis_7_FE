@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import AddLinkImage from "../Image/SideBarImage.png";
 import { useNavigate } from "react-router-dom";
 import ModalAdd from "./ModalAdd";
+import { getPieceAPI } from "../API/Piece";
 
 
 // Styled Components
@@ -19,7 +20,7 @@ const SidebarContainer = styled.div`
   border: 1px solid #afb8c1;
   border-radius: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  z-index: 100;
+  z-index: 250;
 
 `;
 
@@ -56,8 +57,9 @@ const SideBar = () => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+
   const handleConnectHome = () => {
-    navigate("/main");
+    navigate("/piece");
   };
 
   const handleConnectMakeTitle = () => {
@@ -73,6 +75,27 @@ const SideBar = () => {
     console.log("Payload saved:", payload);
     closeModal();
   };
+
+  // 카테고리 데이터를 가져오는 함수
+  const fetchCategories = async () => {
+    try {
+      const response = await getPieceAPI(1);  // 서버 API 엔드포인트
+      setCategories(response); // 받아온 데이터를 상태에 저장
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
+
+    const [categories, setCategories] = useState([]);
+
+  // 새로운 카테고리 추가
+  const handleAddPiece = (newPiece) => {
+    setCategories((prevCategories) => [...prevCategories, newPiece]);  // 새 데이터를 기존 목록에 추가
+  };
+
+  useEffect(() => {
+    fetchCategories();  // 컴포넌트 마운트 시 데이터를 가져옴
+  }, []);
 
   return (
     <>
@@ -105,6 +128,7 @@ const SideBar = () => {
         isOpen={isModalOpen}
         onClose={closeModal}
         onSave={handleSave}
+        onAddPiece={handleAddPiece}
       />
     </>
   );

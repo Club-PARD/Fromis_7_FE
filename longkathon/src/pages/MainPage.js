@@ -9,90 +9,54 @@ import MainRightViewContainer from "../components/MainRightViewContainer";
 import CategoryCard from "../components/CategoryCard";
 import BackGround from "../components/BackGround";
 import PieceMap from "../components/PieceMap";
-
-const generateRandomData = () => {
-  const colors = ["purple", "pink", "red", "black", "blue", "green"];
-  const users = Array.from({ length: 8 }, (_, i) => `user${Math.ceil(Math.random() * 100)}`);
-  const categories = Array.from({ length: 4 }, (_, i) => ({
-    category: `카테고리${i + 1}`,
-    colorKey: colors[Math.floor(Math.random() * colors.length)],
-  }));
-
-  return { users, categories };
-};
+// axios import
+import { getPieceAPI } from "../API/Piece.js"; // 적절한 경로로 수정
 
 const MainPage = () => {
   const navigate = useNavigate();
-  const [currentData, setCurrentData] = useState(generateRandomData());
-  const [pastData, setPastData] = useState([]);
-  const [futureData, setFutureData] = useState([]);
-  const [isAtEnd, setIsAtEnd] = useState(false);
-  const [isAtStart, setIsAtStart] = useState(false);
+  const [pieces, setPieces] = useState([]); // 전체 데이터 저장 상태
+  const [filteredPieces, setFilteredPieces] = useState([]); // 새로 생성된 데이터 상태
+  const [loading, setLoading] = useState(true); // 로딩 상태
 
-  const handleScroll = () => {
-    const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-
-    if (scrollTop + clientHeight >= scrollHeight) {
-      // 페이지 끝에서 추가 스크롤
-      setIsAtEnd(true);
-    } else {
-      setIsAtEnd(false);
-    }
-
-    if (scrollTop === 0) {
-      // 페이지 시작에서 추가 스크롤
-      setIsAtStart(true);
-    } else {
-      setIsAtStart(false);
-    }
-  };
+  const userId = 1; // 예시로 1을 사용
 
   useEffect(() => {
-    const updateData = (direction) => {
-      if (direction === "down" && isAtEnd) {
-        // 아래 스크롤: 다음 데이터 표시
-        if (futureData.length > 0) {
-          const nextFuture = futureData.shift();
-          setPastData([...pastData, currentData]);
-          setCurrentData(nextFuture);
-          setFutureData([...futureData]);
-        } else {
-          const newData = generateRandomData();
-          setPastData([...pastData, currentData]);
-          setCurrentData(newData);
+    const fetchPieceData = async () => {
+      try {
+        setLoading(true);
+        const response = await getPieceAPI(userId);
+        const fetchedData = response.data;
+        console.log("Fetched pieces:", fetchedData);
+
+                fetchedData.forEach((item, index) => {
+          console.log(`Piece #${index + 1}:`, item);
+        });
+        
+        // 전체 데이터 저장
+        setPieces(fetchedData);
+        // 초기화: 모든 pieceId를 recentPieceIds에 추가
+        if (fetchedData.length > 0) {
+          // 최근 데이터를 filteredPieces에 저장 (배열의 마지막 인덱스)
+          setFilteredPieces([fetchedData[fetchedData.length - 1]]);
         }
-      }
-
-      if (direction === "up" && isAtStart) {
-        // 위 스크롤: 이전 데이터 표시
-        if (pastData.length > 0) {
-          const lastPast = pastData.pop();
-          setFutureData([currentData, ...futureData]);
-          setCurrentData(lastPast);
-          setPastData([...pastData]);
-        }
+      } catch (error) {
+        console.error("Error fetching piece data:", error);
+      } finally {
+        setLoading(false);
       }
     };
-
-    const handleWheel = (event) => {
-      if (event.deltaY > 0) {
-        updateData("down");
-      } else if (event.deltaY < 0) {
-        updateData("up");
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    window.addEventListener("wheel", handleWheel);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("wheel", handleWheel);
-    };
-  }, [isAtEnd, isAtStart, currentData, pastData, futureData]);
+    fetchPieceData(); // 데이터 fetch 실행
+  }, [userId]);
 
   const handleConnectCategory = () => {
     navigate("/category");
+  };
+
+  // `StartDay`, `StartMonth`, `StartYear`로 `targetDate`를 포맷팅
+  const formatDate = (day, month, year) => {
+    const formattedMonth = month < 10 ? `0${month}` : month;
+    const formattedDay = day < 10 ? `0${day}` : day;
+    return `${year}-${formattedMonth}-${formattedDay}`;
   };
 
   return (
@@ -111,15 +75,39 @@ const MainPage = () => {
             <ViewButton onClick={handleConnectCategory}>
               전체 조각 보러가기
             </ViewButton>
-            <MainRightViewContainer users={currentData.users} />
+            <MainRightViewContainer
+              users={filteredPieces.map((piece) => ({
+                title: piece.title || '제목 없음', // 제목이 없을 경우 "제목 없음"
+                date: formatDate(
+                  piece.startYear || 0,
+                  piece.startMonth || 0,
+                  piece.startDay || 0
+                ),
+                memberNames: piece.memberNames || [], // 멤버가 없을 경우 빈 배열
+              }))}
+            />
           </ViewContainer>
           <CategoryContainer>
             <CategoryText1>L:nk</CategoryText1>
             <CategoryText2>highlight</CategoryText2>
-            {currentData.categories.map((cat, index) => (
-              <CategoryCard key={index} category={cat.category} colorKey={cat.colorKey} />
-            ))}
-            <DayCard targetDate="2025-01-05" />
+            {!loading &&
+              filteredPieces.map((piece, index) => {
+                const targetDate = formatDate(
+                  piece.startDay,
+                  piece.startMonth,
+                  piece.startYear
+                );
+                return (
+                  <React.Fragment key={index}>
+                    <CategoryCard
+                      category={piece.title}
+                      colorKey={piece.color}
+                    />
+
+                    <DayCard targetDate={targetDate} />
+                  </React.Fragment>
+                );
+              })}
           </CategoryContainer>
         </MainContainer>
       </BackGround>
@@ -128,12 +116,13 @@ const MainPage = () => {
 };
 
 export const Container = styled.div`
-/* border:10px solid black; */
   overflow-y: scroll;
   height: 110vh;
 `;
 
-export const MainBenner = styled.div``;
+export const MainBenner = styled.div`
+z-index: 2000px;
+`;
 
 const MainContainer = styled.div`
   top: 82px;

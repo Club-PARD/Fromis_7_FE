@@ -9,6 +9,7 @@ import EmptyMainPage from './pages/EmptyMain.js';
 import AllCategoryPage from './pages/AllCategoryPage.js';
 import MyInfoPage from './pages/MyInfoPage.js';
 import AddCategory from './pages/AddCategory.js';
+import AllPiecePage from './pages/AllPiecePage.js';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/addcategory" element={<AddCategory />} />
           <Route path="/category" element={<AllCategoryPage Title={"input_title"} />} />
           <Route path="/myinfo" element={<MyInfoPage />} />
+          <Route path="/piece" element={<AllPiecePage />} />
         </Routes>
       </BrowserRouter>
   );

@@ -5,22 +5,26 @@ const MainRightViewContainer = ({ width = "411px", height = "383px", style, user
   return (
     <StyledCard style={{ width, height, ...style }}>
       <TextContainer>
-        <TitleBox>
-          <RightViewText>제목</RightViewText>
-          <LinkTitle>{"Text_Input"}</LinkTitle>
-        </TitleBox>
-        <DateBox>
-          <RightViewText>날짜</RightViewText>
-          <LinkDate>{"Date_Input"}</LinkDate>
-        </DateBox>
-        <MemberBox>
-          <RightViewText>멤버</RightViewText>
-          <MemberCard>
-            {users.map((user, index) => (
-              <LinkMember key={index}>{`${user}`}</LinkMember>
-            ))}
-          </MemberCard>
-        </MemberBox>
+        {users.map((user, index) => (
+          <div key={index}>
+            <TitleBox>
+              <RightViewText>제목</RightViewText>
+              <LinkTitle>{user.title}</LinkTitle>
+            </TitleBox>
+            <DateBox>
+              <RightViewText>날짜</RightViewText>
+              <LinkDate>{user.date}</LinkDate>
+            </DateBox>
+            <MemberBox>
+              <RightViewText>멤버</RightViewText>
+              <MemberCard>
+                {user.memberNames.map((name, idx) => (
+                  <LinkMember key={idx}>{name}</LinkMember>
+                ))}
+              </MemberCard>
+            </MemberBox>
+          </div>
+        ))}
       </TextContainer>
     </StyledCard>
   );
@@ -97,6 +101,8 @@ const LinkTitle = styled.div`
   line-height: 26px; /* 100% */
   position: absolute;
   top: 16px;
+  width: 343px;
+  height: 45px;
 `;
 
 const LinkDate = styled.div`
@@ -108,6 +114,7 @@ const LinkDate = styled.div`
   line-height: 16px;
   position: absolute;
   top: 16px;
+  width: 343px;
 `;
 
 const LinkMember = styled.div`
