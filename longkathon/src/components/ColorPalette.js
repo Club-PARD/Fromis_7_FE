@@ -34,7 +34,7 @@ function ColorPalette() {
 
     return (
         <Container>
-            <Title>약속 조각:</Title>
+            <Title>링크 조각:</Title>
             <Content>
                 <LeftBox>
                     <XShape src={selectedImage} alt="X Shape" />
