@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const server = "http://fromis7.store:8080"; // 서버 주소
+const server = process.env.REACT_APP_API_URL;
 
 // POST
 export const postPieceAPI = async (userId, data) => {
