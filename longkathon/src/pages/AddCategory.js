@@ -1,26 +1,26 @@
 import React, { useState, useRef } from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import ColorPalette from "../components/ColorPalette";
 import InfoCard from "../components/InfoCard";
 import AddContentBox from "../components/AddContentBox";
-import { postPieceAPI } from "../API/Piece";
+import { postPieceAPI } from "../API/Category";
+
 
 function AddCategory({ buttons = [], onClose }) {
   const buttonsArray = ["숙소", "식당", "카페", "교통", "장소", "준비물"];
   const [activeIndex, setActiveIndex] = useState(null);
-  const [infoCards, setInfoCards] = useState([{ id: 0 }]);
-  const [title, setTitle] = useState("");
+  const [infoCards, setInfoCards] = useState([{ id: 0 }]); // 첫 번째 인포박스를 항상 포함
   const [selectedButton, setSelectedButton] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
+  const [title, setTitle] = useState("");
 
   const infoCardRefs = useRef([]);
-
-  const navigate = useNavigate();
 
   const handleClick = (index) => {
     setActiveIndex(index);
     setSelectedButton(buttonsArray[index]);
+    setTitle(buttonsArray[index]); // 선택한 버튼의 이름으로 제목을 설정
   };
 
   const addInfoCard = () => {
@@ -28,53 +28,98 @@ function AddCategory({ buttons = [], onClose }) {
   };
 
   const removeInfoCard = (id) => {
-    setInfoCards(infoCards.filter((card) => card.id !== id));
-    infoCardRefs.current = infoCardRefs.current.filter((ref) => ref?.id !== id);
+    // 첫 번째 인포박스는 삭제하지 않도록 조건 추가
+    if (infoCards.length > 1) {
+      setInfoCards(infoCards.filter((card) => card.id !== id));
+      infoCardRefs.current = infoCardRefs.current.filter((ref) => ref?.id !== id);
+    }
   };
 
   const handleColorSelect = (color) => {
     setSelectedColor(color);
   };
 
+  // const handleSave = async () => {
+  //   // Validate selected button
+  //   if (!selectedButton) {
+  //     alert("버튼을 선택해주세요.");
+  //     return;
+  //   }
+
+  //   // Collect values from InfoCard refs
+  //   const allValues = infoCardRefs.current.map((ref) =>
+  //     ref?.getValues ? ref.getValues() : null
+  //   );
+
+  //   if (allValues.some((values) => !values || !values.url.trim() || !values.description.trim())) {
+  //     alert("모든 InfoCard의 URL과 메모를 입력해주세요.");
+  //     return;
+  //   }
+
+  //   // PostArray를 handleSave 함수 내부로 이동
+  //   const PostArray = {
+  //     "color": selectedColor,
+  //     "name": title, // 선택한 버튼의 이름으로 제목을 설정
+  //     // "pieceId": 20,
+  //     "listups": allValues.map(value => ({
+  //     "url": value.url || "기본 URL",
+  //     "description": value.description || "기본 설명"
+  //     })),    
+  //   };
+
+  //   console.log("PostArray:", PostArray);
+
+  //   try {
+  //     const userId = 1;
+  //     await postPieceAPI(userId, PostArray);
+  //     alert("저장 성공\n저장된 데이터: " + JSON.stringify(PostArray));
+  //     if (onClose) {
+  //       onClose();
+  //     }
+  //   } catch (error) {
+  //     alert("저장 중 오류가 발생했습니다.");
+  //   }
+  // };
+
   const handleSave = async () => {
-    // Validate selected button
-    if (!selectedButton) {
-      alert("버튼을 선택해주세요.");
+    if (!selectedColor || !title.trim()) {
+      alert("색상과 제목을 입력해주세요.");
       return;
     }
-
-    // Collect values from InfoCard refs
-    const allValues = infoCardRefs.current.map((ref) =>
-      ref?.getValues ? ref.getValues() : null
+  
+    const allValues = infoCardRefs.current.map(ref =>
+      ref?.getValues ? ref.getValues() : { url: "", description: "" }
     );
-
-    if (allValues.some((values) => !values || !values.url.trim() || !values.description.trim())) {
-      alert("모든 InfoCard의 URL과 메모를 입력해주세요.");
+  
+    if (allValues.some(value => !value.url.trim() || !value.description.trim())) {
+      alert("모든 URL과 설명을 입력해주세요.");
       return;
     }
-
-    const dataToSave = { title, selectedButton, infoCards: allValues, selectedColor };
-
-    alert(
-      `저장된 데이터:\n카테고리: ${selectedButton}\n선택한 색상: ${selectedColor}\nInfoCards:\n${allValues
-        .map(
-          (values, index) =>
-            `Card ${index + 1}: URL=${values.url}, 메모=${values.description}`
-        )
-        .join("\n")}`
-    );
-
+  
+    const PostArray = {
+      color: selectedColor,
+      name: title,
+      listups: allValues.map(value => ({
+        url: value.url.trim(),
+        description: value.description.trim()
+      }))
+    };
+  
+    console.log("PostArray:", PostArray);
+  
     try {
-      const userId = 1;
-      await postPieceAPI(userId, dataToSave);
+      const response = await postPieceAPI(1, PostArray); // userId 또는 pieceId 필요 여부 확인
       alert("저장 성공");
-      if (onClose) {
-        onClose();
-      }
+      if (onClose) onClose();
     } catch (error) {
+      console.error("저장 실패:", error);
+      if (error.response) {
+        console.error("서버 응답:", error.response.data);
+      }
       alert("저장 중 오류가 발생했습니다.");
     }
   };
+  
 
   const handleCancel = () => {
     if (onClose) {
@@ -100,6 +145,15 @@ function AddCategory({ buttons = [], onClose }) {
                   {button}
                 </Button>
               ))}
+              <EtcDiv>
+              <InputWrapper
+                isActive={activeIndex === buttonsArray.length}
+                onClick={() => handleClick(buttonsArray.length)}
+              >
+                <Label>기타:</Label>
+                <Input type="text" onChange={(e) => setTitle(e.target.value)} />
+              </InputWrapper>
+            </EtcDiv>
             </ButtonsDiv>
           </Category>
           <InfoCardContainer>
@@ -195,6 +249,43 @@ const CategoryTitle = styled.div`
   margin-bottom: 16px;
 `;
 
+const EtcDiv = styled.div`
+  width: 256px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const InputWrapper = styled.div`
+  width: 252px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  border-radius: 20px;
+  background-color: ${(props) => (props.isActive ? "#5ba8fb" : "#fff")};
+  color: ${(props) => (props.isActive ? "#fff" : "#000")};
+  border: 1px solid #5ba8fb;
+`;
+
+const Label = styled.div`
+  margin-left: 38px;
+  width: 100px;
+  font-size: 20px;
+  font-weight: bold;
+  font-family: "Product Sans";
+`;
+
+const Input = styled.input`
+  width: 170px;
+  border: none;
+  font-size: 20px;
+  font-family: "Product Sans";
+  font-weight: bold;
+  color: #000;
+  background: transparent;
+`;
+
 const ButtonsDiv = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -215,8 +306,7 @@ const Button = styled.button`
 
   &:hover {
     background-color: ${(props) => (props.isActive ? "#5ba8fb" : "#e6f7ff")};
-  }
-`;
+  }`;
 
 const InfoCardContainer = styled.div`
   gap: 24px;
