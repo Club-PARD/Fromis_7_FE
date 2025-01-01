@@ -8,14 +8,22 @@ import CategoryAddContainer from "../components/CategoryAddContainer";
 import AlertManager from "../components/AlertManager";
 import AlertManagerDelete from "../components/AlertManagerDelete";
 import AddCategory from "../pages/AddCategory";
+import { useMemo } from "react";
+
+import { getCategoryAPI } from "../API/Category";
 
 const AllCategoryPage = ({ Title }) => {
-  const [categories, setCategories] = useState([
-  ]);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [categories, setCategories] = useState([]);
   const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+
+  const closeModal = (newCategory) => {
+    setIsModalOpen(false);
+    if (newCategory) {
+      setCategories((prevCategories) => [...prevCategories, newCategory]); // 새로운 카테고리 추가
+    }
+  };
 
   const [categoryCount, setCategoryCount] = useState(0); // 카테고리 카드 개수
   const [totalCount, setTotalCount] = useState(0); // 카운트의 총합
@@ -27,11 +35,26 @@ const AllCategoryPage = ({ Title }) => {
 
   useEffect(() => {
     if (totalCount === 4) {
-      setAlertActive(true); // Alert 활성화
+      setAlertActive(true); // Alert 활성화...
     } else {
-      setAlertActive(false); // Alert 비활성화
+      setAlertActive(false); // Alert 비활성화...
     }
   }, [totalCount]);
+
+  // 카테고리 데이터 가져오기
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const pieceId = 7; // pieceId를 실제 ID로 설정
+        const data = await getCategoryAPI(pieceId);
+        setCategories(data); // 서버에서 가져온 데이터를 상태로 설정
+      } catch (error) {
+        console.error("카테고리 데이터를 가져오는 중 오류 발생:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   const activateAlert = () => {
     setAlertActive(true); // Alert 활성화
@@ -39,12 +62,38 @@ const AllCategoryPage = ({ Title }) => {
   };
 
   // 이미지 매핑
-  const imageMap = {
-    purple: require('../Image/X_purple.png'),
-    green: require('../Image/X_green.png'),
-    pink: require('../Image/X_pink.png'),
-    orange: require('../Image/X_orange.png'),
+  const colorNameMap = {
+    '#EA7E7A': 'red',
+    '#FBA96F': 'orange',
+    '#5BA8FB': 'lightblue',
+    '#002ED1': 'darkblue',
+    '#9ED4B6': 'green',
+    '#927CFF': 'purple',
+    '#D9A9ED': 'pink',
+    '#BDBDBD': 'gray',
+    '#424242': 'black',
   };
+
+  const imageMap = {
+    purple: require("../Image/CategoryPiece_Purple.png"),  // 이미지 경로 예시
+    green: require("../Image/CategoryPiece_Green.png"),
+    pink: require("../Image/CategoryPiece_Pink.png"),
+    lightblue: require("../Image/CategoryPiece_LightBlue.png"),
+    darkblue: require("../Image/CategoryPiece_DarkBlue.png"),
+    black: require("../Image/CategoryPiece_Black.png"),
+    orange: require("../Image/CategoryPiece_Orange.png"),
+    red: require("../Image/CategoryPiece_Red.png"),
+    white: require("../Image/CategoryPiece_White.png"),
+  };
+
+  const categoriesWithImages = useMemo(() => {
+    return categories.map((item) => {
+      const colorName = colorNameMap[item.color]; // 색상 이름으로 변환
+      const backgroundImage = imageMap[colorName]; // 이미지 매핑
+      return { ...item, backgroundImage }; // 새로운 데이터 구조 생성
+    });
+  }, [categories]); // `categories`가 변경될 때마다 재계산
+
 
   const handleDelete = (id) => {
     const category = categories.find((category) => category.id === id);
@@ -158,17 +207,20 @@ const AllCategoryPage = ({ Title }) => {
               <CategoryCard_Check
                 key={item.id}
                 index={item.id}
-                category={item.category}
-                colorKey={item.colorKey}
+                category={item.name} // AddCategory.js에서 입력한 이름
+                colorKey={item.color} // AddCategory.js에서 선택한 색상
+                backgroundImage={item.backgroundImage} // 이미지 전달
                 totalCount={totalCount}
-                isSelected={!!selectedCategories[item.id]} // 선택 상태 전달
-                isDisabled={!selectedCategories[item.id] && totalCount >= 4} // 선택되지 않았고 totalCount가 4 이상이면 비활성화
-                onCountChange={(change) => handleCountChange(change, item.id)} // 카운트 변경 함수 전달
-                clicked={isButtonClicked} // 클릭 상태 전달
-                onDelete={() => handleDelete(item.id)} // 삭제 함수 전달
-                activateAlert={activateAlert} // Alert 활성화 함수 전달
+                isSelected={!!selectedCategories[item.id]}
+                isDisabled={!selectedCategories[item.id] && totalCount >= 4}
+                onCountChange={(change) => handleCountChange(change, item.id)}
+                clicked={isButtonClicked}
+                onDelete={() => handleDelete(item.id)}
+                activateAlert={activateAlert}
               />
             ))}
+
+            {/* </CategoryContainer> */}
             {/* AddContainer 렌더링: categoryCount가 8 미만일 때만 */}
             {categories.length < 8 && (
               <CategoryAddContainer_AddCard
@@ -330,6 +382,8 @@ const CategoryContainer = styled.div`
   align-content: flex-start;
 `;
 
+const CategoryCard = styled.div`
+`;
 const ContainerBox = styled.div`
   position: relative;
   width: 100%;

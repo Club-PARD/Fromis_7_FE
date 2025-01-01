@@ -214,7 +214,7 @@ const ModalAdd = ({ isOpen, onClose, initialData, onAddPiece }) => {
                 </ModalGroup>
 
                 <ModalGroup>
-                    <ColorPalette selectedColor={color} onChange={handleColorChange} />
+                    <ColorPalette onColorSelect={handleColorChange} />
                 </ModalGroup>
 
                 <ModalActions>

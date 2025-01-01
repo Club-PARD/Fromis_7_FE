@@ -1,59 +1,95 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom"; // useNavigate 추가
+// import { useNavigate } from "react-router-dom";
 import ColorPalette from "../components/ColorPalette";
 import InfoCard from "../components/InfoCard";
 import AddContentBox from "../components/AddContentBox";
+import { postPieceAPI } from "../API/Category";
 
-function AddCategory({ buttons = [] }) {
+
+function AddCategory({ buttons = [], onClose }) {
   const buttonsArray = ["숙소", "식당", "카페", "교통", "장소", "준비물"];
   const [activeIndex, setActiveIndex] = useState(null);
-  const [infoCards, setInfoCards] = useState([
-    { id: 0, content: "첫 InfoCard" },
-  ]);
-  const [title, setTitle] = useState("");
+  const [infoCards, setInfoCards] = useState([{ id: 0 }]); // 첫 번째 인포박스를 항상 포함
   const [selectedButton, setSelectedButton] = useState(null);
+  const [selectedColor, setSelectedColor] = useState(null);
+  const [title, setTitle] = useState("");
 
-  const navigate = useNavigate();
+  const infoCardRefs = useRef([]);
 
   const handleClick = (index) => {
     setActiveIndex(index);
-    setSelectedButton(index);
+    setSelectedButton(buttonsArray[index]);
+    setTitle(buttonsArray[index]); // 선택한 버튼의 이름으로 제목을 설정
   };
 
   const addInfoCard = () => {
-    setInfoCards([...infoCards, { id: Date.now(), content: "새 InfoCard" }]);
+    setInfoCards([...infoCards, { id: Date.now() }]);
   };
 
   const removeInfoCard = (id) => {
-    setInfoCards(infoCards.filter((card) => card.id !== id));
+    // 첫 번째 인포박스는 삭제하지 않도록 조건 추가
+    if (infoCards.length > 1) {
+      setInfoCards(infoCards.filter((card) => card.id !== id));
+      infoCardRefs.current = infoCardRefs.current.filter((ref) => ref?.id !== id);
+    }
   };
 
-  const handleSave = () => {
-    // 유효성 검사
-    // if (!title.trim()) {
-    //   alert("제목을 입력해주세요.");
-    //   return;
-    // }
+  const handleColorSelect = (color) => {
+    setSelectedColor(color);
+  };
 
-    // 버튼 선택 여부 검사
-    if (!selectedButton) {
-      alert("버튼을 선택해주세요.");
+  const handleSave = async () => {
+    if (!selectedColor || !title.trim()) {
+      alert("색상과 제목을 입력해주세요.");
       return;
     }
+  
+    const allValues = infoCardRefs.current.map(ref =>
+      ref?.getValues ? ref.getValues() : { url: "", description: "" }
+    );
+  
+    if (allValues.some(value => !value.url.trim() || !value.description.trim())) {
+      alert("모든 URL과 설명을 입력해주세요.");
+      return;
+    }
+  
+    const PostArray = {
+      color: selectedColor,
+      name: title,
+      listups: allValues.map(value => ({
+        url: value.url.trim(),
+        description: value.description.trim()
+      }))
+    };
+  
+    try {
+      const response = await postPieceAPI(2, PostArray); // 지금 userId 하드 코딩 되어 있음 바꿔야함;;
+      const savedData = response.data;
+      alert("저장 성공");
+      if (onClose) onClose(savedData);
+    } catch (error) {
+      console.error("저장 실패:", error);
+      if (error.response) {
+        console.error("서버 응답:", error.response.data);
+      }
+      alert("저장 중 오류가 발생했습니다.");
+    }
+  };
+  
 
-    // 저장 로직
-    console.log("저장 성공", { title, infoCards });
-    navigate("/detail");
+  const handleCancel = () => {
+    if (onClose) {
+      onClose();
+    }
   };
 
   return (
     <BaseContainer>
       <TopSection>Fromis_7in POHANG</TopSection>
-
       <ModalContainer>
         <Content>
-          <StyledColorPalette />
+          <StyledColorPalette onColorSelect={handleColorSelect} />
           <Category>
             <CategoryTitle>링크 조각 카테고리 :</CategoryTitle>
             <ButtonsDiv>
@@ -66,25 +102,24 @@ function AddCategory({ buttons = [] }) {
                   {button}
                 </Button>
               ))}
-            </ButtonsDiv>
-            <EtcDiv>
+              <EtcDiv>
               <InputWrapper
                 isActive={activeIndex === buttonsArray.length}
                 onClick={() => handleClick(buttonsArray.length)}
               >
                 <Label>기타:</Label>
-                <Input type="text" />
+                <Input type="text" onChange={(e) => setTitle(e.target.value)} />
               </InputWrapper>
             </EtcDiv>
+            </ButtonsDiv>
           </Category>
           <InfoCardContainer>
             {infoCards.map((infoCard, index) => (
               <InfoCard
                 key={infoCard.id}
                 id={infoCard.id}
-                content={infoCard.content}
-                isFirstCard={index === 0}
-                onClose={removeInfoCard}
+                ref={(el) => (infoCardRefs.current[index] = el)} // Assign ref to each InfoCard
+                onClose={() => removeInfoCard(infoCard.id)}
               />
             ))}
             <AddContentBox onAddInfoCard={addInfoCard} />
@@ -95,6 +130,7 @@ function AddCategory({ buttons = [] }) {
             bgColor="#AFB8C1"
             hoverColor="#909090"
             activeColor="#757575"
+            onClick={handleCancel}
           >
             취소
           </Buttons>
@@ -119,7 +155,7 @@ const BaseContainer = styled.div`
   align-items: center;
   width: 100%;
   min-height: 100vh;
-  background-color: gray;
+  background-color: grey;
 `;
 
 const TopSection = styled.div`
@@ -170,27 +206,12 @@ const CategoryTitle = styled.div`
   margin-bottom: 16px;
 `;
 
-const ButtonsDiv = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-`;
-
-const Button = styled.button`
-  width: 121px;
+const EtcDiv = styled.div`
+  width: 256px;
   height: 58px;
-  border-radius: 20px;
-  background-color: ${(props) => (props.isActive ? "#5ba8fb" : "#fff")};
-  color: ${(props) => (props.isActive ? "#fff" : "#000")};
-  border: 1px solid #5ba8fb;
-  font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 12px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: ${(props) => (props.isActive ? "#5ba8fb" : "#e6f7ff")};
-  }
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const InputWrapper = styled.div`
@@ -222,13 +243,27 @@ const Input = styled.input`
   background: transparent;
 `;
 
-const EtcDiv = styled.div`
-  width: 256px;
-  height: 58px;
+const ButtonsDiv = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
 `;
+
+const Button = styled.button`
+  width: 121px;
+  height: 58px;
+  border-radius: 20px;
+  background-color: ${(props) => (props.isActive ? "#5ba8fb" : "#fff")};
+  color: ${(props) => (props.isActive ? "#fff" : "#000")};
+  border: 1px solid #5ba8fb;
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 12px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: ${(props) => (props.isActive ? "#5ba8fb" : "#e6f7ff")};
+  }`;
 
 const InfoCardContainer = styled.div`
   gap: 24px;
