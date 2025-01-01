@@ -6,24 +6,31 @@ const server = process.env.REACT_APP_API_URL;
 export const postPieceAPI = async (pieceId, data) => {
     try {
         console.log("POST 데이터:", data);
- const response = await axios.post(`${server}/categories/${pieceId}`);
+        //const response = await axios.post(`${sercer}/pieces/${userId}`, data{뭐시기뭐시기로 보내야함})
+        const response = await axios.post(`${server}/categories/7`, data, {
+            headers: {
+              "Content-Type": "application/json", 
+            },
+          });
+        console.log("요청 헤더:", response.config.headers);
         return response;
     } catch (error) {
         console.error("Error while saving piece data:", error);
-        throw error; 
+        console.error("요청 헤더:", error.config?.headers);
+        throw error;
     }
 };
 
-// //GET
-// export const getPieceAPI = async (userId) => { //
-//     try{
-//         const response = await axios.get(`${server}/pieces/all/${userId}`);
-//         return response;
-//     } catch (error){
-//         console.error("Error fetching(userId) user data:", error);
-//         throw error;
-//     }
-// };
+//GET
+export const getCategoryAPI = async (pieceId) => { //
+    try{
+        const response = await axios.get(`${server}/categories/all/${pieceId}`);
+        return response.data;
+    } catch (error){
+        console.error("Error fetching categories error:", error);
+        throw error;
+    }
+};
 
 // //DELETE
 // export const deletePieceAPI = async(pieceId) => {

@@ -1,60 +1,15 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import AddLinkImage from "../Image/SideBarImage.png";
+import UrlShareButton from "../Image/UrlShareButton.png";
 import { useNavigate } from "react-router-dom";
 import ModalAdd from "./ModalAdd";
-
-
-// Styled Components
-const SidebarContainer = styled.div`
-  position: fixed;
-  right: 80px;
-  top: 62px;
-  width: 85px;
-  height: 265px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: white;
-  border: 1px solid #afb8c1;
-  border-radius: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  z-index: 100;
-
-`;
-
-const MenuList = styled.ul`
-  list-style: none;
-  padding: 0;
-
-`;
-
-const MenuItem = styled.li`
-  margin-bottom: 21px;
-  cursor: pointer;
-  position: relative; /* 상대 위치로 설정 */
-
-`;
-
-const HoverImage = styled.div`
-width: 243px;
-height: 59px;
-background-color: #5BA8FB;
-color: #ffffff;
-  position: absolute;
-  right: 40px; /* 아이콘 옆으로 이동 */
-  transform: translateY(-35%);
-  transition: opacity 0.3s ease; /* 부드러운 전환 */
-  border-radius: 20px 0 20px 20px;
-  justify-content: center;
-  align-items: center;   
-  display: ${(props) => (props.$isVisible ? "flex" : "none")}; /* 가시성 제어 */
-`;
 
 // Sidebar Component
 const SideBar = () => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLinkCopied, setIsLinkCopied] = useState(false);
 
   const handleConnectHome = () => {
     navigate("/main");
@@ -69,9 +24,20 @@ const SideBar = () => {
   };
 
   const handleSave = async (payload) => {
-    // Implement save logic here
     console.log("Payload saved:", payload);
     closeModal();
+  };
+
+  // 링크 복사
+  const handleShare = () => {
+    const currentUrl = window.location.href; // 현재 페이지의 URL
+    navigator.clipboard
+      .writeText(currentUrl)
+      .then(() => {
+        setIsLinkCopied(true);
+        setTimeout(() => setIsLinkCopied(false), 2000); // 2초 후 알림 숨기기
+      })
+      .catch((error) => console.error("Failed to copy the link:", error));
   };
 
   return (
@@ -95,8 +61,9 @@ const SideBar = () => {
           <MenuItem>
             <SideAlramButton color="primary:#040404" width={40} height={40} />
           </MenuItem>
-          <MenuItem>
+          <MenuItem onClick={handleShare}>
             <SideShareButton color="primary:#040404" width={40} height={40} />
+            {isLinkCopied && <ShareImage src={UrlShareButton} alt="URL Shared" />}
           </MenuItem>
         </MenuList>
       </SidebarContainer>
@@ -128,13 +95,9 @@ const HoverableMenuItem = ({ icon: Icon, color, width, height }) => {
 };
 
 // Icon Components
-const AddContainer = styled.div`
+const AddContainer = styled.div``;
 
-`;
-
-const HomeContainer = styled.div`
-
-`;
+const HomeContainer = styled.div``;
 
 export const SideAddButton = ({ color, width, height }) => {
   return (
@@ -180,11 +143,62 @@ export const SideShareButton = ({ color, width, height }) => {
   );
 };
 
+// Styled Components
+const SidebarContainer = styled.div`
+  position: fixed;
+  right: 80px;
+  top: 62px;
+  width: 85px;
+  height: 265px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: white;
+  border: 1px solid #afb8c1;
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+`;
+
+const MenuList = styled.ul`
+  list-style: none;
+  padding: 0;
+`;
+
+const MenuItem = styled.li`
+  margin-bottom: 21px;
+  cursor: pointer;
+  position: relative;
+`;
+
+const HoverImage = styled.div`
+  width: 243px;
+  height: 59px;
+  background-color: #5ba8fb;
+  color: #ffffff;
+  position: absolute;
+  right: 40px;
+  transform: translateY(-35%);
+  transition: opacity 0.3s ease;
+  border-radius: 20px 0 20px 20px;
+  justify-content: center;
+  align-items: center;
+  display: ${(props) => (props.$isVisible ? "flex" : "none")};
+`;
+
+const ShareImage = styled.img`
+  position: absolute;
+  right: 40px;
+  align-items: center;
+  width: 243px; /* 이미지 크기 */
+  height: auto;
+  bottom: -40px; /* 아래로 내리기 */
+`;
+
 const CenteredText = styled.div`
-/* border: 1px solid black; */
   font-family: "Product Sans", sans-serif;
-  font-size: 20px; /* 글자 크기 */
-  text-align: center; /* 텍스트 정렬 */
+  font-size: 20px;
+  text-align: center;
 `;
 
 export default SideBar;
