@@ -2,29 +2,75 @@ import React from "react";
 import styled from "styled-components";
 
 const MainRightViewContainer = ({ width = "411px", height = "383px", style, users = [] }) => {
+  const formatDate = (dateString) => {
+    if (typeof dateString !== 'string') {
+      return "Invalid Date"; // dateString이 문자열이 아니면 에러 메시지 반환
+    }
+
+    const [day, month, year] = dateString.split("-"); // 하이픈으로 분리
+
+    if (!year || !month || !day) {
+      return "Invalid Date"; // 기본 값 또는 에러 메시지
+    }
+
+    const months = {
+      1: "Jan",
+      2: "Feb",
+      3: "Mar",
+      4: "Apr",
+      5: "May",
+      6: "Jun",
+      7: "Jul",
+      8: "Aug",
+      9: "Sep",
+      10: "Oct",
+      11: "Nov",
+      12: "Dec",
+    };
+
+    // 월 변환 및 일 앞에 0 붙이기
+    const formattedMonth = months[parseInt(month, 10)] || month;
+    const formattedDay = day.padStart(2, "0");
+
+    return `${formattedMonth} ${formattedDay}, ${year}`;
+  };
+
   return (
     <StyledCard style={{ width, height, ...style }}>
       <TextContainer>
-        {users.map((user, index) => (
-          <div key={index}>
-            <TitleBox>
-              <RightViewText>제목</RightViewText>
-              <LinkTitle>{user.title}</LinkTitle>
-            </TitleBox>
-            <DateBox>
-              <RightViewText>날짜</RightViewText>
-              <LinkDate>{user.date}</LinkDate>
-            </DateBox>
-            <MemberBox>
-              <RightViewText>멤버</RightViewText>
-              <MemberCard>
-                {user.memberNames.map((name, idx) => (
-                  <LinkMember key={idx}>{name}</LinkMember>
-                ))}
-              </MemberCard>
-            </MemberBox>
-          </div>
-        ))}
+      {users.map((user, index) => {
+          // 날짜를 문자열로 결합하여 formatDate 함수에 전달
+          const startDate = formatDate(`${user.startDay}-${user.startMonth}-${user.startYear}`);
+          const endDate = formatDate(`${user.endDay}-${user.endMonth}-${user.endYear}`);
+
+          // 날짜 범위가 유효한지 체크
+          const dateRange = startDate === "Invalid Date" || endDate === "Invalid Date"
+            ? "Invalid Date Range"
+            : `${startDate} - ${endDate}`;
+
+          console.log("Date Range:", dateRange); // 디버깅용 콘솔 출력
+
+          return (
+            <div key={index}>
+              <TitleBox>
+                <RightViewText>제목</RightViewText>
+                <LinkTitle>{user.title}</LinkTitle>
+              </TitleBox>
+              <DateBox>
+                <RightViewText>날짜</RightViewText>
+                <LinkDate>{dateRange}</LinkDate>
+              </DateBox>
+              <MemberBox>
+                <RightViewText>멤버</RightViewText>
+                <MemberCard>
+                  {user.memberNames.map((name, idx) => (
+                    <LinkMember key={idx}>{name}</LinkMember>
+                  ))}
+                </MemberCard>
+              </MemberBox>
+            </div>
+          );
+        })}
       </TextContainer>
     </StyledCard>
   );

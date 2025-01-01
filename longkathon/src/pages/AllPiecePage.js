@@ -3,19 +3,19 @@ import { Container } from "./MainPage";
 import SideBar from "../components/SideBar";
 import HeaderComponent from "../components/HeaderComponent";
 import styled from "styled-components";
-import AlertManager_Delete from "../components/AlertManager_Delete";
+import AlertManagerDelete from "../components/AlertManagerDelete";
 import Dropdown from "../components/CategoryButton";
 import PieceCard from "../components/PieceCard";
 import { deletePieceAPI, getPieceAPI } from "../API/Piece";
 
-
 const AllPiecePage = () => {
+
   const [categories, setCategories] = useState([]); // 카테고리 상태
-  const [selectedCategories, setSelectedCategories] = useState({}); // 선택된 카테고리 상태
+  const [expiredPieces, setExpiredPieces] = useState([]); // 만료된 카테고리 상태
   const [isButtonClicked, setIsButtonClicked] = useState(false); // New state for button click
   const [alertActive, setAlertActive] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false); // 삭제 경고 상태
-  const [titleToDelete, setitlegoryToDelete] = useState(null); // 삭제할 카테고리
+  const [titleToDelete, setTitleToDelete] = useState(null); // 삭제할 카테고리
 
   const activateAlert = () => {
     setAlertActive(true); // Alert 활성화
@@ -26,14 +26,13 @@ const AllPiecePage = () => {
   const colorNameMap = {
     '#EA7E7A': 'red',
     '#FBA96F': 'orange',
-    '#5BA8FB': 'ligtblue',
+    '#5BA8FB': 'lightblue',
     '#002ED1': 'darkblue',
     '#9ED4B6': 'green',
     "#927CFF": "purple",
     "#D9A9ED": "pink",
-    "#FBA96F": "orange",
     '#BDBDBD': 'gray',
-    '#424242':'black',
+    '#424242': 'black',
   };
 
   //이미지 매핑
@@ -57,7 +56,7 @@ const AllPiecePage = () => {
 
   const handleDelete = (pieceId, pieceData) => {
     setAlertActive(false); // Alert 비활성화
-    setitlegoryToDelete(pieceData); // 삭제할 데이터 설정
+    setTitleToDelete(pieceData); // 삭제할 데이터 설정
     setShowDeleteAlert(true); //
   };
 
@@ -74,9 +73,14 @@ const AllPiecePage = () => {
   //get기능
   const fetchCategories = async () => {
     try {
-      const response = await getPieceAPI(1); // 서버 API 엔드포인트
+      const response = await getPieceAPI(2); // 서버 API 엔드포인트
 
       if (response && Array.isArray(response)) {
+
+        response.forEach((item, index) => {
+          console.log(`카테고리 ${index + 1}:`, item);
+        });
+
         setCategories([...response]); // 새로운 배열로 상태 업데이트
       } else {
         console.error("Fetched data is not in expected format.");
@@ -87,6 +91,7 @@ const AllPiecePage = () => {
   };
 
   useEffect(() => {
+    console.log("컴포넌트 로드: 데이터 fetch 시작");
     fetchCategories(); // 컴포넌트가 마운트되면 서버에서 데이터 가져옴
   }, []);
 
@@ -116,10 +121,70 @@ const AllPiecePage = () => {
     }
   };
 
+  // 카테고리 데이터를 현재 날짜를 기준으로 처리하는 함수
+  const processCategories = (data) => {
+    const now = new Date(); // 현재 날짜
+    const activePieces = [];
+
+    console.log("서버에서 받은 데이터:", data); // 서버에서 받은 원본 데이터
+
+    data.forEach((item) => {
+      const startDate = new Date(item.startYear, item.startMonth - 1, item.startDay);
+      const endDate = new Date(item.endYear, item.endMonth - 1, item.endDay);
+
+      console.log(`카드 ${item.title} 시작일: ${startDate}, 종료일: ${endDate}`);
+
+      if (endDate < now) {
+        expiredPieces.push(item); // 만료된 카테고리로 분류
+      } else {
+        activePieces.push(item); // 활성 카테고리로 분류
+      }
+    });
+
+
+    // 활성 카테고리를 시작 날짜 순으로 정렬
+    activePieces.sort((a, b) => {
+      const dateA = new Date(a.startYear, a.startMonth - 1, a.startDay);
+      const dateB = new Date(b.startYear, b.startMonth - 1, b.startDay);
+      return dateA - dateB;
+    });
+
+    console.log("정렬된 활성화된 카드들:", activePieces);
+    console.log("만료된 카드들:", expiredPieces);
+
+    setCategories(activePieces);
+    setExpiredPieces(expiredPieces); // 만료 데이터 상태에 저장
+  };
+
+  // 정렬 버튼 핸들러 (가장 가까운 일정 순으로 정렬)
+  const handleSortClosest = () => {
+    console.log("정렬 버튼 클릭 전 상태:", categories);
+
+    setCategories((prev) =>
+      [...prev].sort((a, b) => {
+        const dateA = new Date(a.startYear, a.startMonth - 1, a.startDay);
+        const dateB = new Date(b.startYear, b.startMonth - 1, b.startDay);
+        return dateA - dateB;
+      })
+    );
+    console.log("정렬 버튼 클릭 후 상태:", categories);
+  };
+
+  // 정렬 (가장 오래된 생성순으로)
+  const handleSortCreatedAt = () => {
+    setCategories((prev) =>
+      [...prev].sort((a, b) => {
+        const createdAtA = new Date(a.createdAt); // createdAt 필드 사용
+        const createdAtB = new Date(b.createdAt);
+        return createdAtB - createdAtA; // 생성일 순으로 정렬
+      })
+    );
+  };
+
   return (
     <AllPageContainer >
       {/* 삭제 경고창 */}
-      <AlertManager_Delete
+      <AlertManagerDelete
         triggerCondition={showDeleteAlert}
         onTrigger={() => setShowDeleteAlert(false)} // 경고창 닫을 때 초기화
         onDelete={confirmDelete}
@@ -137,7 +202,7 @@ const AllPiecePage = () => {
       )}
       <CategorySideBar isButtonClicked={isButtonClicked} />
       <HeaderComponent isButtonClicked={isButtonClicked} />
-      <Dropdown isButtonClicked={isButtonClicked} />
+      <Dropdown isButtonClicked={isButtonClicked} onSortClosest={handleSortClosest} onSortCreatedAt={handleSortCreatedAt} />
       <AllCategoryContainer>
         <CategoryTitle>다가올 <span className="Link">&nbsp;링크</span>를 확인 해보세요!</CategoryTitle>
         <CustomCategoryText1>L:nk</CustomCategoryText1>
@@ -150,6 +215,7 @@ const AllPiecePage = () => {
           <CategoryContainer>
             {categories.map((item) => (
               <PieceCard
+                pieceId={item.pieceId} // pieceId를 전달
                 key={item.pieceId}
                 colorkey={getColorKey(item.color)}// 색상 전달
                 clicked={isButtonClicked}
@@ -178,6 +244,7 @@ const ModalOverlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
+
   justify-content: center;
   align-items: center;
   background: rgba(0, 0, 0, 0.5); /* 반투명 배경 */

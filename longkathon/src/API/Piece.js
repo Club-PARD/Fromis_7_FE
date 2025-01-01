@@ -1,13 +1,13 @@
 import axios from "axios";
 
-const server = "http://fromis7.store:8080"; // 서버 주소
+const server = process.env.REACT_APP_API_URL;
 
 // POST
 export const postPieceAPI = async (userId, data) => {
     try {
         console.log("POST 데이터:", data);
         // const response = await axios.post(`${server}/piece/${userId}`, data);
-        const response = await axios.post(`${server}/pieces/1`, data);
+        const response = await axios.post(`${server}/pieces/2`, data);
         return response;
     } catch (error) {
         console.error("Error while saving piece data:", error);

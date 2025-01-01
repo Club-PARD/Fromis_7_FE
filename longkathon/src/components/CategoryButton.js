@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled, { keyframes } from "styled-components";
 
-const Dropdown = ({ isButtonClicked }) => { // alertActive를 외부에서 받아옴
+const Dropdown = ({ isButtonClicked, onSortClosest, onSortCreatedAt}) => { // alertActive를 외부에서 받아옴
   const [isOpen, setIsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState("선택");
 
@@ -12,6 +12,14 @@ const Dropdown = ({ isButtonClicked }) => { // alertActive를 외부에서 받�
   const handleItemClick = (item) => {
     setSelectedItem(item);
     setIsOpen(false);  // 선택 후 드롭다운 닫기
+
+       // 특정 항목 선택 시 추가 동작
+    if (item === "링크 가까운 순") {
+      console.log("링크 가까운 순 정렬 실행");
+      onSortClosest(); // 정렬 함수 실행
+    }else if (item === "링크 생성순") {
+      onSortCreatedAt(); // '링크 생성순' 정렬 실행
+    }
   };
 
   const handleOutsideClick = (event) => {

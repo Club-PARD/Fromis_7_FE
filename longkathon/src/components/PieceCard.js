@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import PieceBackground from "../Image/PieceBackground.png";
+import { useNavigate } from "react-router-dom";
 
 // const colorMap = {
 //   "#9ED4B6": "green", // '#9ED4B6'는 green에 매핑
@@ -11,12 +12,12 @@ const imageMap = {
   purple: require("../Image/CategoryPiece_Purple.png"),  // 이미지 경로 예시
   green: require("../Image/CategoryPiece_Green.png"),
   pink: require("../Image/CategoryPiece_Pink.png"),
-  lightblue: require("../Image/CategoryPiece_LightBlue.png"),
   darkblue: require("../Image/CategoryPiece_DarkBlue.png"),
   black: require("../Image/CategoryPiece_Black.png"),
   orange: require("../Image/CategoryPiece_Orange.png"),
   red: require("../Image/CategoryPiece_Red.png"),
   gray: require("../Image/CategoryPiece_White.png"),
+  lightblue: require("../Image/CategoryPiece_LightBlue.png"),
 };
 
 const StyledCard = styled.div`
@@ -39,8 +40,14 @@ const PieceCard = ({
   activateAlert,
   title,
   date,
-  members
+  members,
+  pieceId, // pieceId 추가
 }) => {
+  const navigate = useNavigate(); // 네비게이트 훅 사용
+
+    // colorkey 값을 콘솔에 출력
+    console.log("colorkey:", colorkey);
+
   const backgroundImage = imageMap[colorkey] || imageMap.purple;
 
   const handleDelete = () => {
@@ -48,8 +55,13 @@ const PieceCard = ({
     activateAlert(); // Alert 활성화 함수 호출
   };
 
+    // 카드 클릭 시 네비게이션 처리
+    const handleCardClick = () => {
+      navigate(`/main/${pieceId}`, { state: { pieceId} });
+    };
+
   return (
-    <CategoryBox clicked={clicked}>
+    <CategoryBox clicked={clicked} onClick={handleCardClick}>
       <StyledCard>
         <BodyContainer>
           <LeftContainer>
@@ -91,7 +103,6 @@ const PieceCard = ({
 };
 
 const CategoryBox = styled.div`
-/* border: 1px solid black; */
   position: relative;
   /* z-index: 300; */
   z-index: ${(props) => (props.clicked ? "310" : "298")};
@@ -167,7 +178,8 @@ const PieceMember = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 16px;
-  width: 64px;
+  min-width: 64px; /* 최소 너비 설정 */
+  width: auto; /* 글자 수에 따라 너비 자동 조정 */
   height: 24px;
   flex-shrink: 0;
   border-radius: 20px;
@@ -175,6 +187,7 @@ const PieceMember = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+
 `;
 
 const Text1 = styled.div`

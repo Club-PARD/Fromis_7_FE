@@ -12,7 +12,7 @@ const HeaderComponent = ({ disabled, isButtonClicked }) => { // 외부에서 dis
   };
 
   const handleConnectMyInfo = () => {
-    navigate("/myinfo");
+    navigate("/mypage");
   };
 
   const [searchText, setSearchText] = useState("");

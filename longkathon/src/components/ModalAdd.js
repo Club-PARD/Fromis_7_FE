@@ -97,14 +97,17 @@ const ModalAdd = ({ isOpen, onClose, initialData, onAddPiece }) => {
 
         setIsLoading(true);
         try {
-            const response = await postPieceAPI(1, payload); // userId를 1로 고정
+            const response = await postPieceAPI(2, payload); // userId를 1로 고정
             console.log("Payload saved:", response.data);
             alert("저장이 완료되었습니다.");
 
             onAddPiece(response.data);  // 새 데이터를 부모에게 전달
 
             onClose(); // 모달 닫기
-            navigate("/main"); // 메인 페이지로 이동
+
+            const pieceId = response.data.pieceId; // API 응답에서 pieceId 추출
+            navigate(`/main/${pieceId}`); // 동적으로 생성된 경로로 이동
+
         } catch (error) {
             console.error("저장 실패:", error);
             alert("저장 중 오류가 발생했습니다.");
@@ -120,17 +123,17 @@ const ModalAdd = ({ isOpen, onClose, initialData, onAddPiece }) => {
         <ModalOverlay onClick={onClose}>
             <ModalContent onClick={(e) => e.stopPropagation()}>
                 <ModalGroup>
-                    <Label>약속 제목: </Label>
+                    <Label>링크 제목: </Label>
                     <InputTitle
                         type="text"
-                        placeholder="약속 제목을 입력해주세요"
+                        placeholder="링크 제목을 입력해주세요"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                     />
                 </ModalGroup>
 
                 <ModalGroup>
-                    <Label>약속 날짜: </Label>
+                    <Label>링크 날짜: </Label>
                     <DateField>
                         <InputDate
                             placeholder="년도"
@@ -173,7 +176,7 @@ const ModalAdd = ({ isOpen, onClose, initialData, onAddPiece }) => {
                 </ModalGroup>
 
                 <ModalGroup>
-                    <Label>약속 멤버: </Label>
+                    <Label>링크 멤버: </Label>
                     <DateField>
                         {members.map((member, index) => (
                             <MemberContainer key={index}>
@@ -193,7 +196,7 @@ const ModalAdd = ({ isOpen, onClose, initialData, onAddPiece }) => {
                                     ></lord-icon>
                                 </CloseButton>
                                 <InputMember
-                                    placeholder={`예) 멤버 ${index + 1}`}
+                                    placeholder={`멤버 ${index + 1}`}
                                     value={member}
                                     onChange={(e) => handleMemberChange(index, e.target.value)}
                                 />

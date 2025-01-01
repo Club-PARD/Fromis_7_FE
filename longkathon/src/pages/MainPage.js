@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import SideBar from "../components/SideBar";
 import HeaderComponent from "../components/HeaderComponent";
-import Dropdown from "../components/CategoryButton";
 import DayCard from "../components/DayCard";
 import MainRightViewContainer from "../components/MainRightViewContainer";
 import CategoryCard from "../components/CategoryCard";
@@ -13,40 +12,62 @@ import PieceMap from "../components/PieceMap";
 import { getPieceAPI } from "../API/Piece.js"; // 적절한 경로로 수정
 
 const MainPage = () => {
+  const { pieceId } = useParams(); // URL 파라미터에서 pieceId를 받기
+
+  // 컴포넌트가 렌더링될 때 pieceId 값을 콘솔에 출력
+  useEffect(() => {
+    console.log("Received pieceId from URL:", pieceId);
+  }, [pieceId]);  // pieceId가 변경될 때마다 출력
+
+  // useEffect(() => {
+  //   if (pieceData) {
+  //     console.log("수신한 데이터:", pieceData);
+  //   } else {
+  //     console.warn("전달받은 데이터가 없습니다.");
+  //   }
+  // }, [pieceData]);
+
   const navigate = useNavigate();
-  const [pieces, setPieces] = useState([]); // 전체 데이터 저장 상태
   const [filteredPieces, setFilteredPieces] = useState([]); // 새로 생성된 데이터 상태
   const [loading, setLoading] = useState(true); // 로딩 상태
 
-  const userId = 1; // 예시로 1을 사용
+  const userId = 2; // 예시로 1을 사용
 
   useEffect(() => {
     const fetchPieceData = async () => {
-      try {
-        setLoading(true);
-        const response = await getPieceAPI(userId);
-        const fetchedData = response.data;
-        console.log("Fetched pieces:", fetchedData);
+      if (!pieceId) {
+        console.warn("pieceId가 없습니다.");
+        return;
+      }
 
-                fetchedData.forEach((item, index) => {
-          console.log(`Piece #${index + 1}:`, item);
-        });
-        
-        // 전체 데이터 저장
-        setPieces(fetchedData);
-        // 초기화: 모든 pieceId를 recentPieceIds에 추가
-        if (fetchedData.length > 0) {
-          // 최근 데이터를 filteredPieces에 저장 (배열의 마지막 인덱스)
-          setFilteredPieces([fetchedData[fetchedData.length - 1]]);
+      try {
+        setLoading(true); // 로딩 시작
+        const response = await getPieceAPI(userId); // API 요청
+
+        console.log("API 응답:", response); // 응답 콘솔 출력
+
+        // pieceId와 일치하는 데이터만 필터링
+        console.log("Comparing pieceId:", pieceId); // pieceId 콘솔 출력
+
+        const filteredData = response.filter(item => item.pieceId === parseInt(pieceId)); // pieceId 비교 시 숫자로 변환
+
+        console.log("Filtered data:", filteredData); // 필터링된 데이터 콘솔 출력
+
+        if (filteredData.length === 0) {
+          console.warn("일치하는 pieceId가 없습니다.");
+        } else {
+          setFilteredPieces(filteredData); // 필터링된 데이터 상태 업데이트
         }
       } catch (error) {
-        console.error("Error fetching piece data:", error);
+        console.error("데이터 가져오기 오류:", error); // 오류 처리
       } finally {
-        setLoading(false);
+        setLoading(false); // 로딩 종료
       }
     };
-    fetchPieceData(); // 데이터 fetch 실행
-  }, [userId]);
+
+    fetchPieceData(); // 데이터 요청
+  }, [userId, pieceId]); // userId와 pieceId가 변경될 때마다 실행
+
 
   const handleConnectCategory = () => {
     navigate("/category");
@@ -59,14 +80,29 @@ const MainPage = () => {
     return `${year}-${formattedMonth}-${formattedDay}`;
   };
 
+  // categories가 없으면 빈 배열로 처리하고, 4개의 CategoryCard를 항상 표시
+  const categoriesToDisplay = filteredPieces.length > 0
+    ? filteredPieces[0].categories || [] // filteredPieces가 있으면 그 첫 번째 항목의 categories 사용
+    : [];
+
+  // 기본 4개 항목, categories 데이터가 부족하면 기본값으로 채운다
+  const defaultCategories = ["", "", "", ""]; // 기본 4개 항목
+
+  // categories 데이터가 부족하면 defaultCategories로 채운다
+  const categoriesToRender = [...categoriesToDisplay, ...defaultCategories].slice(0, 4); // 항상 4개만 표시
+
+  const backgroundColor = filteredPieces.length > 0 ? filteredPieces[0].color : null;
+
+  console.log("BackGround color:", backgroundColor);
+
   return (
-    <Container>
-      <MainBenner>
-        <SideBar />
-        <HeaderComponent />
-        <Dropdown />
-      </MainBenner>
-      <BackGround>
+    <PageContainer>
+      <Container>
+        <MainBenner>
+          <SideBar />
+          <HeaderComponent />
+        </MainBenner>
+        <BackGround color={backgroundColor} />
         <MainContainer>
           <ViewContainer>
             <PieceMapWrapper>
@@ -76,20 +112,36 @@ const MainPage = () => {
               전체 조각 보러가기
             </ViewButton>
             <MainRightViewContainer
-              users={filteredPieces.map((piece) => ({
-                title: piece.title || '제목 없음', // 제목이 없을 경우 "제목 없음"
-                date: formatDate(
-                  piece.startYear || 0,
-                  piece.startMonth || 0,
-                  piece.startDay || 0
-                ),
-                memberNames: piece.memberNames || [], // 멤버가 없을 경우 빈 배열
-              }))}
+              users={
+                filteredPieces.length > 0
+                  ? filteredPieces.map((piece) => ({
+                    title: piece.title || "제목 없음",
+                    startYear: piece.startYear || "0000",
+                    startMonth: piece.startMonth || "01",
+                    startDay: piece.startDay || "01",
+                    endYear: piece.endYear || "0000",
+                    endMonth: piece.endMonth || "01",
+                    endDay: piece.endDay || "01",
+                    memberNames: piece.memberNames || [],
+                  }))
+                  : []
+              }
             />
           </ViewContainer>
           <CategoryContainer>
             <CategoryText1>L:nk</CategoryText1>
             <CategoryText2>highlight</CategoryText2>
+            {!loading &&
+              categoriesToRender.map((category, index) => {
+                return (
+                  <React.Fragment key={index}>
+                    <CategoryCard
+                      category={category}
+                      colorKey={"#5ba8fb"} // colorKey는 고정된 색상 또는 데이터에서 가져올 수 있음
+                    />
+                  </React.Fragment>
+                );
+              })}
             {!loading &&
               filteredPieces.map((piece, index) => {
                 const targetDate = formatDate(
@@ -99,21 +151,21 @@ const MainPage = () => {
                 );
                 return (
                   <React.Fragment key={index}>
-                    <CategoryCard
-                      category={piece.title}
-                      colorKey={piece.color}
-                    />
-
                     <DayCard targetDate={targetDate} />
                   </React.Fragment>
                 );
               })}
           </CategoryContainer>
         </MainContainer>
-      </BackGround>
-    </Container>
+      </Container>
+    </PageContainer>
   );
 };
+
+const PageContainer = styled.div`
+position: relative;
+top:60px;
+`;
 
 export const Container = styled.div`
   overflow-y: scroll;
@@ -167,6 +219,7 @@ const ViewButton = styled.div`
 `;
 
 const CategoryContainer = styled.div`
+/* border:1px solid black; */
   padding-bottom: 20px;
   width: 100%;
   height: auto;

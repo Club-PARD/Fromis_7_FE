@@ -26,12 +26,13 @@ const DayCard = ({ width = "217px", height = "332px", style, targetDate }) => {
         setDayText(`D+${Math.abs(dayDiff)}`);
       }
 
-      // 월과 일을 두 자리로 포맷하여 설정
-      const formattedMonth = String(target.getMonth() + 1).padStart(2, "0"); // getMonth는 0부터 시작하므로 +1
-      const formattedDate = String(target.getDate()).padStart(2, "0");
+      // 월과 일을 그대로 설정
+      const rawMonth = target.getMonth() + 1; // getMonth는 0부터 시작하므로 +1
+      const rawDate = target.getDate();
 
-      setMonth(formattedMonth);
-      setDate(formattedDate);
+      // 10 미만일 때 2자리로 변경
+      setMonth(rawMonth < 10 ? `0${rawMonth}` : `${rawMonth}`);
+      setDate(rawDate < 10 ? `0${rawDate}` : `${rawDate}`);
     };
 
     // 초기 계산
@@ -59,8 +60,8 @@ const DayCard = ({ width = "217px", height = "332px", style, targetDate }) => {
   );
 };
 
-const Container = styled.div` 
-cursor: pointer;
+const Container = styled.div`
+  cursor: pointer;
 `;
 
 const StyledCard = styled.div`
@@ -98,7 +99,7 @@ const DateBar = styled.div`
 const DateText = styled.div`
   position: absolute;
   top: ${(props) => (props.type === "month" ? "120px" : "198px")};
-  left: ${(props) => (props.type === "date" ? "101px" : "36px")};
+  left: ${(props) => (props.type === "date" ? "101px" : "34px")};
   font-size: 16px;
   color: #040404;
   text-align: right;
@@ -109,29 +110,27 @@ const DateText = styled.div`
 `;
 
 const Text1 = styled.div`
-  // 원하는 스타일 추가
-  color: #AFB8C1;
-font-family: "Product Sans";
-font-size: 12px;
-font-style: normal;
-font-weight: 400;
-line-height: 12px; /* 100% */
-position: absolute;
-top:169px;
-left:102px;
+  color: #afb8c1;
+  font-family: "Product Sans";
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 12px; /* 100% */
+  position: absolute;
+  top: 169px;
+  left: 102px;
 `;
 
 const Text2 = styled.div`
-  // 원하는 스타일 추가
-  color: #AFB8C1;
-font-family: "Product Sans";
-font-size: 12px;
-font-style: normal;
-font-weight: 400;
-line-height: 12px; /* 100% */
-position: absolute;
-top:249px;
-left:77px;
+  color: #afb8c1;
+  font-family: "Product Sans";
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 12px; /* 100% */
+  position: absolute;
+  top: 249px;
+  left: 77px;
 `;
 
 export default DayCard;
