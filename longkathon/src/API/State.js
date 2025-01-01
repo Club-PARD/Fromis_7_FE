@@ -6,6 +6,7 @@ const server = process.env.REACT_APP_API_URL;
 export const postLikeAPI = async (listId, userId, data) => {
     try {
         console.log("Like Post 데이터:", data);
+        //const response = await axios.post(`${server}/states/likes/${listId}/${userId}`, data);
         const response = await axios.post(`${server}/states/likes/${listId}/${userId}`, data);
         return response;
     } catch (error) {
