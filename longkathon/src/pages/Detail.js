@@ -12,14 +12,17 @@ import axios from "axios";
 import { postLikeAPI, postUnlikeAPI, postAlignAPI } from "../API/State";
 
 const DetailPage = ({ propUserId, propListId }) => {
-    const [userId, setUserId] = useState(propUserId || null);
-    const [listId, setListId] = useState(propListId || null); // 동적 할당 가능하도록 설정
+    const [userId, setUserId] = useState(propUserId || 1);
+    const [listId, setListId] = useState(propListId || 1); // 동적 할당 가능하도록 설정 -> 동적 하게 하려면 1대신 null로 설정
+
 
     const [thumbUpColor, setThumbUpColor] = useState("#dcdcdc");
     const [thumbDownColor, setThumbDownColor] = useState("#dcdcdc");
     const [commentColor, setCommentColor] = useState("#dcdcdc")
     const [isShared, setIsShared] = useState(false);
     const [sharedCount, setSharedCount] = useState(0); // 공유 카운트 상태 추가
+
+    const [comments, setComments] = useState([]); // 초기 상태를 빈 배열로 설정
 
     const [likeCount, setLikeCount] = useState(0);
     const [dislikeCount, setDislikeCount] = useState(0);
@@ -30,16 +33,6 @@ const DetailPage = ({ propUserId, propListId }) => {
 
     const [showCommentInput, setShowCommentInput] = useState(false);
     const [commentText, setCommentText] = useState("");
-
-    const [comments, setComments] = useState([ // Mockdata
-        { id: 1, name: "김희민", text: "난 ISTP라고... ㅎ", time: "4시간 전", profileImg: "https://via.placeholder.com/50" },
-        { id: 2, name: "김세현", text: "그냥 레전드", time: "1일 전", profileImg: "https://via.placeholder.com/50" },
-        { id: 3, name: "김하진", text: "막이래", time: "1일 전", profileImg: "https://via.placeholder.com/50" },
-        { id: 4, name: "유슈민", text: "1시간만 자고 올게요", time: "1일 전", profileImg: "https://via.placeholder.com/50" },
-        { id: 5, name: "김우현", text: "과자 다 먹을 꼬야", time: "2일 전", profileImg: "https://via.placeholder.com/50" },
-        { id: 6, name: "이수인", text: "럭키 비키가 돼...", time: "2일 전", profileImg: "https://via.placeholder.com/50" },
-    ]);
-
     const [image, setImage] = useState(null); // 업로드된 이미지를 저장
 
     const [isEditable, setIsEditable] = useState(false); // 수정 가능 여부를 나타내는 상태
@@ -76,7 +69,7 @@ const DetailPage = ({ propUserId, propListId }) => {
                     const userResponse = await axios.get(`${process.env.REACT_APP_API_URL}/users/1`);
                     setUserId(userResponse.data.userId);
                 }
-    
+
                 // listId가 없으면 fetch
                 if (!listId) {
                     const listResponse = await axios.get(`${process.env.REACT_APP_API_URL}/categories/1`);
@@ -86,75 +79,27 @@ const DetailPage = ({ propUserId, propListId }) => {
                 console.error("Error fetching userId or listId:", error);
             }
         };
-    
+
         fetchUserAndListIds();
     }, [userId, listId]); // userId와 listId를 의존성 배열에 추가
-    
-    
-    // const handleLike = async () => {
-        
 
-    //     const listId = 3; // 잇츠 하드코딩 동적 할당 안됨;;
-    //     const userId = 1;
-
-    //     try {
-    //         // listId와 userId 확인
-    //         if (!listId || !userId) {
-    //             console.error("listId 또는 userId가 정의되지 않았습니다.", listId, userId);
-    //             return;
-    //         }
-
-    //         // 좋아요 데이터 구성
-    //         const likeData = {
-    //             listId, // 현재 리스트 ID
-    //             userId, // 현재 사용자 ID
-    //         };
-
-    //         // 서버로 좋아요 요청 보내기
-    //         const response = await postLikeAPI(listId, userId, likeData);
-
-    //         // 서버 응답 처리
-    //         const isLiked = response.data; // 서버 응답이 true 또는 false라고 가정
-    //         if (liked) {
-    //             // 좋아요 상태 해제
-    //             setLikeCount((prev) => prev - 1);
-    //             setLiked(false);
-    //             setThumbUpColor("#dcdcdc");
-    //         } else {
-    //             // 좋아요 상태 설정
-    //             setLikeCount((prev) => prev + 1);
-    //             setLiked(true);
-    //             setThumbUpColor("#5BA8FB");
-
-    //             // 싫어요 상태 해제
-    //             if (disliked) {
-    //                 setDislikeCount((prev) => prev - 1);
-    //                 setDisliked(false);
-    //                 setThumbDownColor("#dcdcdc");
-    //             }
-    //         }
-    //     } catch (error) {
-    //         console.error("Error handling like:", error);
-    //     }
-    // };
-
-    const handleLike = async () => {    
+    const handleLike = async () => {
         try {
             // listId와 userId 확인
             if (!userId || !listId) {
                 console.error("User ID 또는 List ID가 없습니다.");
                 return;
             }
-    
+
             // 좋아요 데이터 구성
             const likeData = {
                 listId, // 현재 리스트 ID
                 userId, // 현재 사용자 ID
             };
-    
+
             // 서버로 좋아요 요청 보내기
             const response = await postLikeAPI(listId, userId, likeData);
-    
+
             // 서버 응답 처리
             const isLiked = response.data; // 서버 응답이 true 또는 false라고 가정
             if (liked) {
@@ -167,7 +112,7 @@ const DetailPage = ({ propUserId, propListId }) => {
                 setLikeCount((prev) => prev + 1);
                 setLiked(true);
                 setThumbUpColor("#5BA8FB");
-    
+
                 // 싫어요 상태 해제
                 if (disliked) {
                     setDislikeCount((prev) => prev - 1);
@@ -179,48 +124,75 @@ const DetailPage = ({ propUserId, propListId }) => {
             console.error("Error handling like:", error);
         }
     };
-    
 
     const handleDislike = () => {
-        const listId = 1;
-        const userId = 1;
-
-        try{
-            if(!listId || !userId){
+        try {
+            if (!listId || !userId) {
                 console.error("listId 또는 userId가 정의되지 않았습니다.", listId, userId);
                 return;
             }
-        } catch (error){
+            const dislikeData = {
+                listId,
+                userId,
+            };
+            const response = postUnlikeAPI(listId, userId, dislikeData);
+            const isDisliked = response.data;
+            if (disliked) {
+                // 싫어요 상태 해제
+                setDislikeCount((prev) => prev - 1);
+                setDisliked(false);
+                setThumbDownColor("#dcdcdc");
+            } else {
+                // 싫어요 상태 설정
+                setDislikeCount((prev) => prev + 1);
+                setDisliked(true);
+                setThumbDownColor("#5BA8FB");
 
-        }
-
-
-        if (disliked) {
-            // 싫어요 상태 해제
-            setDislikeCount((prev) => prev - 1);
-            setDisliked(false);
-            setThumbDownColor("#dcdcdc");
-        } else {
-            // 싫어요 상태 설정
-            setDislikeCount((prev) => prev + 1);
-            setDisliked(true);
-            setThumbDownColor("#5BA8FB");
-
-            // 좋아요 상태 해제
-            if (liked) {
-                setLikeCount((prev) => prev - 1);
-                setLiked(false);
-                setThumbUpColor("#dcdcdc");
+                // 좋아요 상태 해제
+                if (liked) {
+                    setLikeCount((prev) => prev - 1);
+                    setLiked(false);
+                    setThumbUpColor("#dcdcdc");
+                }
             }
+        } catch (error) {
+            console.error("Error handling like:", error);
         }
     };
 
-    const handleSharedClick = () => {
-        setIsShared((prevState) => !prevState);
-        setSharedCount((prevState) => (isShared ? prevState - 1 : prevState + 1)); // 공유 여부에 따라 증가/감소
+    const handleSharedClick = async () => {
+        try {
+            // userId와 listId 기본값 설정
+            const currentUserId = userId || 1;
+            const currentListId = listId || 1;
+    
+            const alignData = {
+                listId: currentListId,
+                userId: currentUserId,
+            };
+    
+            console.log("Align Post 데이터:", alignData);
+    
+            // 서버로 데이터 전송
+            const response = await postAlignAPI(currentListId, currentUserId, alignData);
+    
+            console.log("Align API 응답 데이터:", response.data);
+    
+            // 서버 응답 처리
+            if (response.status === 201 && response.data === true) {
+                setIsShared((prevState) => !prevState); // 이전 상태를 안전하게 참조
+                setSharedCount((prevState) => prevState + 1);
+            } else if (response.status === 201 && response.data === false) {
+                setIsShared((prevState) => !prevState);
+                setSharedCount((prevState) => (prevState > 0 ? prevState - 1 : 0)); // 카운트 감소 처리
+            } else {
+                console.error("Align API 호출 실패:", "응답 데이터가 예상과 다릅니다.");
+            }
+        } catch (error) {
+            console.error("Error during align post:", error.response ? error.response.data : error.message);
+        }
     };
-
-
+        
     const handleCommentSubmit = () => {
         if (commentText.trim()) {
             const newComment = {
@@ -234,11 +206,6 @@ const DetailPage = ({ propUserId, propListId }) => {
         }
     };
 
-    const toggleColor = (currentColor, setColor) => {
-        const newColor = currentColor === "#dcdcdc" ? "#5BA8FB" : "#dcdcdc";
-        setColor(newColor);
-    };
-
     const toggleCommentInput = () => {
         setShowCommentInput((prev) => !prev);
         setCommentColor((prevColor) => (prevColor === "#dcdcdc" ? "#5BA8FB" : "#dcdcdc"));
@@ -249,7 +216,6 @@ const DetailPage = ({ propUserId, propListId }) => {
         setIsEditable(true); // 수정 모드 활성화
         setTempMemo(infoData.memo); // 기존 메모를 tempMemo에 복사
     };
-
 
     // 저장 버튼 클릭 시 tempMemo를 infoData.memo에 저장
     const handleMemoSave = () => {
