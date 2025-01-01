@@ -5,7 +5,8 @@
 <div>
 
 <p align="center">
-  ![Title](https://github.com/user-attachments/assets/9fdc6cd7-2eeb-40ee-9c36-d901f3c377e6)
+<p align="center"><img src="./src/Image/ReadMe/LandPage.png" width="70%" />
+
 </p>
 
 <h3 align="center">L:nk</h3>
