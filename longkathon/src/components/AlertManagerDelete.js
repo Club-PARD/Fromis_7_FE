@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { CategoryPiece } from "./CategoryCard_Check";
 // import background from "../Image/X_purple.png";
 
-const AlertManager_Delete = ({ triggerCondition, categoryToDelete, onTrigger, onDelete, onCancel, backgroundImage }) => {
+const AlertManager_Delete = ({ triggerCondition, titleToDelete, onTrigger, onDelete, onCancel, backgroundImage }) => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -24,7 +24,7 @@ const AlertManager_Delete = ({ triggerCondition, categoryToDelete, onTrigger, on
   return (
     <AlertOverlay>
       <AlertBox>
-        <AlertMessage>   <span className="categoryName">"{categoryToDelete?.category}"</span> {/* 카테고리 이름 */}조각을 <span className="deleteText">삭제</span> {/* "삭제" 글씨 */}할까요?</AlertMessage>
+        <AlertMessage>   <span className="categoryName">"{titleToDelete?.title}"</span> {/* 카테고리 이름 */}조각을 <span className="deleteText">삭제</span> {/* "삭제" 글씨 */}할까요?</AlertMessage>
         <AlertBackGround $image={backgroundImage} />
         <CloseButton onClick={() => { handleClose(); onDelete(); }}>삭제</CloseButton> {/* 삭제 버튼 클릭 시 onDelete 실행 */}
         <CancelButton onClick={() => { handleClose(); onCancel(); }}>취소</CancelButton> {/* 취소 버튼 추가 */}
@@ -32,8 +32,6 @@ const AlertManager_Delete = ({ triggerCondition, categoryToDelete, onTrigger, on
     </AlertOverlay>
   );
 };
-
-export default AlertManager_Delete;
 
 // 스타일 컴포넌트 정의
 const AlertOverlay = styled.div`
@@ -146,4 +144,4 @@ border: none;
   }
 `;
 
-
+export default AlertManager_Delete;

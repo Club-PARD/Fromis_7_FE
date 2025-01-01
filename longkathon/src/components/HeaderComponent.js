@@ -4,16 +4,15 @@ import styled from "styled-components";
 import HamburgerIcon from "./HamburgerButton";
 import { useNavigate } from "react-router-dom";
 
-const HeaderComponent = ({ disabled }) => { // 외부에서 disabled 값을 받아옴
-
+const HeaderComponent = ({ disabled, isButtonClicked }) => { // 외부에서 disabled 값을 받아옴
   const navigate = useNavigate();
 
   const handleConnectHome = () => {
     navigate("/main");
   };
 
-  const handleConnectMyInfo = ( )=>{
-    navigate("/myinfo");
+  const handleConnectMyInfo = () => {
+    navigate("/mypage");
   };
 
   const [searchText, setSearchText] = useState("");
@@ -24,53 +23,75 @@ const HeaderComponent = ({ disabled }) => { // 외부에서 disabled 값을 받�
   };
 
   return (
-    <HeaderContainer>
-      <HamburgerContainer>
-        <HamburgerIcon />
-      </HamburgerContainer>
+      <HeaderBackground isButtonClicked={isButtonClicked}>
+        <HamburgerContainer>
+          <HamburgerIcon />
+        </HamburgerContainer>
 
-      <LogoGroup onClick={handleConnectHome}>
-        <LogoImg src={logoImg} alt='LogoImg' />
-        <LogoText> L:nk</LogoText>
-      </LogoGroup>
+        <LogoGroup onClick={handleConnectHome}>
+          <LogoImg src={logoImg} alt='LogoImg' />
+          <LogoText> L:nk</LogoText>
+        </LogoGroup>
 
-      <RightContainer>
-        <SearchBox>
-          <Search
-            type="text"
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            placeholder="Search"
-            disabled={disabled} // 외부에서 받은 disabled 값으로 배경색을 변경
-          />
-          <SearchButton onClick={handleSearchClick}>
-            <SearchIcon disabled={disabled} />
-          </SearchButton>
-        </SearchBox>
-        <UserBox onClick={handleConnectMyInfo}>
-          <User />
-        </UserBox>
-      </RightContainer>
-    </HeaderContainer>
+        <RightContainer>
+          <SearchBox>
+            <Search
+              type="text"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              placeholder="Search"
+              disabled={disabled} // 외부에서 받은 disabled 값으로 배경색을 변경
+            />
+            <SearchButton onClick={handleSearchClick}>
+              <SearchIcon disabled={disabled} />
+            </SearchButton>
+          </SearchBox>
+          <UserBox onClick={handleConnectMyInfo}>
+            <User />
+          </UserBox>
+        </RightContainer>
+      </HeaderBackground>
   );
 };
 
-const HeaderContainer = styled.div`
-  height: 60px;
-  display: flex;
-  align-items: center;
+// const HeaderContainer = styled.div`
+//   height: 60px;
+//   display: flex;
+//   align-items: center;
+//   justify-content: space-between;
+//   position: fixed;  /* 상단 고정 */
+//   top: 0;
+//   left: 0;
+//   right: 0;
+//   z-index: ${(props) => (props.isButtonClicked ? 200 : 1000)};  /* alertActive에 따라 z-index 설정 */
+//   padding: 0 20px;  /* 좌우 여백 추가 */
+// `;
+
+const HeaderBackground = styled.div`
+position: fixed;
+width: 100%;
+height: 60px;
+background-color: white;
+top: 0;
+  left: 0;
+  right: 0;
+  z-index: ${(props) => (props.isButtonClicked ? 200 : 900)};  /* alertActive에 따라 z-index 설정 */
+  padding: 0 20px;  /* 좌우 여백 추가 */
+   align-items: center;
   justify-content: space-between;
+  display: flex;
 `;
 
 const HamburgerContainer = styled.div`
   margin-left: 82px;
+  width: 40px;
 `;
 
 const LogoGroup = styled.div`
+position: absolute;
   display: flex;
   justify-content: center;
   align-items: center;
-  position: absolute;
   left: 50%;
   transform: translateX(-50%);
   cursor: pointer;
@@ -80,7 +101,6 @@ const LogoImg = styled.img`
   width: 40px;
   height: 40px;
   margin-right: 8px;
-  
 `;
 
 const LogoText = styled.span`
@@ -107,7 +127,7 @@ const SearchBox = styled.div`
 `;
 
 const Search = styled.input`
-  border:${(props) => (props.disabled ? "1px solid rgba(4, 4, 4, 0.3)" : "1px solid #afb8c1")};
+  border: ${(props) => (props.disabled ? "1px solid rgba(4, 4, 4, 0.3)" : "1px solid #afb8c1")};
   border-radius: 10px;
   width: 192px;
   height: 38px;
