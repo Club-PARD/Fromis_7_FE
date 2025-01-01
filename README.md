@@ -7,7 +7,6 @@
 
 <p align="center"><img src="./src/Image/ReadMe/LandPage.png" width="70%" />
 
-</p>
 
 <h3 align="center">L:nk</h3>
 
