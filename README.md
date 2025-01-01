@@ -5,8 +5,9 @@
 <div>
 
 
-<p align="center"><img src=![Title](https://github.com/user-attachments/assets/82149023-5b3e-4179-b714-1a63e9a61777)
- width="70%" />
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/82149023-5b3e-4179-b714-1a63e9a61777" width="70%" />
+</p>
 
 
 <h3 align="center">L:nk</h3>
