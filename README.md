@@ -82,6 +82,11 @@ Link는 여행 준비 과정에서 주최자와 참여자가 여행 정보를 �
 
 # Page
 
+## Land Page
+  <p align="center"><img src="https://github.com/user-attachments/assets/e4b8e66d-472f-44f1-bc77-b299c82c7fb5" width="30%" />
+
+  - 기능: 웹 사이트를 방문할 때 보게 되는 페이지
+
 ## Login Page
   <p align="center"><img src="https://github.com/user-attachments/assets/de481da7-8f12-4559-a123-1523137f5252" width="30%" />
 
@@ -113,15 +118,10 @@ Link는 여행 준비 과정에서 주최자와 참여자가 여행 정보를 �
   - 주요 기술: 
 
 ## MyInfo Page
-  <p align="center"><img src="./src/Image/ReadMe/MyPage.png" width="70%" />
+  <p align="center"><img src="https://github.com/user-attachments/assets/631d9565-9621-432d-b4da-c2ded1e068b3" width="30%" />
 
   - 기능: 마이페이지 
   - 주요 기술: 
-
-## Land Page
-  <p align="center"><img src="https://github.com/user-attachments/assets/e4b8e66d-472f-44f1-bc77-b299c82c7fb5" width="30%" />
-
-  - 기능: 웹 사이트를 방문할 때 보게 되는 페이지
 
 ## Comment Page
   <p align="center"><img src="https://github.com/user-attachments/assets/8aeb88df-a209-4178-b060-b3305ed72870" width="30%" />
