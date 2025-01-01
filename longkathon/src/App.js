@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import LenderPage from './pages/Land.js';
-import LoginPage from './pages/Login.js';
+import LoginNoGoogle from './pages/Login_NoGoogle.js';
 import MainPage from './pages/MainPage.js';
 import DetailPage from './pages/Detail.js';
 import EmptyMainPage from './pages/EmptyMain.js';
@@ -32,7 +32,8 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LenderPage />} />
-          <Route path="/login" element={<LoginPage />} />
+          {/* nogoogle page랑 연결됨. */}
+          <Route path="/login" element={<LoginNoGoogle />} /> 
           <Route path="/main" element={<MainPage />} />
           <Route path="/emptymain" element={<EmptyMainPage />} />
           <Route path="/detail" element={<DetailPage />} />

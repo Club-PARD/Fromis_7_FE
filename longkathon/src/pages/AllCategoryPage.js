@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Container, MainBenner } from "./MainPage";
 import SideBar from "../components/SideBar";
 import HeaderComponent from "../components/HeaderComponent";
-import styled from "styled-components";
-import CategoryCard_Check from "../components/CategoryCard_Check";
 import CategoryAddContainer from "../components/CategoryAddContainer";
 import AlertManager from "../components/AlertManager";
 import AlertManager_Delete from "../components/AlertManager_Delete";
 import AddCategory from "../pages/AddCategory";
+import CategoryCard_Check from "../components/CategoryCard_Check"; // CategoryCard_Check 선언 추가
+import styled from "styled-components";
 
 const AllCategoryPage = ({ Title }) => {
   const [categories, setCategories] = useState([
@@ -165,7 +165,7 @@ const AllCategoryPage = ({ Title }) => {
             {/* AddContainer 렌더링: categoryCount가 8 미만일 때만 */}
             {categories.length < 8 && (
               <CategoryAddContainer_AddCard
-                onClickHandler={handleAddCard} // 수정된 부분
+                onClickHandler={handleAddCard}
                 position={getAddCardPosition()}
                 disabled={isButtonClicked}
               />
@@ -189,15 +189,14 @@ const ModalOverlay = styled.div`
   justify-content: center;
   align-items: center;
   background: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
-  pointer-events: auto; /* 모달 배경 클릭 가능 */
+  pointer-events: auto;
   z-index: 300;
 `;
 
 const ModalContent = styled.div`
-  max-height: 95%; /* 모달 내용의 최대 높이 설정 */
+  max-height: 98%;
   overflow-y: auto; /* 스크롤 가능하도록 설정 */
-  background: red; /* 모달 배경색 */
-  border-radius: 20px; /* 모달 모서리 둥글게 */
+  border-radius: 20px; 
 `;
 
 const AllPageContainer = styled(Container)`
