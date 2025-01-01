@@ -125,7 +125,7 @@ function LenderPage() {
 
 const AppContainer = styled.div`
   text-align: center;
-  min-height: 100vh;
+  min-height: 100px;
   font-family: "Arial", sans-serif;
   color: #333;
 

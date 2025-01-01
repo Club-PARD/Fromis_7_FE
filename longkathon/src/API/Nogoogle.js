@@ -20,8 +20,26 @@ export const postLoginAPI = async (data) => {
     }
 };
 
-// POST - SignIn
-export const postSignInAPI = async (data) => {
+
+// POST - SignUp (Duplication Check)
+export const postDUPAPI = async (data) => {
+    try {
+        console.log("POST - signup:", data);
+        const response = await axios.post(`${server}/signin/logincheck`, data, {
+            headers: {
+                "Content-Type": "application/json",
+            }
+        });
+        console.log(response);
+        return response;
+    } catch (error) {
+        console.error("아이디 중복 확인에 문제가 있어요ㅜㅜ", error);
+        throw error; 
+    }
+};
+
+// POST - Register
+export const postRegisterAPI = async (data) => {
     try {
         console.log("POST - signup:", data);
         const response = await axios.post(`${server}/signin/access`, data, {
@@ -35,3 +53,4 @@ export const postSignInAPI = async (data) => {
         throw error; 
     }
 };
+

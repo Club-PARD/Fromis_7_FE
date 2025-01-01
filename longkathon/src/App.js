@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import LenderPage from './pages/Land.js';
-import LoginNoGoogle from './pages/Login_NoGoogle.js';
+import LoginNoGoogle from './pages/Login.js';
 import MainPage from './pages/MainPage.js';
 import DetailPage from './pages/Detail.js';
 import EmptyMainPage from './pages/EmptyMain.js';
@@ -11,6 +11,7 @@ import ModalAdd from './components/ModalAdd.js';
 import MyInfoPage from './pages/MyInfoPage.js';
 import AddCategory from './pages/AddCategory.js';
 import HistoryPage from './pages/History.js';
+import SignUp from "./pages/SignUp.js";
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
           <Route path="/category" element={<AllCategoryPage Title={"input_title"} />} />
           <Route path="/mypage" element={<MyInfoPage />} />
           <Route path="/history" element={<HistoryPage />} />
+          <Route path="/SignUp" element={<SignUp />} />
         </Routes>
       </BrowserRouter>
     </>

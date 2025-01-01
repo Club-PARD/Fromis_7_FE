@@ -1,0 +1,323 @@
+import React, { useState } from "react";
+import styled from "styled-components";
+import LoginLogoImage from "../Image/LoginLogo.png";
+import { useNavigate } from "react-router-dom";
+import { postLoginAPI, postDUPAPI, postRegisterAPI } from "../API/Nogoogle";
+
+function Register() {
+  const [nickname, setNickname] = useState("");
+  const [credentials, setCredentials] = useState({ id: "", password: "", confirmPassword: "" });
+  const [isIdAvailable, setIsIdAvailable] = useState(false);
+  const navigate = useNavigate();
+
+
+  //중복 체크 
+  const handleIdCheck = async () => {
+    const checkData = { email: credentials.id };
+    try {
+      const response = await postDUPAPI(checkData);
+      setIsIdAvailable(response.data);
+      if (response.data) {
+        alert("사용 가능한 아이디입니다.");
+      } else {
+        alert("아이디가 중복되었습니다.");
+      }
+    } catch (error) {
+      console.error("중복 확인 실패:", error);
+    }
+  };
+
+  const handleRegister = async () => {
+    if (!isIdAvailable) {
+      alert("아이디 중복 확인을 먼저 해주세요.");
+      return;
+    }
+    if (credentials.password !== credentials.confirmPassword) {
+      alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+      return;
+    }
+    const userData = {
+      name: nickname,
+      email: credentials.id,
+      password: credentials.password,
+    };
+    try {
+      await postRegisterAPI(userData);
+      navigate("/main");
+    } catch (error) {
+      console.error("회원가입 실패:", error);
+    }
+  };
+
+  const handleLogin = async () => {
+    const loginData = {
+      email: credentials.id,
+      password: credentials.password,
+    };
+    console.log("로그인 데이터:", loginData);
+    try {
+      await postLoginAPI(loginData);
+      navigate("/main");
+    } catch (error) {
+      console.error("로그인 실패:", error);
+    }
+  };
+
+  return (
+    <SignUpContainer>
+      <LogoSection>
+        <LoginLogo src={LoginLogoImage} alt="Login Logo" />
+      </LogoSection>
+      <GoogleLoginSection>
+        <Title>회원가입</Title>
+        <Container>
+          <Label>아이디</Label>
+          <InputIdContainer>
+            <InputId
+              type="text"
+              placeholder="이메일 주소를 입력해주세요."
+              value={credentials.id}
+              onChange={(e) => setCredentials({ ...credentials, id: e.target.value })}
+            />
+            <DuplicationCheckButton onClick={handleIdCheck}>중복 확인</DuplicationCheckButton>
+          </InputIdContainer>
+        </Container>
+        <Container>
+          <Label>비밀번호</Label>
+          <InputPassword
+            type="password"
+            placeholder="비밀번호 입력 (문자, 숫자, 특수문자 포함 8~20자)"
+            value={credentials.password}
+            onChange={(e) =>
+              setCredentials({ ...credentials, password: e.target.value })
+            }
+          />
+        </Container>
+        <Container>
+          <Label>비밀번호 확인</Label>
+          <CheckPassword
+            type="password"
+            placeholder="비밀번호를 재입력"
+            value={credentials.confirmPassword}
+            onChange={(e) =>
+              setCredentials({ ...credentials, confirmPassword: e.target.value })
+            }
+          />
+        </Container>
+        <Container>
+          <Label>사용자 이름</Label>
+          <InputUserName
+            type="text"
+            placeholder="이름을 입력해주세요."
+            value={nickname}
+            onChange={(e) => setNickname(e.target.value)}
+          />
+        </Container>
+        <SignUpButton onClick={handleRegister}>가입하기</SignUpButton>
+      </GoogleLoginSection>
+    </SignUpContainer>
+  );
+}
+
+const SignUpContainer = styled.div`
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Arial", sans-serif;
+  background: #fff;
+  padding: 63px, 144px;
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+`;
+
+const LogoSection = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 105px;
+`;
+
+const LoginLogo = styled.img`
+  width: 479px;
+  height: 224px;
+`;
+
+const GoogleLoginSection = styled.div`
+  display: flex;
+  justify-content: start;
+  width: 567px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+const Title = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  font-size: 32px;
+  font-weight: 400;
+  color: #040404;
+  margin-bottom: 16px;
+  margin-left: 300px;
+  margin-right: 300px;
+`;
+
+const Container = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+`;
+
+const InputIdContainer = styled.div`
+    display: flex;
+    align-items: center;
+    width: 567px;
+  height: 84px;
+  text-indent: 20px;
+  border-radius: 10px;
+  border: 1px solid #afb8c1;
+  background: #fff;
+  color: #e1e1e1;
+  font-family: "Product Sans";
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  margin-bottom: 24px;
+  padding: 0px;
+    justify-content: space-between;
+`;
+
+const Label = styled.label`
+  padding-left: 30px;
+  color: #040404;
+  font-family: "Product Sans";
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  margin-bottom: 8px;
+`;
+
+const InputId = styled.input`
+width: 100%;
+height: 84px;
+text-indent: 20px;
+border-radius: 10px;
+border: none;
+  background: #fff;
+  color: #e1e1e1;
+  font-family: "Product Sans";
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  color: #000;
+  font-family: "Product Sans";
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  padding: 0px;
+  z-index: 300;
+`;
+
+const DuplicationCheckButton = styled.button`
+width: 119px;
+height: 42px;
+padding: 0px;
+flex-shrink: 0;
+border-radius: 10px;
+background: #5ba8fb;
+border: none;
+color: #FFF;
+font-family: "Product Sans";
+font-size: 16px;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
+margin-right: 10px;
+`;
+
+const InputPassword = styled.input`
+  width: 567px;
+  height: 84px;
+  text-indent: 20px;
+  border-radius: 10px;
+  border: 1px solid #afb8c1;
+  background: #fff;
+  color: #e1e1e1;
+  font-family: "Product Sans";
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  color: #000;
+  font-family: "Product Sans";
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  padding: 0px;
+  margin-bottom: 24px;
+`;
+
+const CheckPassword = styled.input`
+  width: 567px;
+  height: 84px;
+  text-indent: 20px;
+  border-radius: 10px;
+  border: 1px solid #afb8c1;
+  background: #fff;
+  color: #e1e1e1;
+  font-family: "Product Sans";
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  margin-bottom: 24px;
+  padding: 0px;
+`;
+
+const InputUserName = styled.input`
+  width: 567px;
+  height: 84px;
+  text-indent: 20px;
+  border-radius: 10px;
+  border: 1px solid #afb8c1;
+  background: #fff;
+  color: #e1e1e1;
+  font-family: "Product Sans";
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  margin-bottom: 24px;
+  padding: 0px;
+`;
+
+const SignUpButton = styled.button`
+  width: 100%;
+  height: 84px;
+  color: #fff;
+  font-weight: 400;
+  cursor: pointer;
+  color: #fff;
+  font-family: "Product Sans";
+  font-size: 20px;
+
+  font-weight: 400;
+  line-height: normal;
+  border-radius: 10px;
+  border: none;
+  background: #5ba8fb;
+  padding: 0px;
+  margin-top: 30px;
+`;
+
+export default Register;

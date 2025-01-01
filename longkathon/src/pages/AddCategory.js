@@ -39,48 +39,6 @@ function AddCategory({ buttons = [], onClose }) {
     setSelectedColor(color);
   };
 
-  // const handleSave = async () => {
-  //   // Validate selected button
-  //   if (!selectedButton) {
-  //     alert("버튼을 선택해주세요.");
-  //     return;
-  //   }
-
-  //   // Collect values from InfoCard refs
-  //   const allValues = infoCardRefs.current.map((ref) =>
-  //     ref?.getValues ? ref.getValues() : null
-  //   );
-
-  //   if (allValues.some((values) => !values || !values.url.trim() || !values.description.trim())) {
-  //     alert("모든 InfoCard의 URL과 메모를 입력해주세요.");
-  //     return;
-  //   }
-
-  //   // PostArray를 handleSave 함수 내부로 이동
-  //   const PostArray = {
-  //     "color": selectedColor,
-  //     "name": title, // 선택한 버튼의 이름으로 제목을 설정
-  //     // "pieceId": 20,
-  //     "listups": allValues.map(value => ({
-  //     "url": value.url || "기본 URL",
-  //     "description": value.description || "기본 설명"
-  //     })),    
-  //   };
-
-  //   console.log("PostArray:", PostArray);
-
-  //   try {
-  //     const userId = 1;
-  //     await postPieceAPI(userId, PostArray);
-  //     alert("저장 성공\n저장된 데이터: " + JSON.stringify(PostArray));
-  //     if (onClose) {
-  //       onClose();
-  //     }
-  //   } catch (error) {
-  //     alert("저장 중 오류가 발생했습니다.");
-  //   }
-  // };
-
   const handleSave = async () => {
     if (!selectedColor || !title.trim()) {
       alert("색상과 제목을 입력해주세요.");
@@ -105,12 +63,11 @@ function AddCategory({ buttons = [], onClose }) {
       }))
     };
   
-    console.log("PostArray:", PostArray);
-  
     try {
-      const response = await postPieceAPI(1, PostArray); // userId 또는 pieceId 필요 여부 확인
+      const response = await postPieceAPI(2, PostArray); // 지금 userId 하드 코딩 되어 있음 바꿔야함;;
+      const savedData = response.data;
       alert("저장 성공");
-      if (onClose) onClose();
+      if (onClose) onClose(savedData);
     } catch (error) {
       console.error("저장 실패:", error);
       if (error.response) {
@@ -198,7 +155,7 @@ const BaseContainer = styled.div`
   align-items: center;
   width: 100%;
   min-height: 100vh;
-  background-color: gray;
+  background-color: grey;
 `;
 
 const TopSection = styled.div`
