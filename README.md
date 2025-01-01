@@ -91,43 +91,43 @@ Link는 여행 준비 과정에서 주최자와 참여자가 여행 정보를 �
   <p align="center"><img src="https://github.com/user-attachments/assets/de481da7-8f12-4559-a123-1523137f5252" width="30%" />
 
   - 기능: 로그인 페이지 
-  - 주요 기술: 
+
 
 ## History Page
   <p align="center"><img src="https://github.com/user-attachments/assets/0e27527e-7cd5-4653-b1d0-1e0131c97f1b" width="30%" />
 
   - 기능: 지난 약속들 모아보는 페이지
-  - 주요 기술: 
+
 
 ## Main Page - piece
   <p align="center"><img src="https://github.com/user-attachments/assets/f1b41108-2028-48c3-8f36-cd455ad1c699" width="30%" />
 
   - 기능: 약속을 생성하고 삭제하는 약속 페이지
-  - 주요 기술: 
+
 
 ## Main Page - category
   <p align="center"><img src="https://github.com/user-attachments/assets/7796a3e1-a799-4cfc-9944-0aeb758f95ce" width="30%" />
 
   - 기능: 약속의 카테고리를 모아보는 종합 페이지 
-  - 주요 기술: 
+
   
 ## Add Page
   <p align="center"><img src="https://github.com/user-attachments/assets/d793e8af-0276-4ddd-9836-5c4743e54a1a" width="30%" />
 
   - 기능: 약속 및 카테고리를 생성 수정 삭제하는 모달 페이지  
-  - 주요 기술: 
+
 
 ## MyInfo Page
   <p align="center"><img src="https://github.com/user-attachments/assets/631d9565-9621-432d-b4da-c2ded1e068b3" width="30%" />
 
   - 기능: 마이페이지 
-  - 주요 기술: 
+
 
 ## Comment Page
   <p align="center"><img src="https://github.com/user-attachments/assets/8aeb88df-a209-4178-b060-b3305ed72870" width="30%" />
 
   - 기능: 카테고리별 비동기 커뮤니케이션 페이지
-  - 주요 기술: 
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
