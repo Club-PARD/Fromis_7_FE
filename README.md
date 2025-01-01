@@ -5,7 +5,7 @@
 <div>
 
 <p align="center">
-  <img src="./src/Img/ReadMe/Title.png" width="50%" />
+  ![Title](https://github.com/user-attachments/assets/9fdc6cd7-2eeb-40ee-9c36-d901f3c377e6)
 </p>
 
 <h3 align="center">L:nk</h3>
