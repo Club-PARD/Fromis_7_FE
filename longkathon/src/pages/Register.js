@@ -3,7 +3,7 @@ import styled from "styled-components";
 import LoginLogoImage from "../Image/LoginLogo.png";
 import { useNavigate } from "react-router-dom";
 import { postLoginAPI, postDUPAPI, postRegisterAPI } from "../API/Login";
-
+//등록
 function Register() {
   const [nickname, setNickname] = useState("");
   const [credentials, setCredentials] = useState({
