@@ -8,7 +8,7 @@ const HeaderComponent = ({ disabled, isButtonClicked }) => { // 외부에서 dis
   const navigate = useNavigate();
 
   const handleConnectHome = () => {
-    navigate("/main");
+    navigate("/piece");
   };
 
   const handleConnectMyInfo = () => {
@@ -54,19 +54,6 @@ const HeaderComponent = ({ disabled, isButtonClicked }) => { // 외부에서 dis
   );
 };
 
-// const HeaderContainer = styled.div`
-//   height: 60px;
-//   display: flex;
-//   align-items: center;
-//   justify-content: space-between;
-//   position: fixed;  /* 상단 고정 */
-//   top: 0;
-//   left: 0;
-//   right: 0;
-//   z-index: ${(props) => (props.isButtonClicked ? 200 : 1000)};  /* alertActive에 따라 z-index 설정 */
-//   padding: 0 20px;  /* 좌우 여백 추가 */
-// `;
-
 const HeaderBackground = styled.div`
 position: fixed;
 width: 100%;
@@ -75,7 +62,7 @@ background-color: white;
 top: 0;
   left: 0;
   right: 0;
-  z-index: ${(props) => (props.isButtonClicked ? 200 : 900)};  /* alertActive에 따라 z-index 설정 */
+  z-index: ${(props) => (props.isButtonClicked ? 200 : 900)};  
   padding: 0 20px;  /* 좌우 여백 추가 */
    align-items: center;
   justify-content: space-between;

@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 
-const CategoryAddContainer = ({ onClickHandler, disabled = false }) => {
+const CategoryAddContainer = ({ onClickHandler }) => {
   return (
-    <AddContainer disabled={disabled} >
+    <AddContainer >
       <CategoryFile src={require("../Image/CategoryFile.png")} alt="file-image" />
       <CategotyTitle>categories: </CategotyTitle>
 
@@ -14,7 +14,7 @@ const CategoryAddContainer = ({ onClickHandler, disabled = false }) => {
         style={{
           width: "100px", height: "100px", transform: "rotate(-45deg)", position: "absolute", top: "108px", left: "57px"
         }}
-        onClick={disabled ? null : onClickHandler} // Disable click if disabled is true
+        onClick={onClickHandler} // Disable click if disabled is true
       ></lord-icon>
     </AddContainer>
   );
@@ -25,10 +25,6 @@ const AddContainer = styled.div`
   position: relative;
   width: 217px;
   height: 260px;
-  ${({ disabled }) => 
-    disabled && `
-      pointer-events: none; /* Disable all interactions */
-    `}
 `;
 
 const CategotyTitle = styled.div`

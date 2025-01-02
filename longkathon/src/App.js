@@ -22,7 +22,7 @@ function App() {
         <Route path="/emptymain" element={<EmptyMainPage />} />
         <Route path="/detail" element={<DetailPage />} />
         <Route path="/addcategory" element={<AddCategory />} />
-        <Route path="/category" element={<AllCategoryPage Title={"input_title"} />} />
+        <Route path="/piece/:pieceIdCategory/category" element={<AllCategoryPage />} />
         <Route path="/mypage" element={<MyInfoPage />} />
         <Route path="/history" element={<HistoryPage />} />
         <Route path="/piece" element={<AllPiecePage />} />

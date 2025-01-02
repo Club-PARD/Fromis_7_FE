@@ -307,7 +307,7 @@ const CustomCategoryButton = styled.button`
   text-align: center;
   position: absolute;
   top: 114px;
-  left: 887px;
+  right:0px;
   cursor: pointer; /* 항상 클릭 가능 */
   transition: background-color 0.2s, color 0.2s;
   z-index: ${(props) => (props.clicked ? "330" : "100")};

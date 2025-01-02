@@ -70,7 +70,7 @@ const MainPage = () => {
 
 
   const handleConnectCategory = () => {
-    navigate("/category");
+    navigate(`/piece/${pieceId}/category`);
   };
 
   // `StartDay`, `StartMonth`, `StartYear`로 `targetDate`를 포맷팅
@@ -106,7 +106,7 @@ const MainPage = () => {
         <MainContainer>
           <ViewContainer>
             <PieceMapWrapper>
-              <PieceMap />
+              <PieceMap pieceId={pieceId}/>
             </PieceMapWrapper>
             <ViewButton onClick={handleConnectCategory}>
               전체 조각 보러가기
@@ -269,7 +269,7 @@ export const CategoryText2 = styled.div`
 
 const PieceMapWrapper = styled.div`
   position: absolute;
-  top: 50%;
+  top: 140px;
   left: 0;
   transform: translate(0, -50%);
   margin-top: 20px;

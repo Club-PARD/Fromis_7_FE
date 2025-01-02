@@ -70,9 +70,9 @@ const InformationCard = styled.div`
 
 const CloseButton = styled.div`
   position: absolute;
-  top: -5px;
-  right: -5px;
-  background: white;
+  top: -15px;
+  right: -15px;
+  background: none;
   border: none;
   cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
   color: #5ba8fb;

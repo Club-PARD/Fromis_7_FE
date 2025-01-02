@@ -7,7 +7,7 @@ export const postPieceAPI = async (pieceId, data) => {
     try {
         console.log("POST 데이터:", data);
         //const response = await axios.post(`${sercer}/pieces/${userId}`, data{뭐시기뭐시기로 보내야함})
-        const response = await axios.post(`${server}/categories/7`, data, {
+        const response = await axios.post(`${server}/categories/3`, data, {
             headers: {
               "Content-Type": "application/json", 
             },
@@ -22,9 +22,9 @@ export const postPieceAPI = async (pieceId, data) => {
 };
 
 //GET
-export const getCategoryAPI = async (pieceId) => { //
+export const getCategoryAPI = async (pieceIdCategory) => { //
     try{
-        const response = await axios.get(`${server}/categories/all/${pieceId}`);
+        const response = await axios.get(`${server}/categories/all/${pieceIdCategory}`);
         return response.data;
     } catch (error){
         console.error("Error fetching categories error:", error);
@@ -32,13 +32,29 @@ export const getCategoryAPI = async (pieceId) => { //
     }
 };
 
-// //DELETE
-// export const deletePieceAPI = async(pieceId) => {
-//     try{
-//         const response = await axios.delete(`${server}/pieces/${pieceId}`);
-//         return response;
-//     } catch (error){
-//         console.error("Error deleting piece data:", error);
-//         throw error;
-//     }
-// };
+//DELETE
+export const deleteCategoryAPI = async(cateId) => {
+    try{
+        const response = await axios.delete(`${server}/categories/${cateId}`);
+        return response;
+    } catch (error){
+        console.error("Error deleting piece data:", error);
+        throw error;
+    }
+};
+
+//update
+export const updateCategoryAPI = async (cateId, isHighlighted) => {
+    try {
+        // 쿼리 파라미터로 isHighlighted를 전달
+        const response = await axios.patch(`${server}/categories/${cateId}`, null, {
+            params: {
+                isHighlighted: isHighlighted,
+            },
+        });
+        return response; // 응답 반환
+    } catch (error) {
+        console.error("Error updating piece data:", error);
+        throw error; // 오류 던지기
+    }
+};
