@@ -12,6 +12,7 @@ import AddCategory from './pages/AddCategory.js';
 import AllPiecePage from './pages/AllPiecePage.js';
 import HistoryPage from './pages/History.js';
 import Register from "./pages/Register.js";
+
 import LoginPage from './pages/Login.js';
 
 function App() {
@@ -30,7 +31,7 @@ function App() {
         <Route path="/piece" element={<AllPiecePage />} />
       </Routes>
     </BrowserRouter>
+
   );
 }
-
 export default App;

@@ -21,17 +21,33 @@ const AllCategoryPage = () => {
   const { pieceIdCategory } = useParams(); // URL 파라미터에서 pieceId를 받기
   const [pieceTitle, setPieceTitle] = useState(""); // pieceTitle 상태 추가
 
-    // pieceTitle을 가져오는 함수
+
+  useEffect(() => {
     const fetchPieceTitle = async (pieceIdCategory) => {
       try {
         const categoryData = await getCategoryAPI(pieceIdCategory);
-        const pieceTitle = categoryData.pieceTitle; // pieceTitle 추출
-        setPieceTitle(pieceTitle); // pieceTitle 상태 업데이트
+        const Title = categoryData.pieceTitle; // pieceTitle 추출
+        setPieceTitle(Title); // pieceTitle 상태 업데이트
         console.log("Piece Title:", pieceTitle); // 로그로 출력
       } catch (error) {
         console.error("Error fetching category data:", error);
       }
     };
+
+    fetchPieceTitle();
+  }, []);
+
+  // pieceTitle을 가져오는 함수
+  // const fetchPieceTitle = async (pieceIdCategory) => {
+  //   try {
+  //     const categoryData = await getCategoryAPI(pieceIdCategory);
+  //     const Title = categoryData.pieceTitle; // pieceTitle 추출
+  //     setPieceTitle(Title); // pieceTitle 상태 업데이트
+  //     console.log("Piece Title:", pieceTitle); // 로그로 출력
+  //   } catch (error) {
+  //     console.error("Error fetching category data:", error);
+  //   }
+  // };
 
   // useEffect(() => {
   //   console.log("URL에서 가져온 ID:", pieceIdCategory);
@@ -74,7 +90,7 @@ const AllCategoryPage = () => {
         // const pieceId = 7; 
 
         const data = await getCategoryAPI(pieceIdCategory); //pieceId
-        console.log("category",data);
+        console.log("category", data);
         setCategories(data); // 서버에서 가져온 데이터를 상태로 설정
         setCategoryCount(data.length); // 카테고리 개수 설정
       } catch (error) {
@@ -207,7 +223,7 @@ const AllCategoryPage = () => {
   //     } else {
   //       delete newSelected[id]; // 선택 해제
   //     }
-  
+
   //     // 서버에 업데이트 요청 (isSelected와 isHighlighted 상태를 동기화)
   //     const categoryToUpdate = categories.find((category) => category.id === id);
   //     if (categoryToUpdate) {
@@ -222,7 +238,7 @@ const AllCategoryPage = () => {
   //         console.error("카테고리 상태 업데이트 실패:", error);
   //       }
   //     }
-  
+
   //     return newSelected;
   //   });
   // };
@@ -231,26 +247,26 @@ const AllCategoryPage = () => {
     setTotalCount((prevTotal) => prevTotal + change);
     setSelectedCategories((prevSelected) => {
       const newSelected = { ...prevSelected };
-  
+
       // 카테고리 선택 상태 변경
       if (change > 0) {
         newSelected[id] = true; // 선택됨
       } else {
         delete newSelected[id]; // 선택 해제
       }
-  
+
       // 카테고리 업데이트 (목데이터 처리)
       const categoryToUpdate = categories.find((category) => category.id === id);
       if (categoryToUpdate) {
         categoryToUpdate.isHighlighted = change > 0; // isHighlighted 상태 업데이트
         console.log(`카테고리 ${categoryToUpdate.name}의 isHighlighted 상태가 변경되었습니다.`);
       }
-  
+
       return newSelected;
     });
   };
-  
-  
+
+
   const backgroundImage = require('../Image/MainIcon.png'); // 배경 이미지 추가
 
   const handleAddCard = () => {
@@ -418,7 +434,7 @@ height: 2000px;
 z-index: 900;
 `;
 
-const CategoryAddContainer_AddCard=styled(CategoryAddContainer)`
+const CategoryAddContainer_AddCard = styled(CategoryAddContainer)`
 
 `;
 
