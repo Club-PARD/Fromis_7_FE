@@ -7,11 +7,7 @@ export const postPieceAPI = async (pieceId, data) => {
     try {
         console.log("POST 데이터:", data);
         //const response = await axios.post(`${sercer}/pieces/${userId}`, data{뭐시기뭐시기로 보내야함})
-<<<<<<< HEAD
-        const response = await axios.post(`${server}/categories/1`, data, {
-=======
         const response = await axios.post(`${server}/categories/3`, data, {
->>>>>>> a999a0261ef1bdc906c37e3b814196412f9eca01
             headers: {
               "Content-Type": "application/json", 
             },
@@ -28,12 +24,7 @@ export const postPieceAPI = async (pieceId, data) => {
 //GET
 export const getCategoryAPI = async (pieceIdCategory) => { //
     try{
-<<<<<<< HEAD
-        //const response = await axios.get(`${server}/categories/all/${pieceId}`);
-        const response = await axios.get(`${server}/categories/all/1`);
-=======
         const response = await axios.get(`${server}/categories/all/${pieceIdCategory}`);
->>>>>>> a999a0261ef1bdc906c37e3b814196412f9eca01
         return response.data;
     } catch (error){
         console.error("Error fetching categories error:", error);
