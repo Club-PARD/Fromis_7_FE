@@ -19,26 +19,6 @@ import { useParams } from "react-router-dom";
 
 const AllCategoryPage = () => {
   const { pieceIdCategory } = useParams(); // URL 파라미터에서 pieceId를 받기
-  const [pieceTitle, setPieceTitle] = useState(""); // pieceTitle 상태 추가
-
-    // pieceTitle을 가져오는 함수
-    const fetchPieceTitle = async (pieceIdCategory) => {
-      try {
-        const categoryData = await getCategoryAPI(pieceIdCategory);
-        const pieceTitle = categoryData.pieceTitle; // pieceTitle 추출
-        setPieceTitle(pieceTitle); // pieceTitle 상태 업데이트
-        console.log("Piece Title:", pieceTitle); // 로그로 출력
-      } catch (error) {
-        console.error("Error fetching category data:", error);
-      }
-    };
-
-  // useEffect(() => {
-  //   console.log("URL에서 가져온 ID:", pieceIdCategory);
-  //   // 이 ID를 이용해 데이터를 가져오는 API 호출
-  //   // 예: getPieceAPI(id);
-  // }, [pieceIdCategory]);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [categoryPieces, setCategoryPieces] = useState([]); // 카테고리 상태
   const [categories, setCategories] = useState([]);
@@ -68,13 +48,14 @@ const AllCategoryPage = () => {
   }, [totalCount]);
 
   // 카테고리 데이터 가져오기
+  //이거로 카테고리 데이터 가져옴 건들 ㄴㄴ
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         // const pieceId = 7; 
 
         const data = await getCategoryAPI(pieceIdCategory); //pieceId
-        console.log("category",data);
+        console.log("category", data);
         setCategories(data); // 서버에서 가져온 데이터를 상태로 설정
         setCategoryCount(data.length); // 카테고리 개수 설정
       } catch (error) {
@@ -198,6 +179,39 @@ const AllCategoryPage = () => {
     console.log("showDeleteAlert 상태:", false); // 상태 업데이트 확인
   };
 
+  const [pieceTitle, setPieceTitle] = useState(""); // pieceTitle 상태 추가
+
+  // pieceIdCategory를 정수로 변환
+  const findPieceId = parseInt(pieceIdCategory, 10);
+
+  console.log("pieceId", findPieceId); // 변환된 정수값 로그
+
+  useEffect(() => {
+    const fetchPieceTitle = async () => {
+      try {
+        // API를 통해 데이터 가져오기
+        const categoryData = await getPieceAPI(2); // 예시로 2를 전달
+        console.log("categoryData:", categoryData); // 로그로 출력
+  
+        // pieceId가 findPieceId와 일치하는 항목 찾기
+        const foundItem = categoryData.find(item => item.pieceId === findPieceId);
+  
+        // 일치하는 항목이 있으면 pieceTitle을 추출하여 상태 업데이트
+        if (foundItem) {
+          setPieceTitle(foundItem.title);
+          console.log("Piece Title:", foundItem.title); // 로그로 출력
+        } else {
+          console.log("No matching item found.");
+        }
+      } catch (error) {
+        console.error("Error fetching category data:", error);
+      }
+    };
+  
+    fetchPieceTitle();
+  }, [findPieceId]); // findPieceId가 변경될 때마다 실행
+  
+
   // const handleCountChange = async (change, id) => {
   //   setTotalCount((prevTotal) => prevTotal + change);
   //   setSelectedCategories((prevSelected) => {
@@ -207,7 +221,7 @@ const AllCategoryPage = () => {
   //     } else {
   //       delete newSelected[id]; // 선택 해제
   //     }
-  
+
   //     // 서버에 업데이트 요청 (isSelected와 isHighlighted 상태를 동기화)
   //     const categoryToUpdate = categories.find((category) => category.id === id);
   //     if (categoryToUpdate) {
@@ -222,7 +236,7 @@ const AllCategoryPage = () => {
   //         console.error("카테고리 상태 업데이트 실패:", error);
   //       }
   //     }
-  
+
   //     return newSelected;
   //   });
   // };
@@ -231,26 +245,26 @@ const AllCategoryPage = () => {
     setTotalCount((prevTotal) => prevTotal + change);
     setSelectedCategories((prevSelected) => {
       const newSelected = { ...prevSelected };
-  
+
       // 카테고리 선택 상태 변경
       if (change > 0) {
         newSelected[id] = true; // 선택됨
       } else {
         delete newSelected[id]; // 선택 해제
       }
-  
+
       // 카테고리 업데이트 (목데이터 처리)
       const categoryToUpdate = categories.find((category) => category.id === id);
       if (categoryToUpdate) {
         categoryToUpdate.isHighlighted = change > 0; // isHighlighted 상태 업데이트
         console.log(`카테고리 ${categoryToUpdate.name}의 isHighlighted 상태가 변경되었습니다.`);
       }
-  
+
       return newSelected;
     });
   };
-  
-  
+
+
   const backgroundImage = require('../Image/MainIcon.png'); // 배경 이미지 추가
 
   const handleAddCard = () => {
@@ -395,7 +409,7 @@ const AllCategoryPage = () => {
         <ModalContainer>
           <ModalOverlay >
             <ModalContent>
-              <AddCategory pieceTitle={pieceTitle} onClose={closeModal} />
+              <AddCategory pieceTitle={pieceTitle} findPieceId={findPieceId} onClose={closeModal} />
             </ModalContent>
           </ModalOverlay>
         </ModalContainer>
@@ -418,7 +432,7 @@ height: 2000px;
 z-index: 900;
 `;
 
-const CategoryAddContainer_AddCard=styled(CategoryAddContainer)`
+const CategoryAddContainer_AddCard = styled(CategoryAddContainer)`
 
 `;
 

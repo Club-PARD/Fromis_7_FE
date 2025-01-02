@@ -6,7 +6,6 @@ const CategoryAddContainer = ({ onClickHandler }) => {
     <AddContainer >
       <CategoryFile src={require("../Image/CategoryFile.png")} alt="file-image" />
       <CategotyTitle>categories: </CategotyTitle>
-
       <lord-icon
         src="https://cdn.lordicon.com/nqtddedc.json"
         trigger="hover"

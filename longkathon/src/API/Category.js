@@ -3,11 +3,10 @@ import axios from "axios";
 const server = process.env.REACT_APP_API_URL;
 
 // POST
-export const postPieceAPI = async (pieceId, data) => {
+export const postCategoryAPI = async (pieceId, data) => {
     try {
         console.log("POST 데이터:", data);
-        //const response = await axios.post(`${sercer}/pieces/${userId}`, data{뭐시기뭐시기로 보내야함})
-        const response = await axios.post(`${server}/categories/3`, data, {
+        const response = await axios.post(`${server}/categories/${pieceId}`, data, {
             headers: {
               "Content-Type": "application/json", 
             },
