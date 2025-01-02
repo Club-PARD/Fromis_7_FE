@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import LenderPage from './pages/Land.js';
-import LoginPage from './pages/Login.js';
+import LoginNoGoogle from './pages/Login.js';
 import MainPage from './pages/MainPage.js';
 import DetailPage from './pages/Detail.js';
 import EmptyMainPage from './pages/EmptyMain.js';
@@ -11,6 +11,8 @@ import MyInfoPage from './pages/MyInfoPage.js';
 import AddCategory from './pages/AddCategory.js';
 import AllPiecePage from './pages/AllPiecePage.js';
 import HistoryPage from './pages/History.js';
+import Register from "./pages/Register.js";
+import LoginPage from './pages/Login.js';
 
 function App() {
   return (
