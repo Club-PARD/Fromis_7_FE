@@ -6,21 +6,37 @@ import { postLoginAPI, postDUPAPI, postRegisterAPI } from "../API/Nogoogle";
 
 function Register() {
   const [nickname, setNickname] = useState("");
-  const [credentials, setCredentials] = useState({ id: "", password: "", confirmPassword: "" });
+  const [credentials, setCredentials] = useState({
+    id: "",
+    password: "",
+    confirmPassword: "",
+  });
   const [isIdAvailable, setIsIdAvailable] = useState(false);
+  const [isIdDuplicated, setIsIdDuplicated] = useState(false); // 중복 여부 상태 추가
+  const [isPasswordMatch, setIsPasswordMatch] = useState(true); // 비밀번호 일치 여부 상태 추가
+  const [isEmailValid, setIsEmailValid] = useState(true); // 이메일 유효성 상태 추가
+  const [isPasswordValid, setIsPasswordValid] = useState(true); // 비밀번호 유효성 상태 추가
   const navigate = useNavigate();
 
-
-  //중복 체크 
-  const handleIdCheck = async () => {
+  //중복 체크
+  const handleDUPCheck = async () => {
     const checkData = { email: credentials.id };
+
+    // 이메일 유효성 검사
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(credentials.id)) {
+      alert("올바르지 않은 이메일 형식입니다.");
+      setIsEmailValid(false);
+      return;
+    } else {
+      setIsEmailValid(true);
+    }
     try {
       const response = await postDUPAPI(checkData);
       setIsIdAvailable(response.data);
+      setIsIdDuplicated(!response.data);
       if (response.data) {
-        alert("사용 가능한 아이디입니다.");
-      } else {
-        alert("아이디가 중복되었습니다.");
+        alert("사용할 수 있는 아이디입니다.");
       }
     } catch (error) {
       console.error("중복 확인 실패:", error);
@@ -28,12 +44,30 @@ function Register() {
   };
 
   const handleRegister = async () => {
+    // 모든 인풋이 채워졌는지 확인
+    if (
+      !credentials.id ||
+      !credentials.password ||
+      !credentials.confirmPassword ||
+      !nickname
+    ) {
+      alert("모든 정보를 입력해주세요.");
+      return;
+    }
     if (!isIdAvailable) {
       alert("아이디 중복 확인을 먼저 해주세요.");
       return;
     }
     if (credentials.password !== credentials.confirmPassword) {
       alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+      return;
+    }
+    if (!isEmailValid) {
+      alert("올바르지 않은 이메일 형식입니다.");
+      return;
+    }
+    if (!isPasswordValid) {
+      alert("비밀번호는 영어,숫자, 특수문자포함 8자~20자여야 합니다.");
       return;
     }
     const userData = {
@@ -43,23 +77,10 @@ function Register() {
     };
     try {
       await postRegisterAPI(userData);
-      navigate("/main");
+      alert("회원가입이 완료되었습니다. 로그인페이지로 이동합니다.");
+      navigate("/login");
     } catch (error) {
       console.error("회원가입 실패:", error);
-    }
-  };
-
-  const handleLogin = async () => {
-    const loginData = {
-      email: credentials.id,
-      password: credentials.password,
-    };
-    console.log("로그인 데이터:", loginData);
-    try {
-      await postLoginAPI(loginData);
-      navigate("/main");
-    } catch (error) {
-      console.error("로그인 실패:", error);
     }
   };
 
@@ -71,41 +92,84 @@ function Register() {
       <GoogleLoginSection>
         <Title>회원가입</Title>
         <Container>
-          <Label>아이디</Label>
+          <FlexDiv>
+            <Label>아이디</Label>
+            {isIdDuplicated && <RedLabel>중복된 이메일 주소에요</RedLabel>}
+          </FlexDiv>
           <InputIdContainer>
             <InputId
               type="text"
               placeholder="이메일 주소를 입력해주세요."
               value={credentials.id}
-              onChange={(e) => setCredentials({ ...credentials, id: e.target.value })}
+              onChange={(e) =>
+                setCredentials({ ...credentials, id: e.target.value })
+              }
             />
-            <DuplicationCheckButton onClick={handleIdCheck}>중복 확인</DuplicationCheckButton>
+            <DuplicationCheckButton onClick={handleDUPCheck}>
+              중복 확인
+            </DuplicationCheckButton>
           </InputIdContainer>
         </Container>
         <Container>
-          <Label>비밀번호</Label>
+          <FlexDiv>
+            <Label>비밀번호</Label>
+            {!isPasswordValid && (
+              <RedLabel>
+                올바르지 않은 비밀번호 형식이에요
+              </RedLabel>
+            )}
+          </FlexDiv>
           <InputPassword
             type="password"
             placeholder="비밀번호 입력 (문자, 숫자, 특수문자 포함 8~20자)"
             value={credentials.password}
-            onChange={(e) =>
-              setCredentials({ ...credentials, password: e.target.value })
-            }
+            onChange={(e) => {
+              setCredentials({ ...credentials, password: e.target.value });
+              const passwordRegex =
+                /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,20}$/;
+              setIsPasswordValid(passwordRegex.test(e.target.value));
+              if (
+                credentials.confirmPassword &&
+                e.target.value !== credentials.confirmPassword
+              ) {
+                setIsPasswordMatch(false);
+              } else {
+                setIsPasswordMatch(true);
+              }
+            }}
           />
         </Container>
         <Container>
-          <Label>비밀번호 확인</Label>
+          <FlexDiv>
+            <Label>비밀번호 확인</Label>
+            {!isPasswordMatch && (
+              <RedLabel>비밀번호가 일치하지 않아요</RedLabel>
+            )}
+          </FlexDiv>
           <CheckPassword
             type="password"
-            placeholder="비밀번호를 재입력"
+            placeholder="비밀번호 재입력"
             value={credentials.confirmPassword}
-            onChange={(e) =>
-              setCredentials({ ...credentials, confirmPassword: e.target.value })
-            }
+            onChange={(e) => {
+              setCredentials({
+                ...credentials,
+                confirmPassword: e.target.value,
+              });
+              if (
+                credentials.password &&
+                e.target.value !== credentials.password
+              ) {
+                setIsPasswordMatch(false);
+              } else {
+                setIsPasswordMatch(true);
+              }
+            }}
           />
         </Container>
         <Container>
-          <Label>사용자 이름</Label>
+          <FlexDiv>
+            <Label>사용자 이름</Label>
+          </FlexDiv>
           <InputUserName
             type="text"
             placeholder="이름을 입력해주세요."
@@ -127,7 +191,6 @@ const SignUpContainer = styled.div`
   align-items: center;
   font-family: "Arial", sans-serif;
   background: #fff;
-  padding: 63px, 144px;
   @media (max-width: 768px) {
     flex-direction: column;
   }
@@ -168,15 +231,20 @@ const Title = styled.div`
 `;
 
 const Container = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: start;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+`;
+
+const FlexDiv = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 const InputIdContainer = styled.div`
-    display: flex;
-    align-items: center;
-    width: 567px;
+  display: flex;
+  align-items: center;
+  width: 567px;
   height: 84px;
   text-indent: 20px;
   border-radius: 10px;
@@ -190,7 +258,7 @@ const InputIdContainer = styled.div`
   line-height: normal;
   margin-bottom: 24px;
   padding: 0px;
-    justify-content: space-between;
+  justify-content: space-between;
 `;
 
 const Label = styled.label`
@@ -204,12 +272,22 @@ const Label = styled.label`
   margin-bottom: 8px;
 `;
 
+const RedLabel = styled.div`
+  color: #ff6a6a;
+  font-family: "Product Sans";
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  margin-left: 8px;
+`;
+
 const InputId = styled.input`
-width: 100%;
-height: 84px;
-text-indent: 20px;
-border-radius: 10px;
-border: none;
+  width: 100%;
+  height: 84px;
+  text-indent: 20px;
+  border-radius: 10px;
+  border: none;
   background: #fff;
   color: #e1e1e1;
   font-family: "Product Sans";
@@ -228,20 +306,20 @@ border: none;
 `;
 
 const DuplicationCheckButton = styled.button`
-width: 119px;
-height: 42px;
-padding: 0px;
-flex-shrink: 0;
-border-radius: 10px;
-background: #5ba8fb;
-border: none;
-color: #FFF;
-font-family: "Product Sans";
-font-size: 16px;
-font-style: normal;
-font-weight: 400;
-line-height: normal;
-margin-right: 10px;
+  width: 119px;
+  height: 42px;
+  padding: 0px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: #5ba8fb;
+  border: none;
+  color: #fff;
+  font-family: "Product Sans";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  margin-right: 10px;
 `;
 
 const InputPassword = styled.input`

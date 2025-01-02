@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Container, MainBenner } from "./MainPage";
+import { Container } from "./MainPage";
 import SideBar from "../components/SideBar";
 import HeaderComponent from "../components/HeaderComponent";
 import CategoryAddContainer from "../components/CategoryAddContainer";
 import AlertManager from "../components/AlertManager";
-import AlertManager_Delete from "../components/AlertManager_Delete";
+import AlertManagerDelete from "../components/AlertManagerDelete";
 import AddCategory from "../pages/AddCategory";
 import CategoryCard_Check from "../components/CategoryCard_Check";
 import { useMemo } from "react";
@@ -21,6 +21,7 @@ const AllCategoryPage = ({ Title }) => {
   const [alertActive, setAlertActive] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false); // 삭제 경고 상태
   const [categoryToDelete, setCategoryToDelete] = useState(null); // 삭제할 카테고리
+  const [categoryCount, setCategoryCount] = useState(0); // 카테고리 개수
 
   useEffect(() => {
     if (totalCount === 4) {
@@ -37,6 +38,7 @@ const AllCategoryPage = ({ Title }) => {
         const pieceId = 7; // pieceId를 실제 ID로 설정
         const data = await getCategoryAPI(pieceId);
         setCategories(data); // 서버에서 가져온 데이터를 상태로 설정
+        setCategoryCount(data.length); // 카테고리 개수 설정
       } catch (error) {
         console.error("카테고리 데이터를 가져오는 중 오류 발생:", error);
       }
@@ -117,6 +119,12 @@ const AllCategoryPage = ({ Title }) => {
     });
   };
 
+  const backgroundImage = require('../Image/MainIcon.png'); // 배경 이미지 추가
+
+  const handleAddCard = () => {
+    setIsModalOpen(true); // 모달 열기
+  };
+
   const getAddCardPosition = () => {
     // 카드가 4개씩 한 줄에 배치되므로, categoryCount에 맞춰 적절한 위치 계산
     const row = Math.floor(categoryCount / 4); // 한 줄에 4개의 카드
@@ -133,13 +141,13 @@ const AllCategoryPage = ({ Title }) => {
     if (isModalOpen) {
       document.body.style.overflow = 'hidden'; // 전체 페이지 스크롤 비활성화
     } else {
-      document.body.style.overflow = 'auto'; // 전체 페이지 스크롤 활성화
+      document.body.style.overflow = 'auto'; // 전체 페이지 스큜롤 활성화
     }
   }, [isModalOpen]);
 
-  const handleAddCard = () => {
-    setIsModalOpen(true); // AddCategory 모달 열기
-  };
+  // const handleAddCard = () => {
+  //   setIsModalOpen(true); // AddCategory 모달 열기
+  // };
 
   const closeModal = () => {
     setIsModalOpen(false); // 모달 닫기
@@ -156,7 +164,7 @@ const AllCategoryPage = ({ Title }) => {
         </ModalOverlay>
       )}
       {/* 삭제 경고창 */}
-      <AlertManager_Delete
+      <AlertManagerDelete
         triggerCondition={showDeleteAlert}
         onTrigger={() => setShowDeleteAlert(false)} // 경고창 닫을 때 초기화
         onDelete={confirmDelete} // 삭제 버튼 클릭 시 삭제 수행
@@ -164,7 +172,7 @@ const AllCategoryPage = ({ Title }) => {
         backgroundImage={categoryToDelete?.backgroundImage}  // 해당 카테고리의 배경 이미지 전달
         message={`${categoryToDelete?.category} 카드를 삭제할까요?`} // 직접 전달된 메시지
         categoryToDelete={categoryToDelete} // 삭제할 카테고리 전달
-      />
+      />)
       {/* AlertManager: 최대 선택 개수 도달 시 경고 */}
       {!showDeleteAlert && (
         <AlertManager
@@ -172,11 +180,17 @@ const AllCategoryPage = ({ Title }) => {
           message="최대 4개 카테고리만 즐겨찾기 할 수 있습니다."
         />
       )}
-
-      <MainBenner>
+      {/* 배경 이미지: categories.length가 0일 때만 표시 */}
+      {categories.length === 0 && (
+        <>
+          <BackgroundImage src={backgroundImage} alt="배경 이미지" />
+          <BackgroundTitle>카테고리가 생성될 때마다 조각을 링크해요!</BackgroundTitle>
+        </>
+      )}
+      <FixContainer>
         <CategorySideBar />
         <HeaderComponent />
-      </MainBenner>
+      </FixContainer>
       <AllCategoryContainer>
         <CategoryTitle>{Title}</CategoryTitle>
         <CustomCategoryText1>{totalCount}/4</CustomCategoryText1>
@@ -218,7 +232,13 @@ const AllCategoryPage = ({ Title }) => {
   );
 };
 
-const CategorySideBar = styled(SideBar)``;
+const FixContainer =styled.div`
+  `;
+
+const CategorySideBar = styled(SideBar)`
+
+`;
+
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -230,8 +250,8 @@ const ModalOverlay = styled.div`
   justify-content: center;
   align-items: center;
   background: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
-  pointer-events: auto;
-  z-index: 300;
+  pointer-events: auto; /* 모달 배경 클릭 가능 */
+  z-index: 1100;
 `;
 
 const ModalContent = styled.div`
@@ -243,6 +263,7 @@ const ModalContent = styled.div`
 const AllPageContainer = styled(Container)`
   background: ${(props) => (props.$highlight ? "rgba(4, 4, 4, 0.6)" : "transparent")};
   pointer-events: ${(props) => (props.$highlight ? "none" : "auto")};
+  
 `;
 
 const CustomCategoryText1 = styled.div`
@@ -348,6 +369,41 @@ const ContainerBox = styled.div`
   width: 100%;
   top: 188px;
   height: 614px;
+`;
+
+const BackgroundImage = styled.img`
+  position: absolute;
+  top:263px;
+  left:469px;
+  width: 467px;
+  height: auto;
+  display: flex;
+    justify-content: center;
+    align-items: center;
+  z-index: -1; /* 컨텐츠 뒤에 배경이 오도록 설정 */
+  border-radius: 12px;
+`;
+
+const BackgroundTitle = styled.div`
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #3597ff;
+    font-family: "Product Sans Thin";
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 350;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    z-index: 300;
+
+    /* 반응형 스타일 */
+    @media (max-width: 768px) {
+        font-size: 24px;
+    }
 `;
 
 export default AllCategoryPage;

@@ -51,15 +51,15 @@ const CategoryIcon = styled.div`
 
 const CategoryCard = ({ category, colorKey }) => {
   // colorKey에 맞는 이미지를 imageMap에서 가져오기
-  const imageKey = colorKey ? colorKey.toLowerCase() : "purple";
-  const image = imageMap[imageKey] || imageMap.purple;  // 기본값을 purple로 설정
+  const imageKey = colorKey ? colorKey.toLowerCase() : null;
+  const image = imageKey ? imageMap[imageKey] : null; // colorKey가 유효하지 않으면 null
 
   return (
     <CategoryBox>
       <StyledCard />  {/* StyledCard는 배경 이미지로 설정됨 */}
       <CategoryPiece image={image} />  {/* CategoryPiece에 배경 이미지 전달 */}
       <CategoryText>categories:</CategoryText>
-      <DisplayedText>{category}</DisplayedText>
+      <DisplayedText hasText={!!category}>{category || ""}</DisplayedText>
       <CategoryIcon>
         <BookMarkIcon />
       </CategoryIcon>
@@ -88,7 +88,7 @@ const DisplayedText = styled.div`
   height: auto;
   border-radius: 20px;
   background: #fff;
-  padding: 5px 10px;
+  padding: ${(props) => (props.hasText ? "5px 10px" : "0")}; /* 글자가 없으면 패딩 제거 */
   color: #040404;
   font-family: Inter;
   font-size: 16px;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled, { keyframes } from "styled-components";
 
-const Dropdown = () => {
+const Dropdown = ({ isButtonClicked, onSortClosest, onSortCreatedAt}) => { // alertActive를 외부에서 받아옴
   const [isOpen, setIsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState("선택");
 
@@ -12,6 +12,14 @@ const Dropdown = () => {
   const handleItemClick = (item) => {
     setSelectedItem(item);
     setIsOpen(false);  // 선택 후 드롭다운 닫기
+
+       // 특정 항목 선택 시 추가 동작
+    if (item === "링크 가까운 순") {
+      console.log("링크 가까운 순 정렬 실행");
+      onSortClosest(); // 정렬 함수 실행
+    }else if (item === "링크 생성순") {
+      onSortCreatedAt(); // '링크 생성순' 정렬 실행
+    }
   };
 
   const handleOutsideClick = (event) => {
@@ -32,7 +40,7 @@ const Dropdown = () => {
   }, [isOpen]);
   
   return (
-    <Container id="dropdown-menu">
+    <Container id="dropdown-menu" isButtonClicked={isButtonClicked}> {/* alertActive 값 전달 */}
       <DropdownMenu isOpen={isOpen} onClick={toggleDropdown}>
         <MenuItem>
           {selectedItem}
@@ -50,7 +58,6 @@ const Dropdown = () => {
     </Container>
   );
 };
-
 
 const rotateIn = keyframes`
   from {
@@ -78,10 +85,8 @@ const Container = styled.div`
   top: 62px; /* 화면 상단에서 82px 떨어짐 */
   left: 82px; /* 화면 왼쪽에서 82px 떨어짐 */
   font-family: "Product Sans", sans-serif;
-  z-index: 1; /* 기본적으로 낮은 z-index */
+  z-index: ${(props) => (props.isButtonClicked ? 299 : 303)}; /* alertActive일 때 z-index를 300보다 낮게 설정 */
 `;
-
-
 
 const DropdownMenu = styled.div`
   display: flex;
@@ -114,7 +119,6 @@ const MenuItem = styled.li`
     border-radius: 20px;
   }
 `;
-
 
 const DropdownItems = styled.div`
   width: 180px;

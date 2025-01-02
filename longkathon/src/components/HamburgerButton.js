@@ -1,8 +1,15 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-export const HamburgerIcon = ({ color, width, height }) => {
+export const HamburgerIcon = () => {
   const [showBanners, setShowBanners] = useState(false);
+
+  const navigate = useNavigate();
+
+  const handleConnectMyInfo = () => {
+    navigate("/myinfo");
+  };
 
   const handleIconClick = () => {
     setShowBanners(!showBanners);
@@ -36,8 +43,9 @@ export const HamburgerIcon = ({ color, width, height }) => {
         onClick={handleIconClick}
       ></LordIcon>
       <BannersContainer show={showBanners}>
-        {["마이 페이지", "진행 중 링크", "지난 링크", "설정"].map((category, index) => (
-          <Banner key={index}>{category}</Banner>
+        {["마이 페이지", "진행 중 링크", "지난 링크"].map((category, index) => (
+          <Banner key={index} onClick={index === 0 ? handleConnectMyInfo : undefined} // 첫 번째 카테고리 클릭 시 네비게이트
+          >{category}</Banner>
         ))}
       </BannersContainer>
     </Container>
@@ -68,7 +76,7 @@ const BannersContainer = styled.div`
   font-family: "Product Sans", sans-serif;
   font-size: 16px;
   width: 300px;
-  height: 220px;
+  height: 162px;
   border: ${(props) => (props.show ? "1px solid #AFB8C1" : "none")};
   border-radius: 20px;
   background-color: #ffffff;
@@ -89,7 +97,7 @@ const Banner = styled.div`
   padding: 10px 20px;
   border-radius: 20px;
   text-align: left;
-  height: 55px;
+  height: 40px;
   display: flex;
   align-items: center;
   cursor: pointer;

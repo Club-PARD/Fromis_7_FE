@@ -5,24 +5,23 @@ import { useNavigate } from "react-router-dom";
 import { postLoginAPI, postRegisterAPI } from "../API/Nogoogle";
 // CSS수정해야 합니다. -Sehyun-
 function LoginPage() {
-  const [nickname, setNickname] = useState("");
   const [credentials, setCredentials] = useState({ id: "", password: "" });
   const navigate = useNavigate();
 
-  //회원가입
-  const handleRegister = async () => {
-    const userData = {
-      name: nickname,
-      email: credentials.id,
-      password: credentials.password,
-    };
-    try {
-      await postRegisterAPI(userData);
-      navigate("/login");
-    } catch (error) {
-      console.error("회원가입 실패:", error);
-    }
-  };
+  // //회원가입
+  // const handleRegister = async () => {
+  //   const userData = {
+  //     name: nickname,
+  //     email: credentials.id,
+  //     password: credentials.password,
+  //   };
+  //   try {
+  //     await postRegisterAPI(userData);
+  //     navigate("/login");
+  //   } catch (error) {
+  //     console.error("회원가입 실패:", error);
+  //   }
+  // };
 
   //login flow
   const handleLogin = async () => {
@@ -50,15 +49,17 @@ function LoginPage() {
         <InputId
           type="text"
           placeholder="아이디를 입력해주세요."
-          value={nickname}
-          onChange={(e) => setNickname(e.target.value)}
-        />
-        <InputPassword
-          type="text"
-          placeholder="비밀번호를 입력해주세요."
           value={credentials.id}
           onChange={(e) =>
             setCredentials({ ...credentials, id: e.target.value })
+          }
+        />
+        <InputPassword
+          type="password"
+          placeholder="비밀번호를 입력해주세요."
+          value={credentials.password}
+          onChange={(e) =>
+            setCredentials({ ...credentials, password: e.target.value })
           }
         />
         <FindIdPassWord>
@@ -67,7 +68,7 @@ function LoginPage() {
           <FindPW>비밀번호 찾기</FindPW>
         </FindIdPassWord>
         <LoginButton onClick={handleLogin}>로그인</LoginButton>
-        <RegisterButton onClick={() => navigate("/signup")}>회원가입</RegisterButton>
+        <RegisterButton onClick={() => navigate("/Register")}>회원가입</RegisterButton>
       </GoogleLoginSection>
     </LoginContainer>
   );
@@ -90,7 +91,6 @@ const LogoSection = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: 144px;
   margin-right: 106px;
 `;
 

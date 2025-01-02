@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import LenderPage from './pages/Land.js';
@@ -7,11 +7,11 @@ import MainPage from './pages/MainPage.js';
 import DetailPage from './pages/Detail.js';
 import EmptyMainPage from './pages/EmptyMain.js';
 import AllCategoryPage from './pages/AllCategoryPage.js';
-import ModalAdd from './components/ModalAdd.js';
 import MyInfoPage from './pages/MyInfoPage.js';
 import AddCategory from './pages/AddCategory.js';
+import AllPiecePage from './pages/AllPiecePage.js';
 import HistoryPage from './pages/History.js';
-import SignUp from "./pages/SignUp.js";
+import Register from "./pages/Register.js";
 
 function App() {
   return (
@@ -42,7 +42,7 @@ function App() {
           <Route path="/category" element={<AllCategoryPage Title={"input_title"} />} />
           <Route path="/mypage" element={<MyInfoPage />} />
           <Route path="/history" element={<HistoryPage />} />
-          <Route path="/SignUp" element={<SignUp />} />
+          <Route path="/Register" element={<Register />} />
         </Routes>
       </BrowserRouter>
     </>

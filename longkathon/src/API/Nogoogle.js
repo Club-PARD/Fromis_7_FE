@@ -24,7 +24,7 @@ export const postLoginAPI = async (data) => {
 // POST - SignUp (Duplication Check)
 export const postDUPAPI = async (data) => {
     try {
-        console.log("POST - signup:", data);
+        console.log("POST - 중복체크:", data);
         const response = await axios.post(`${server}/signin/logincheck`, data, {
             headers: {
                 "Content-Type": "application/json",
@@ -41,7 +41,7 @@ export const postDUPAPI = async (data) => {
 // POST - Register
 export const postRegisterAPI = async (data) => {
     try {
-        console.log("POST - signup:", data);
+        console.log("POST - Register:", data);
         const response = await axios.post(`${server}/signin/access`, data, {
             headers: {
                 "Content-Type": "application/json",
