@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import PieceBox from "../Image/PieceBox.png";
 
@@ -12,18 +12,21 @@ import PinkPiece from "../Image/PinkPiece.png";
 import GrayPiece from "../Image/GrayPiece.png";
 import BlackPiece from "../Image/BlackPiece.png";
 import NoPieceImage from "../Image/NoPiece.png";
+import { getCategoryAPI } from "../API/Category";
 
-const mockCategories = [
-    // { id: 1, name: "Category 1" },
-    // { id: 2, name: "Category 2" },
-    // { id: 3, name: "Category 3" }, 
-    // { id: 4, name: "Category 4" }, 
-    // { id: 5, name: "Category 5" }, 
-    // { id: 6, name: "Category 6" },
-    // { id: 7, name: "Category 7" },
-    // { id: 8, name: "Category 8" },
-    // { id: 9, name: "Category 9" },
-];
+// 색상 코드와 색상 이름을 매핑하는 객체
+const colorCodeMap = {
+    '#EA7E7A': 'red',
+    '#FBA96F': 'orange',
+    '#5BA8FB': 'lightblue',
+    '#002ED1': 'darkblue',
+    '#9ED4B6': 'green',
+    '#927CFF': 'purple',
+    '#D9A9ED': 'pink',
+    '#BDBDBD': 'gray',
+    '#424242': 'black',
+  };
+
 const calculateConnectedPosition = (index) => {
     // 퍼즐 조각이 연결되는 좌표 설정
     const positions = [
@@ -41,20 +44,41 @@ const calculateConnectedPosition = (index) => {
     return positions[index] || { x: 0, y: 0 }; // 기본값
 };
 
-const PieceMap = () => {
-    const [categories, setCategories] = useState(mockCategories); 
+const PieceMap = ({pieceId}) => {
+    const [categories, setCategories] = useState([]); 
 
     const colors = [
-        { color: "Red", image: RedPiece },
-        { color: "Orange", image: OrangePiece },
-        { color: "Green", image: GreenPiece },
-        { color: "Blue", image: BluePiece },
-        { color: "SkyBlue", image: SkyBluePiece },
-        { color: "Purple", image: PurplePiece },
-        { color: "Pink", image: PinkPiece },
-        { color: "Gray", image: GrayPiece },
-        { color: "Black", image: BlackPiece },
+        { color: "red", image: RedPiece },
+        { color: "orange", image: OrangePiece },
+        { color: "green", image: GreenPiece },
+        { color: "darkblue", image: BluePiece },
+        { color: "lightblue", image: SkyBluePiece },
+        { color: "purple", image: PurplePiece },
+        { color: "pink", image: PinkPiece },
+        { color: "gray", image: GrayPiece },
+        { color: "black", image: BlackPiece },
     ];
+
+   // 카테고리 데이터 가져오기
+   useEffect(() => {
+    const fetchCategories = async () => {
+        try {
+            
+            const data = await getCategoryAPI(pieceId);
+            console.log("category", data);
+
+            // color 값을 추출하여 배열로 저장
+            const colorArray = data.map((category) => category.color);
+            console.log("Colors:", colorArray);
+
+            setCategories(data); // 서버에서 가져온 데이터를 상태로 설정
+        } catch (error) {
+            console.error("카테고리 데이터를 가져오는 중 오류 발생:", error);
+        }
+    };
+
+    fetchCategories();
+}, []);
 
     return (
         <Container>
@@ -67,12 +91,15 @@ const PieceMap = () => {
                 <PuzzleBox>
                     <Message>{categories.length}개의 퍼즐이 생성되었어요!</Message>
                     <NoPiece src={ NoPieceImage } alt="No piece" />
-                    {categories.slice(0, 9).map((_, index) => {
+                    {categories.slice(0, 9).map((category, index) => {
                         const { x, y } = calculateConnectedPosition(index);
+                        const colorName = colorCodeMap[category.color]; // 색상 이름 변환
+                        const colorImage = colors.find((c) => c.color === colorName)?.image; // 색상 이미지 매핑
+
                         return (
                             <Piece
                                 key={index}
-                                src={colors[index % colors.length].image}
+                                src={colorImage || NoPieceImage} // 매핑 실패 시 기본 이미지
                                 alt={`Piece ${index}`}
                                 style={{
                                     position: "absolute",
