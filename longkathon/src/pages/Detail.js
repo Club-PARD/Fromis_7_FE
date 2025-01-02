@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import HeaderComponent from "../components/HeaderComponent";
 import BeforeShare from "../Image/BeforeShare.png";
 import AfterShare from "../Image/AfterShare.png";
+import Logo from "../Image/Logo.png"
 
 import { postLikeAPI, postUnlikeAPI, postAlignAPI } from "../API/State";
 import { postCommentAPI } from "../API/Comment";
 import { getListAPI } from "../API/List";
+import { getUserAPI } from "../API/User";
 
 // 스타일 컴포넌트 임포트
 import {
@@ -19,9 +21,10 @@ import {
 } from "../styles/DetailStyles";
 
 const DetailPage = ({ propUserId, propListId }) => {
-    const [userId, setUserId] = useState(propUserId || 1);
-    const [listId, setListId] = useState(propListId || 1); // 동적 할당 가능하도록 설정 -> 동적 하게 하려면 1대신 null로 설정
+    const [userId, setUserId] = useState(propUserId || 5);
+    const [listId, setListId] = useState(propListId || 2); // 동적 할당 가능하도록 설정 -> 동적 하게 하려면 1대신 null로 설정
 
+    const [userName, setUserName] = useState("익명"); // Default user name
 
     const [thumbUpColor, setThumbUpColor] = useState("#dcdcdc");
     const [thumbDownColor, setThumbDownColor] = useState("#dcdcdc");
@@ -44,23 +47,30 @@ const DetailPage = ({ propUserId, propListId }) => {
 
     const [isEditable, setIsEditable] = useState(false); // 수정 가능 여부를 나타내는 상태
 
-    const [infoData, setInfoData] = useState({
-        url: "http://fromis_7.link",
-        name: "숙소 이름 여기에...",
-        memo: "메모를 입력해주세요",
-    });
+    const [infoData, setInfoData] = useState({});
 
     const [tempMemo, setTempMemo] = useState(infoData.memo); // tempMemo 상태 추가
     const handleEditToggle = () => {
         setIsEditable((prev) => !prev); // 수정 가능 여부를 토글
     };
 
+    // const getCurrentTime = () => {
+    //     const now = new Date();
+    //     const hours = now.getHours();
+    //     const minutes = now.getMinutes();
+    //     return `${hours}:${minutes < 10 ? "0" : ""}${minutes}`;
+    // };
 
-    const getCurrentTime = () => {
-        const now = new Date();
-        const hours = now.getHours();
-        const minutes = now.getMinutes();
-        return `${hours}:${minutes < 10 ? "0" : ""}${minutes}`;
+    // 시간 변환 함수
+    const formatTime = (isoString) => {
+        const date = new Date(isoString);
+        return date.toLocaleString("ko-KR", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+        });
     };
 
     //댓글 개수 동기화
@@ -69,10 +79,20 @@ const DetailPage = ({ propUserId, propListId }) => {
     }, [comments]);
 
     useEffect(() => {
+        localStorage.setItem("comments", JSON.stringify(comments));
+    }, [comments]); // 댓글 상태 변경 시 로컬 저장소 업데이트
+    
+
+    useEffect(() => {
         const fetchUserAndListData = async () => {
             try {
                 const listData = await getListAPI(listId);
-    
+
+                if (!listData) {
+                    console.error("listData is undefined");
+                    return;
+                }
+
                 // 서버 데이터와 로컬 저장소 동기화
                 const savedState = JSON.parse(localStorage.getItem("likeDislikeState")) || {};
                 const {
@@ -81,30 +101,79 @@ const DetailPage = ({ propUserId, propListId }) => {
                     likeCount = listData.likeCount || 0,
                     dislikeCount = listData.dislikeCount || 0,
                 } = savedState;
-    
+
                 setLikeCount(likeCount);
                 setDislikeCount(dislikeCount);
                 setLiked(liked);
                 setDisliked(disliked);
                 setThumbUpColor(liked ? "#5BA8FB" : "#dcdcdc");
                 setThumbDownColor(disliked ? "#5BA8FB" : "#dcdcdc");
+
+                // 공유 상태 초기화
+                const sharedState = JSON.parse(localStorage.getItem("sharedState")) || {};
+                const {
+                    isShared = listData.isShared || false,
+                    sharedCount = listData.alignCount || 0,
+                } = sharedState;
+
+                setSharedCount(sharedCount);
+                setIsShared(isShared);
+
+                // 서버 데이터로 infoData 상태 업데이트
+                setInfoData({
+                    url: listData.url || "http://fromis_7.link", // 기본값 유지
+                    name: listData.name || "빈칸을 채워주세요...",
+                    memo: listData.description || "메모를 입력해주세요",
+                });
+
+                // 댓글 데이터 매핑 (comments가 없을 경우 빈 배열 사용)
+                const mappedComments = (listData.lists[0]?.comments || []).map((comment) => ({
+                    name: comment.userName || "익명", // 댓글 작성자 이름
+                    content: comment.content || "내용 없음", // 댓글 내용
+                    time: comment.createdAt ? formatTime(comment.createdAt) : "시간 정보 없음", // 댓글 작성 시간
+                    profileImg: comment.imageUrl || Logo, // 저장된 이미지가 없으면 Logo 이미지를 기본값으로 설정
+                }));
+                setComments(mappedComments); // 상태에 저장
+
+                // 로깅: 확인용
+                console.log("Fetched and mapped comments:", mappedComments);
+
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
         };
-    
+
         fetchUserAndListData();
     }, [listId]);
+
+    // 사용자 이름 가져오기 (별도의 useEffect 유지)
+    useEffect(() => {
+        const fetchUserName = async () => {
+            try {
+                const response = await getUserAPI(userId); // API 호출
+                const data = response.data; // Axios는 JSON을 자동으로 파싱함
+                setUserName(data.name || "익명"); // 사용자 이름 설정
+            } catch (error) {
+                console.error("사용자 이름 가져오는 중 에러 발생:", error);
+            }
+        };
+
+        fetchUserName(); // 함수 호출
+    }, [userId]); // userId가 변경될 때만 실행
+
+    const saveSharedStateToLocalStorage = (newState) => {
+        localStorage.setItem("sharedState", JSON.stringify(newState));
+    };
 
     const saveStateToLocalStorage = (newState) => {
         localStorage.setItem("likeDislikeState", JSON.stringify(newState));
     };
-    
+
     const handleLike = async () => {
         try {
             let updatedLikeCount = likeCount;
             let updatedDislikeCount = dislikeCount;
-    
+
             if (liked) {
                 // 좋아요 해제
                 const response = await postUnlikeAPI(listId, userId);
@@ -117,7 +186,7 @@ const DetailPage = ({ propUserId, propListId }) => {
                 updatedLikeCount = response.likeCount ?? likeCount + 1;
                 setLiked(true);
                 setThumbUpColor("#5BA8FB");
-    
+
                 // 싫어요 해제
                 if (disliked) {
                     updatedDislikeCount = response.unlikeCount ?? dislikeCount - 1;
@@ -125,10 +194,10 @@ const DetailPage = ({ propUserId, propListId }) => {
                     setThumbDownColor("#dcdcdc");
                 }
             }
-    
+
             setLikeCount(updatedLikeCount);
             setDislikeCount(updatedDislikeCount);
-    
+
             saveStateToLocalStorage({
                 liked: !liked,
                 disliked: false,
@@ -139,12 +208,12 @@ const DetailPage = ({ propUserId, propListId }) => {
             console.error("Error in handleLike:", error);
         }
     };
-    
+
     const handleDislike = async () => {
         try {
             let updatedLikeCount = likeCount;
             let updatedDislikeCount = dislikeCount;
-    
+
             if (disliked) {
                 // 싫어요 해제
                 const response = await postLikeAPI(listId, userId); // API 호출
@@ -157,7 +226,7 @@ const DetailPage = ({ propUserId, propListId }) => {
                 updatedDislikeCount = response.unlikeCount ?? dislikeCount + 1;
                 setDisliked(true);
                 setThumbDownColor("#5BA8FB");
-    
+
                 // 좋아요 해제
                 if (liked) {
                     updatedLikeCount = response.likeCount ?? likeCount - 1;
@@ -165,10 +234,10 @@ const DetailPage = ({ propUserId, propListId }) => {
                     setThumbUpColor("#dcdcdc");
                 }
             }
-    
+
             setLikeCount(updatedLikeCount);
             setDislikeCount(updatedDislikeCount);
-    
+
             saveStateToLocalStorage({
                 liked: false,
                 disliked: !disliked,
@@ -179,43 +248,64 @@ const DetailPage = ({ propUserId, propListId }) => {
             console.error("Error in handleDislike:", error);
         }
     };
-                            
+
     const handleSharedClick = async () => {
         try {
-            const response = await postAlignAPI(listId, userId);
-            const { alignCount, isShared } = response;
-    
-            setSharedCount(alignCount);
-            setIsShared(isShared);
+            let updatedSharedCount = sharedCount;
+
+            if (isShared) {
+                // 공유 해제
+                const response = await postAlignAPI(listId, userId, false); // 서버 호출 (공유 해제)
+                updatedSharedCount = response.alignCount ?? sharedCount - 1;
+                setIsShared(false);
+            } else {
+                // 공유 설정
+                const response = await postAlignAPI(listId, userId, true); // 서버 호출 (공유 설정)
+                updatedSharedCount = response.alignCount ?? sharedCount + 1;
+                setIsShared(true);
+            }
+
+            setSharedCount(updatedSharedCount);
+
+            saveSharedStateToLocalStorage({
+                isShared: !isShared,
+                sharedCount: updatedSharedCount,
+            });
         } catch (error) {
-            console.error("Error handling align click:", error);
+            console.error("Error handling shared click:", error);
         }
     };
-    
+
     const handleCommentSubmit = async () => {
         if (commentText.trim()) {
             try {
                 const newComment = {
-                    name: "사용자", // 사용자 이름은 실제 프로젝트에서 동적으로 가져올 수 있습니다.
                     content: commentText,
-                    time: getCurrentTime(),
+                    createdAt: new Date().toISOString(),
                 };
-
-                console.log("서버로 전송되는 데이터:", newComment);
-                // 서버에 댓글 저장
+    
+                // 서버에 새 댓글 저장
                 const response = await postCommentAPI(listId, userId, newComment);
-
+    
                 if (response.status === 201) {
-                    // 서버 응답 데이터를 사용하여 상태 업데이트
-                    setComments((prev) => [...prev, response.data]);
-                    setCommentText(""); // 입력창 초기화
+                    const addedComment = {
+                        name: userName || "익명",
+                        content: commentText,
+                        time: formatTime(newComment.createdAt),
+                        profileImg: response.data.profileImg || Logo,
+                    };
+    
+                    // 상태에 즉시 추가
+                    setComments((prevComments) => [...prevComments, addedComment]);
+                    setCommentText(""); // 입력 필드 초기화
                 }
             } catch (error) {
-                console.error("Error submitting comment:", error);
+                console.error("댓글 추가 중 오류 발생:", error);
             }
         }
     };
-
+            
+    
     const toggleCommentInput = () => {
         setShowCommentInput((prev) => !prev);
         setCommentColor((prevColor) => (prevColor === "#dcdcdc" ? "#5BA8FB" : "#dcdcdc"));
@@ -236,22 +326,47 @@ const DetailPage = ({ propUserId, propListId }) => {
         setIsEditable(false); // 수정 모드 비활성화
     };
 
+    useEffect(() => {
+        const fetchCommentsFromLocalStorage = () => {
+            // localStorage에서 댓글 데이터를 가져옴
+            const storedComments = JSON.parse(localStorage.getItem("comments")) || [];
+            setComments(storedComments);
+        };
+    
+        fetchCommentsFromLocalStorage();
+    }, []); // 컴포넌트 로드시 한 번만 실행
+    
+
     // useEffect를 사용하여 댓글 데이터 가져오기
     useEffect(() => {
         const fetchComments = async () => {
             try {
-                // 댓글 데이터 가져오기
                 const response = await getListAPI(listId);
-                setComments(response.comments);
+    
+                if (!response.comments || response.comments.length === 0) {
+                    console.warn("댓글 데이터가 비어 있습니다.");
+                    setComments([]); // 빈 배열로 초기화
+                    return;
+                }
+    
+                const updatedComments = response.comments.map((comment) => ({
+                    name: comment.userName || "익명", // 댓글 작성자 이름
+                    content: comment.content || "내용 없음", // 댓글 내용
+                    time: comment.createdAt ? formatTime(comment.createdAt) : "시간 정보 없음", // 댓글 시간
+                    profileImg: comment.imageUrl || Logo, // 프로필 이미지
+                }));
+    
+                setComments(updatedComments); // 상태 업데이트
             } catch (error) {
-                console.error("Error fetching comments:", error);
+                console.error("댓글 데이터 가져오기 오류:", error);
             }
         };
-
+    
         fetchComments();
-    }, [listId]); // listId를 의존성 배열에 추가
-
-
+    }, [listId]); // listId가 변경될 때마다 데이터 갱신
+        
+            
+    
     return (
         <Container>
             <MainBenner>
@@ -278,7 +393,12 @@ const DetailPage = ({ propUserId, propListId }) => {
                 </CategoryRow>
                 <InfoContainer>
                     <InputLabel>URL:</InputLabel>
-                    <InputBox placeholder="wwww.example.com" />
+                    <InputBox 
+                        value = {infoData.url} // 서버에서 URL 값 불러온 거
+                        placeholder="wwww.example.com"
+                        readOnly // 수정 불가능하게 하기 위해서
+                        />
+                        
                     <ImageBox isEditable={isEditable}>
                         {image ? (
                             <UploadedImage src={image} alt="업로드된 이미지" />
@@ -287,7 +407,11 @@ const DetailPage = ({ propUserId, propListId }) => {
                         )}
 
                     </ImageBox>
-                    <InputBox placeholder="숙소 이름" />
+                    <InputBox 
+                        value = {infoData.name}
+                        placeholder="숙소 이름" 
+                        readOnly // 수정 불가능하게 하기 위해서
+                    />
                 </InfoContainer>
                 <MemoWrapper>
                     <MemoContainer>
@@ -368,8 +492,8 @@ const DetailPage = ({ propUserId, propListId }) => {
                                             <CommentTextContainer>
                                                 <CommentHeader>
                                                     <CommentUser>{comment.name}</CommentUser>
-                                                    <CommentText>{comment.text}</CommentText>
                                                 </CommentHeader>
+                                                <CommentText>{comment.content}</CommentText>
                                                 <CommentTime>{comment.time}</CommentTime>
                                             </CommentTextContainer>
                                         </CommentItemContainer>
