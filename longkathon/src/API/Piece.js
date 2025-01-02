@@ -19,7 +19,7 @@ export const postPieceAPI = async (userId, data) => {
 export const getPieceAPI = async (userId) => { //
     try {
         // const response = await axios.get(`${server}/pieces/all/${userId}`);
-        const response = await axios.get(`${server}/pieces/all/${userId}`);
+        const response = await axios.get(`${server}/pieces/all/2`);
         return response.data;
     } catch (error) {
         console.error("Error fetching(userId) user data:", error);

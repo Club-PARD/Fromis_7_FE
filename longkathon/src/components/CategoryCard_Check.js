@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { updateCategoryAPI } from "../API/Category";
 
 // 키와 이미지 경로를 매핑하는 객체
 const imageMap = {
@@ -11,7 +12,20 @@ const imageMap = {
   black: require("../Image/CategoryPiece_Black.png"),
   orange: require("../Image/CategoryPiece_Orange.png"),
   red: require("../Image/CategoryPiece_Red.png"),
-  white: require("../Image/CategoryPiece_White.png"),
+  gray: require("../Image/CategoryPiece_White.png"),
+};
+
+// 색상 코드와 색상 이름을 매핑하는 객체
+const colorCodeMap = {
+  '#EA7E7A': 'red',
+  '#FBA96F': 'orange',
+  '#5BA8FB': 'lightblue',
+  '#002ED1': 'darkblue',
+  '#9ED4B6': 'green',
+  '#927CFF': 'purple',
+  '#D9A9ED': 'pink',
+  '#BDBDBD': 'gray',
+  '#424242': 'black',
 };
 
 const StyledCard = styled.div`
@@ -78,6 +92,7 @@ const CategoryCard_Check = ({
   clicked,
   onDelete,
   activateAlert, // AlertManager 활성화를 위한 함수 전달
+  cateId,
 }) => {
   const [isMarked, setIsMarked] = useState(isSelected); // 초기 상태를 상위에서 전달받음
 
@@ -86,38 +101,60 @@ const CategoryCard_Check = ({
     setIsMarked(isSelected);
   }, [isSelected]);
 
-  const color = colorKey || "purple"; // 기본 색상 설정
-  const imageKey = color.toLowerCase();
-  const backgroundimage = imageMap[imageKey] || imageMap.purple;
+  // 색상 코드 변환: colorKey를 색상 코드로 매핑하여 imageMap에 적용
+  const colorName = colorCodeMap[colorKey] || "purple"; // colorCodeMap을 사용하여 색상 코드 변환
+  const backgroundImage = imageMap[colorName] || imageMap.purple; // 변환된 색상 이름으로 이미지 매핑
 
   const toggleCountAndColor = () => {
     if (isDisabled && !isMarked) {
       return; // 비활성 상태에서 선택 불가
     }
-
     setIsMarked((prevState) => {
       const newMarkedState = !prevState;
-      onCountChange(newMarkedState ? 1 : -1); // 새 상태에 따라 카운트 업데이트
-      return newMarkedState; // 상태 반전
+      onCountChange(newMarkedState ? 1 : -1);
+      return newMarkedState;
     });
   };
 
-    const handleDelete = () => {
-    onDelete(); // 삭제 함수 호출
-    activateAlert(); // Alert 활성화 함수 호출
+  //   setIsMarked((prevState) => {
+  //     const newMarkedState = !prevState;
+  //     onCountChange(newMarkedState ? 1 : -1); // 새 상태에 따라 카운트 업데이트
+  //     updateIsHighlighted(cateId, newMarkedState); // 서버에 isHighlighted 상태 업데이트
+  //     return newMarkedState; // 상태 반전
+  //   });
+  // };
+
+  const handleDelete = () => {
+    onDelete(cateId); // cateId를 전달
+    activateAlert();
   };
 
+  // 서버로 상태를 변경할 때 호출하는 함수 (목 데이터 사용)
+  // const updateIsHighlighted = async (cateId, isHighlighted) => {
+  //   try {
+  //     // 서버 호출 부분을 주석 처리하고 목 데이터 반환
+  //     // const response = await updateCategoryAPI(cateId, isHighlighted); // 실제 서버 호출
+
+  //     // 목 데이터 (가상의 응답을 반환)
+  //     const response = { data: { cateId, isHighlighted } }; // 예시 응답
+  //     console.log("목 데이터로 업데이트됨:", response);
+  //     return response.data; // 서버의 응답 데이터 반환
+  //   } catch (error) {
+  //     console.error("Error updating highlighted status:", error);
+  //     throw error; // 에러 처리
+  //   }
+  // };
 
   return (
     <CategoryBox clicked={clicked}>
       <StyledCard />
-      <CategoryPiece background={backgroundimage} />
+      <CategoryPiece background={backgroundImage} />
       <CategoryText>categories:</CategoryText>
       <DisplayedText>{category}</DisplayedText>
       <CategoryIcon>
         {clicked ? (
-          <DeleteIcon onClick={handleDelete}/>) : (<BookMarkIcon onClick={toggleCountAndColor}isMarked={isMarked}
-            isDisabled={isDisabled}/>)}
+          <DeleteIcon onClick={handleDelete} />) : (<BookMarkIcon onClick={toggleCountAndColor} isMarked={isMarked}
+            isDisabled={isDisabled} />)}
       </CategoryIcon>
     </CategoryBox>
   );
@@ -128,7 +165,7 @@ const CategoryBox = styled.div`
 /* border: 1px solid black; */
   position: relative;
   /* z-index: 300; */
-  z-index: ${(props)=>(props.clicked? "310": "298")};
+  z-index: ${(props) => (props.clicked ? "310" : "298")};
 `;
 
 const CategoryIcon = styled.div`

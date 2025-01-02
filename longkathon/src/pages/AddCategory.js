@@ -7,7 +7,7 @@ import AddContentBox from "../components/AddContentBox";
 import { postPieceAPI } from "../API/Category";
 
 
-function AddCategory({ buttons = [], onClose }) {
+function AddCategory({ clicked, onClose, pieceTitle }) {
   const buttonsArray = ["숙소", "식당", "카페", "교통", "장소", "준비물"];
   const [activeIndex, setActiveIndex] = useState(null);
   const [infoCards, setInfoCards] = useState([{ id: 0 }]); // 첫 번째 인포박스를 항상 포함
@@ -84,9 +84,11 @@ function AddCategory({ buttons = [], onClose }) {
     }
   };
 
+  console.log("제목",pieceTitle);
+
   return (
-    <BaseContainer>
-      <TopSection>Fromis_7in POHANG</TopSection>
+    <BaseContainer clicked={clicked}>
+      <TopSection>{pieceTitle}</TopSection>
       <ModalContainer>
         <Content>
           <StyledColorPalette onColorSelect={handleColorSelect} />
@@ -148,6 +150,25 @@ function AddCategory({ buttons = [], onClose }) {
   );
 }
 
+const TopSection=styled.div`
+width: 412px;
+height: 88px;
+border-radius: 20px;
+opacity: 1;
+background: linear-gradient(149deg, #F0F8FF 0.77%, #F2F1F8 99.23%);
+margin-top:116px;
+color: #040404;
+font-family: Inter;
+font-size: 26px;
+font-style: normal;
+font-weight: 700;
+line-height: 26px; /* 100% */
+display: flex;
+align-items: center;
+justify-content: center;
+text-align: center;
+`;
+
 const BaseContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -155,32 +176,21 @@ const BaseContainer = styled.div`
   align-items: center;
   width: 100%;
   min-height: 100vh;
-  background-color: grey;
-`;
-
-const TopSection = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 412px;
-  height: 88px;
-  border-radius: 20px;
-  background: #fff;
-  margin-bottom: 32px;
-  color: #040404;
-  font-family: Inter;
-  font-size: 26px;
-  font-weight: 700;
+  background-color: none;
+  z-index:${(props) => (props.clicked ? "1000" : "100")};
 `;
 
 const ModalContainer = styled.div`
-  width: 1275.24px;
+margin-top: 32px;
+  width: 1280px;
   padding-top: 26px;
   padding-bottom: 42px;
   background: #fff;
   border-radius: 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   position: relative;
+  max-height: 90vh; /* 화면 크기 제한 */
+  overflow-y: auto; /* 콘텐츠가 넘치면 수직 스크롤 가능 */
 `;
 
 const Content = styled.div`
