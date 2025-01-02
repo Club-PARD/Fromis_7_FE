@@ -2,42 +2,32 @@ import React, { useEffect, useState } from "react";
 import { Container } from "./MainPage";
 import SideBar from "../components/SideBar";
 import HeaderComponent from "../components/HeaderComponent";
-import styled from "styled-components";
-import CategoryCard_Check from "../components/CategoryCard_Check";
 import CategoryAddContainer from "../components/CategoryAddContainer";
 import AlertManager from "../components/AlertManager";
 import AlertManagerDelete from "../components/AlertManagerDelete";
 import AddCategory from "../pages/AddCategory";
+import CategoryCard_Check from "../components/CategoryCard_Check";
 import { useMemo } from "react";
+import styled from 'styled-components';
 
 import { getCategoryAPI } from "../API/Category";
 
 const AllCategoryPage = ({ Title }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [categories, setCategories] = useState([]);
-  const openModal = () => setIsModalOpen(true);
-
-  const closeModal = (newCategory) => {
-    setIsModalOpen(false);
-    if (newCategory) {
-      setCategories((prevCategories) => [...prevCategories, newCategory]); // 새로운 카테고리 추가
-    }
-  };
-
-  const [categoryCount, setCategoryCount] = useState(0); // 카테고리 카드 개수
   const [totalCount, setTotalCount] = useState(0); // 카운트의 총합
   const [selectedCategories, setSelectedCategories] = useState({}); // 선택된 카테고리 상태
-  const [isButtonClicked, setIsButtonClicked] = useState(false); // New state for button click
+  const [isButtonClicked, setIsButtonClicked] = useState(false); // 버튼 클릭 상태
   const [alertActive, setAlertActive] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false); // 삭제 경고 상태
   const [categoryToDelete, setCategoryToDelete] = useState(null); // 삭제할 카테고리
+  const [categoryCount, setCategoryCount] = useState(0); // 카테고리 개수
 
   useEffect(() => {
     if (totalCount === 4) {
-      setAlertActive(true); // Alert 활성화...
+      setAlertActive(true); // Alert 활성화
     } else {
-      setAlertActive(false); // Alert 비활성화...
+      setAlertActive(false); // Alert 비활성화
     }
   }, [totalCount]);
 
@@ -48,6 +38,7 @@ const AllCategoryPage = ({ Title }) => {
         const pieceId = 7; // pieceId를 실제 ID로 설정
         const data = await getCategoryAPI(pieceId);
         setCategories(data); // 서버에서 가져온 데이터를 상태로 설정
+        setCategoryCount(data.length); // 카테고리 개수 설정
       } catch (error) {
         console.error("카테고리 데이터를 가져오는 중 오류 발생:", error);
       }
@@ -61,39 +52,37 @@ const AllCategoryPage = ({ Title }) => {
     setTimeout(() => setAlertActive(false), 300); // 3초 후 Alert 비활성화
   };
 
-  // 이미지 매핑
-  const colorNameMap = {
-    '#EA7E7A': 'red',
-    '#FBA96F': 'orange',
-    '#5BA8FB': 'lightblue',
-    '#002ED1': 'darkblue',
-    '#9ED4B6': 'green',
-    '#927CFF': 'purple',
-    '#D9A9ED': 'pink',
-    '#BDBDBD': 'gray',
-    '#424242': 'black',
-  };
-
-  const imageMap = {
-    purple: require("../Image/CategoryPiece_Purple.png"),  // 이미지 경로 예시
-    green: require("../Image/CategoryPiece_Green.png"),
-    pink: require("../Image/CategoryPiece_Pink.png"),
-    lightblue: require("../Image/CategoryPiece_LightBlue.png"),
-    darkblue: require("../Image/CategoryPiece_DarkBlue.png"),
-    black: require("../Image/CategoryPiece_Black.png"),
-    orange: require("../Image/CategoryPiece_Orange.png"),
-    red: require("../Image/CategoryPiece_Red.png"),
-    white: require("../Image/CategoryPiece_White.png"),
-  };
-
   const categoriesWithImages = useMemo(() => {
-    return categories.map((item) => {
-      const colorName = colorNameMap[item.color]; // 색상 이름으로 변환
-      const backgroundImage = imageMap[colorName]; // 이미지 매핑
-      return { ...item, backgroundImage }; // 새로운 데이터 구조 생성
-    });
-  }, [categories]); // `categories`가 변경될 때마다 재계산
+    const colorNameMap = {
+      '#EA7E7A': 'red',
+      '#FBA96F': 'orange',
+      '#5BA8FB': 'lightblue',
+      '#002ED1': 'darkblue',
+      '#9ED4B6': 'green',
+      '#927CFF': 'purple',
+      '#D9A9ED': 'pink',
+      '#BDBDBD': 'gray',
+      '#424242': 'black',
+    };
 
+    const imageMap = {
+      purple: require("../Image/CategoryPiece_Purple.png"),
+      green: require("../Image/CategoryPiece_Green.png"),
+      pink: require("../Image/CategoryPiece_Pink.png"),
+      lightblue: require("../Image/CategoryPiece_LightBlue.png"),
+      darkblue: require("../Image/CategoryPiece_DarkBlue.png"),
+      black: require("../Image/CategoryPiece_Black.png"),
+      orange: require("../Image/CategoryPiece_Orange.png"),
+      red: require("../Image/CategoryPiece_Red.png"),
+      white: require("../Image/CategoryPiece_White.png"),
+    };
+
+    return categories.map((item) => {
+      const colorName = colorNameMap[item.color];
+      const backgroundImage = imageMap[colorName];
+      return { ...item, backgroundImage };
+    });
+  }, [categories]);
 
   const handleDelete = (id) => {
     const category = categories.find((category) => category.id === id);
@@ -152,9 +141,17 @@ const AllCategoryPage = ({ Title }) => {
     if (isModalOpen) {
       document.body.style.overflow = 'hidden'; // 전체 페이지 스크롤 비활성화
     } else {
-      document.body.style.overflow = 'auto'; // 전체 페이지 스크롤 활성화
+      document.body.style.overflow = 'auto'; // 전체 페이지 스큜롤 활성화
     }
   }, [isModalOpen]);
+
+  // const handleAddCard = () => {
+  //   setIsModalOpen(true); // AddCategory 모달 열기
+  // };
+
+  const closeModal = () => {
+    setIsModalOpen(false); // 모달 닫기
+  };
 
   return (
     <AllPageContainer>
@@ -172,7 +169,7 @@ const AllCategoryPage = ({ Title }) => {
         onTrigger={() => setShowDeleteAlert(false)} // 경고창 닫을 때 초기화
         onDelete={confirmDelete} // 삭제 버튼 클릭 시 삭제 수행
         onCancel={cancelDelete} // onCancel 프롭을 전달
-        backgroundImage={imageMap[categoryToDelete?.colorKey]}  // 해당 카테고리의 colorKey에 맞는 배경 이미지 전달
+        backgroundImage={categoryToDelete?.backgroundImage}  // 해당 카테고리의 배경 이미지 전달
         message={`${categoryToDelete?.category} 카드를 삭제할까요?`} // 직접 전달된 메시지
         categoryToDelete={categoryToDelete} // 삭제할 카테고리 전달
       />)
@@ -203,7 +200,7 @@ const AllCategoryPage = ({ Title }) => {
         </CustomCategoryButton>
         <ContainerBox>
           <CategoryContainer>
-            {categories.map((item) => (
+            {categoriesWithImages.map((item) => ( // categoriesWithImages 사용
               <CategoryCard_Check
                 key={item.id}
                 index={item.id}
@@ -220,11 +217,10 @@ const AllCategoryPage = ({ Title }) => {
               />
             ))}
 
-            {/* </CategoryContainer> */}
-            {/* AddContainer 렌더링: categoryCount가 8 미만일 때만 */}
+            {/* AddContainer 렌더링: categories.length가 8 미만일 때만 */}
             {categories.length < 8 && (
-              <CategoryAddContainer_AddCard
-                onClickHandler={handleAddCard} // 수정된 부분
+              <CategoryAddContainer
+                onClickHandler={handleAddCard}
                 position={getAddCardPosition()}
                 disabled={isButtonClicked}
               />
@@ -259,29 +255,15 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalContent = styled.div`
-  max-height: 95%; /* 모달 내용의 최대 높이 설정 */
+  max-height: 98%;
   overflow-y: auto; /* 스크롤 가능하도록 설정 */
-  background: red; /* 모달 배경색 */
-  border-radius: 20px; /* 모달 모서리 둥글게 */
+  border-radius: 20px; 
 `;
 
 const AllPageContainer = styled(Container)`
   background: ${(props) => (props.$highlight ? "rgba(4, 4, 4, 0.6)" : "transparent")};
   pointer-events: ${(props) => (props.$highlight ? "none" : "auto")};
   
-`;
-
-const CategoryAddContainer_AddCard = styled(CategoryAddContainer)`
-  width: 200px;
-  height: 150px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: 1px dashed #ccc;
-  border-radius: 8px;
-  position: absolute;
-  top: 1000px;
-  left: ${(props) => props.position.column * 265 + "px"};
 `;
 
 const CustomCategoryText1 = styled.div`
@@ -382,8 +364,6 @@ const CategoryContainer = styled.div`
   align-content: flex-start;
 `;
 
-const CategoryCard = styled.div`
-`;
 const ContainerBox = styled.div`
   position: relative;
   width: 100%;
