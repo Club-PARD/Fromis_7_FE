@@ -26,7 +26,6 @@ export const postDUPAPI = async (data) => {
         "Content-Type": "application/json",
       },
     });
-    console.log(response);
     return response;
   } catch (error) {
     console.error("아이디 중복 확인에 문제가 있어요ㅜㅜ", error);

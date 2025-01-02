@@ -29,7 +29,6 @@ function LoginPage() {
       email: credentials.id,
       password: credentials.password,
     };
-    console.log("로그인 데이터:", loginData);
     try {
       await postLoginAPI(loginData);
       navigate("/main");
