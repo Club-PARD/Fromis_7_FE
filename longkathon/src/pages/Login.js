@@ -2,11 +2,26 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import LoginLogoImage from "../Image/LoginLogo.png";
 import { useNavigate } from "react-router-dom";
-import { postLoginAPI, postRegisterAPI } from "../API/Nogoogle";
-
+import { postLoginAPI, postRegisterAPI } from "../API/Login";
+// CSS수정해야 합니다. -Sehyun-
 function LoginPage() {
   const [credentials, setCredentials] = useState({ id: "", password: "" });
   const navigate = useNavigate();
+
+  // //회원가입
+  // const handleRegister = async () => {
+  //   const userData = {
+  //     name: nickname,
+  //     email: credentials.id,
+  //     password: credentials.password,
+  //   };
+  //   try {
+  //     await postRegisterAPI(userData);
+  //     navigate("/login");
+  //   } catch (error) {
+  //     console.error("회원가입 실패:", error);
+  //   }
+  // };
 
   //login flow
   const handleLogin = async () => {
@@ -14,6 +29,7 @@ function LoginPage() {
       email: credentials.id,
       password: credentials.password,
     };
+    console.log("로그인 데이터:", loginData);
     try {
       await postLoginAPI(loginData);
       navigate("/main");
@@ -204,8 +220,6 @@ const RegisterButton = styled.button`
   line-height: normal;
   border-radius: 10px;
   border: 1px solid #5ba8fb;
-  background: #fff;
-  padding: 0px;
 `;
 
 const LoginButton = styled.button`
@@ -222,9 +236,7 @@ const LoginButton = styled.button`
   font-weight: 400;
   line-height: normal;
   border-radius: 10px;
-  border: none;
-  background: #5ba8fb;
-  padding: 0px;
+  border: 1px solid #007bff;
 `;
 
 export default LoginPage;

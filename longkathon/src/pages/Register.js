@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import LoginLogoImage from "../Image/LoginLogo.png";
 import { useNavigate } from "react-router-dom";
-import { postLoginAPI, postDUPAPI, postRegisterAPI } from "../API/Nogoogle";
+import { postLoginAPI, postDUPAPI, postRegisterAPI } from "../API/Login";
 
 function Register() {
   const [nickname, setNickname] = useState("");
