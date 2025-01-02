@@ -47,23 +47,19 @@ const DetailPage = ({ propUserId, propListId }) => {
 
     const [isEditable, setIsEditable] = useState(false); // 수정 가능 여부를 나타내는 상태
 
-    const [infoData, setInfoData] = useState({
-        url: "http://fromis_7.link",
-        name: "숙소 이름 여기에...",
-        memo: "메모를 입력해주세요",
-    });
+    const [infoData, setInfoData] = useState({});
 
     const [tempMemo, setTempMemo] = useState(infoData.memo); // tempMemo 상태 추가
     const handleEditToggle = () => {
         setIsEditable((prev) => !prev); // 수정 가능 여부를 토글
     };
 
-    const getCurrentTime = () => {
-        const now = new Date();
-        const hours = now.getHours();
-        const minutes = now.getMinutes();
-        return `${hours}:${minutes < 10 ? "0" : ""}${minutes}`;
-    };
+    // const getCurrentTime = () => {
+    //     const now = new Date();
+    //     const hours = now.getHours();
+    //     const minutes = now.getMinutes();
+    //     return `${hours}:${minutes < 10 ? "0" : ""}${minutes}`;
+    // };
 
     // 시간 변환 함수
     const formatTime = (isoString) => {
@@ -123,7 +119,13 @@ const DetailPage = ({ propUserId, propListId }) => {
                 setSharedCount(sharedCount);
                 setIsShared(isShared);
 
-                // 댓글 데이터 매핑 (comments가 없을 경우 빈 배열 사용)
+                // 서버 데이터로 infoData 상태 업데이트
+                setInfoData({
+                    url: listData.url || "http://fromis_7.link", // 기본값 유지
+                    name: listData.name || "빈칸을 채워주세요...",
+                    memo: listData.description || "메모를 입력해주세요",
+                });
+
                 // 댓글 데이터 매핑 (comments가 없을 경우 빈 배열 사용)
                 const mappedComments = (listData.lists[0]?.comments || []).map((comment) => ({
                     name: comment.userName || "익명", // 댓글 작성자 이름
@@ -133,9 +135,9 @@ const DetailPage = ({ propUserId, propListId }) => {
                 }));
                 setComments(mappedComments); // 상태에 저장
 
-
                 // 로깅: 확인용
                 console.log("Fetched and mapped comments:", mappedComments);
+
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
@@ -391,7 +393,12 @@ const DetailPage = ({ propUserId, propListId }) => {
                 </CategoryRow>
                 <InfoContainer>
                     <InputLabel>URL:</InputLabel>
-                    <InputBox placeholder="wwww.example.com" />
+                    <InputBox 
+                        value = {infoData.url} // 서버에서 URL 값 불러온 거
+                        placeholder="wwww.example.com"
+                        readOnly // 수정 불가능하게 하기 위해서
+                        />
+                        
                     <ImageBox isEditable={isEditable}>
                         {image ? (
                             <UploadedImage src={image} alt="업로드된 이미지" />
@@ -400,7 +407,11 @@ const DetailPage = ({ propUserId, propListId }) => {
                         )}
 
                     </ImageBox>
-                    <InputBox placeholder="숙소 이름" />
+                    <InputBox 
+                        value = {infoData.name}
+                        placeholder="숙소 이름" 
+                        readOnly // 수정 불가능하게 하기 위해서
+                    />
                 </InfoContainer>
                 <MemoWrapper>
                     <MemoContainer>
