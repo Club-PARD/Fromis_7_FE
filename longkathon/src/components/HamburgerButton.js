@@ -8,7 +8,7 @@ export const HamburgerIcon = () => {
   const navigate = useNavigate();
 
   const handleConnectMyInfo = () => {
-    navigate("/myinfo");
+    navigate("/mypage");
   };
 
   const handleIconClick = () => {
