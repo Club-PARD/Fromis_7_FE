@@ -8,7 +8,6 @@ import { getPieceAPI } from "../API/Piece";
 import axios from 'axios';
 import { getAlarmAPI } from "../API/Notification"
 
-//수민 누나가 공유해준 코드
 // Sidebar Component
 const SideBar = () => {
   const navigate = useNavigate();
@@ -118,7 +117,7 @@ const SideBar = () => {
           <AddContainer onClick={handleConnectMakeTitle}>
             <HoverableMenuItem
               icon={SideAddButton}
-              imageSrc={AddLinkImage}
+              // imageSrc={AddLinkImage}
               color="primary:#5ba8fb"
               width={40}
               height={40}
@@ -293,6 +292,7 @@ const CenteredText = styled.div`
   font-family: "Product Sans", sans-serif;
   font-size: 20px;
   text-align: center;
+  z-index: 2000px;
 `;
 
 const AlarmModal = ({ notifications, createdAt, onClose }) => {
@@ -333,7 +333,7 @@ const ModalOverlay = styled.div`
   left: 0;
   right: 0;
   background-color: transparent;
-  padding-left: 1040px;
+  padding-left: 1280px;
   padding-top: 225px;
   z-index: 800;
 `;
@@ -344,6 +344,8 @@ const ModalContent = styled.div`
   padding-top: 20px;
   width: 240px;
   height: 248px;
+  max-height: 300px;
+  overflow-y: auto;
   background-color: white;
   border-radius: 20px 0px 20px 20px;
   background: linear-gradient(149deg, #F0F8FF 0.77%, #F2F1F8 99.23%);
