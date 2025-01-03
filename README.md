@@ -128,7 +128,7 @@ Link는 여행 준비 과정에서 주최자와 참여자가 여행 정보를 �
 
   - 기능: 카테고리별 비동기 커뮤니케이션 페이지
 
-# 기술 스텍
+# Tech Stack
 
 ### FrontEnd
 ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
