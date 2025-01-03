@@ -9,7 +9,7 @@ import MyInfoPage from './pages/MyInfoPage.js';
 import AddCategory from './pages/AddCategory.js';
 import AllPiecePage from './pages/AllPiecePage.js';
 import HistoryPage from './pages/History.js';
-import Register from "./pages/Register.js";
+import RegisterPage from './pages/Register.js';
 
 import LoginPage from './pages/Login.js';
 import FetchPractice from './pages/FetchPractce.js';
