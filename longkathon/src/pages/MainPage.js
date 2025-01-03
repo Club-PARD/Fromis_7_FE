@@ -10,22 +10,10 @@ import BackGround from "../components/BackGround";
 import PieceMap from "../components/PieceMap";
 // axios import
 import { getPieceAPI } from "../API/Piece.js"; // 적절한 경로로 수정
+import { getCategoryAPI } from "../API/Category.js";
 
 const MainPage = () => {
   const { pieceId } = useParams(); // URL 파라미터에서 pieceId를 받기
-
-  // 컴포넌트가 렌더링될 때 pieceId 값을 콘솔에 출력
-  useEffect(() => {
-    console.log("Received pieceId from URL:", pieceId);
-  }, [pieceId]);  // pieceId가 변경될 때마다 출력
-
-  // useEffect(() => {
-  //   if (pieceData) {
-  //     console.log("수신한 데이터:", pieceData);
-  //   } else {
-  //     console.warn("전달받은 데이터가 없습니다.");
-  //   }
-  // }, [pieceData]);
 
   const navigate = useNavigate();
   const [filteredPieces, setFilteredPieces] = useState([]); // 새로 생성된 데이터 상태
@@ -33,6 +21,7 @@ const MainPage = () => {
 
   const userId = 2; // 예시로 1을 사용
 
+  // pieceId 값에 따라 필터링된 데이터 요청
   useEffect(() => {
     const fetchPieceData = async () => {
       if (!pieceId) {
@@ -47,15 +36,12 @@ const MainPage = () => {
         console.log("API 응답:", response); // 응답 콘솔 출력
 
         // pieceId와 일치하는 데이터만 필터링
-        console.log("Comparing pieceId:", pieceId); // pieceId 콘솔 출력
-
         const filteredData = response.filter(item => item.pieceId === parseInt(pieceId)); // pieceId 비교 시 숫자로 변환
-
-        console.log("Filtered data:", filteredData); // 필터링된 데이터 콘솔 출력
 
         if (filteredData.length === 0) {
           console.warn("일치하는 pieceId가 없습니다.");
         } else {
+
           setFilteredPieces(filteredData); // 필터링된 데이터 상태 업데이트
         }
       } catch (error) {
@@ -68,10 +54,20 @@ const MainPage = () => {
     fetchPieceData(); // 데이터 요청
   }, [userId, pieceId]); // userId와 pieceId가 변경될 때마다 실행
 
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await getCategoryAPI(pieceId);
+        const filteredCategories = response.filter(category => category.isHighlighted);
+        setCategoriesToRender(filteredCategories); // 상태 업데이트
+        console.log('상태 업데이트 완료:', filteredCategories); // 상태로 설정된 데이터 확인
+      } catch (error) {
+        console.error('API 호출 실패:', error);
+      }
+    };
+    fetchCategories();
+  }, []);
 
-  const handleConnectCategory = () => {
-    navigate(`/piece/${pieceId}/category`);
-  };
 
   // `StartDay`, `StartMonth`, `StartYear`로 `targetDate`를 포맷팅
   const formatDate = (day, month, year) => {
@@ -88,12 +84,18 @@ const MainPage = () => {
   // 기본 4개 항목, categories 데이터가 부족하면 기본값으로 채운다
   const defaultCategories = ["", "", "", ""]; // 기본 4개 항목
 
-  // categories 데이터가 부족하면 defaultCategories로 채운다
-  const categoriesToRender = [...categoriesToDisplay, ...defaultCategories].slice(0, 4); // 항상 4개만 표시
+
 
   const backgroundColor = filteredPieces.length > 0 ? filteredPieces[0].color : null;
 
   console.log("BackGround color:", backgroundColor);
+
+  const [categoriesToRender, setCategoriesToRender] = useState([]); // 렌더링할 카테고리 상태
+
+  // useEffect(() => {
+  //   console.log('categoriesToRender 상태:', categoriesToRender); // 상태 업데이트 이후 값 확인
+  // }, [categoriesToRender]);
+
 
   return (
     <PageContainer>
@@ -106,9 +108,9 @@ const MainPage = () => {
         <MainContainer>
           <ViewContainer>
             <PieceMapWrapper>
-              <PieceMap pieceId={pieceId}/>
+              <PieceMap pieceId={pieceId} />
             </PieceMapWrapper>
-            <ViewButton onClick={handleConnectCategory}>
+            <ViewButton onClick={() => navigate(`/piece/${pieceId}/category`)}>
               전체 조각 보러가기
             </ViewButton>
             <MainRightViewContainer
@@ -131,18 +133,36 @@ const MainPage = () => {
           <CategoryContainer>
             <CategoryText1>L:nk</CategoryText1>
             <CategoryText2>highlight</CategoryText2>
-            {!loading &&
-              categoriesToRender.map((category, index) => {
-                return (
-                  <React.Fragment key={index}>
+            {loading ? (
+              <div>Loading...</div>
+            ) : (
+              // 부족한 부분을 null로 채운 확장된 배열 생성
+              [...categoriesToRender, ...Array(4 - categoriesToRender.length).fill(null)].map((category, index) => {
+                console.log(`렌더링되는 카테고리 ${index}:`, category); // 각 항목 확인
+                if (category) {
+                  // 실제 데이터가 있는 경우
+                  return (
                     <CategoryCard
-                      category={category}
-                      colorKey={"#5ba8fb"} // colorKey는 고정된 색상 또는 데이터에서 가져올 수 있음
+                      key={index}
+                      category={category.name} // name 값을 전달
+                      colorKey={category.color} // color 값을 전달
                     />
-                  </React.Fragment>
-                );
-              })}
-            {!loading &&
+                  );
+                } else {
+                  // 데이터가 없는 경우
+                  return (
+                    <CategoryCard
+                      key={index}
+                      category={""} // 기본값으로 표시할 문자열
+                      colorKey={""} // 기본 회색 색상
+                    />
+                  );
+                }
+              })
+            )}
+            {loading ? (
+              <div>Loading...</div> // 로딩 중일 때 표시
+            ) : (
               filteredPieces.map((piece, index) => {
                 const targetDate = formatDate(
                   piece.startDay,
@@ -150,11 +170,10 @@ const MainPage = () => {
                   piece.startYear
                 );
                 return (
-                  <React.Fragment key={index}>
-                    <DayCard targetDate={targetDate} />
-                  </React.Fragment>
+                  <DayCard key={index} targetDate={targetDate} />
                 );
-              })}
+              })
+            )}
           </CategoryContainer>
         </MainContainer>
       </Container>
@@ -163,8 +182,8 @@ const MainPage = () => {
 };
 
 const PageContainer = styled.div`
-position: relative;
-top:60px;
+  position: relative;
+  top: 60px;
 `;
 
 export const Container = styled.div`
@@ -173,7 +192,7 @@ export const Container = styled.div`
 `;
 
 export const MainBenner = styled.div`
-z-index: 2000px;
+  z-index: 2000px;
 `;
 
 const MainContainer = styled.div`
@@ -219,7 +238,6 @@ const ViewButton = styled.div`
 `;
 
 const CategoryContainer = styled.div`
-/* border:1px solid black; */
   padding-bottom: 20px;
   width: 100%;
   height: auto;

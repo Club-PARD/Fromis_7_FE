@@ -84,8 +84,6 @@ function AddCategory({ clicked, onClose, findPieceId, pieceTitle }) {
     }
   };
 
-  console.log("findpieceID",findPieceId);
-
   return (
     <BaseContainer clicked={clicked}>
       <TopSection>{pieceTitle}</TopSection>
