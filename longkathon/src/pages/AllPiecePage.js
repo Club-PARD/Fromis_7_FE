@@ -327,7 +327,7 @@ const CustomCategoryButton = styled.button`
 `;
 
 const AllCategoryContainer = styled.div`
-border: 10px solid red;
+/* border: 10px solid red; */
   position: relative;
   top: 60px;
   margin-left: 210px;

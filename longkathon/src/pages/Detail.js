@@ -11,7 +11,9 @@ import { getListAPI, updateListAPI } from "../API/List";
 import { getUserAPI } from "../API/User";
 import { getImageByColor } from "../components/ColorImageMap";
 import { getCategoryAPI } from "../API/Category";
+import AddCategoryPage from '../pages/AddCategory'; // Adjust the path accordingly
 
+import { useNavigate } from "react-router-dom"; 
 
 // 스타일 컴포넌트 임포트
 import {
@@ -60,6 +62,16 @@ const DetailPage = ({ propUserId, propListId }) => {
     });
 
     const [categoryId, setCategoryId] = useState(null); // 초기화
+
+    const navigate = useNavigate();
+
+    const handleCancelClick = () => {
+        navigate("/addcategory"); // "/addcategory" 경로로 이동
+    };
+
+    const moveToCategory = () => {
+        navigate("/category"); // category 페이지로 이동
+    }
 
 
     const handleEditToggle = () => {
@@ -288,35 +300,6 @@ const DetailPage = ({ propUserId, propListId }) => {
         }
     };
 
-    // const handleCommentSubmit = async () => {
-    //     if (commentText.trim()) {
-    //         try {
-    //             const newComment = {
-    //                 content: commentText,
-    //                 createdAt: new Date().toISOString(),
-    //             };
-
-    //             // 서버에 새 댓글 저장
-    //             const response = await postCommentAPI(listId, userId, newComment);
-
-    //             if (response.status === 201) {
-    //                 const addedComment = {
-    //                     name: userName || "익명",
-    //                     content: commentText,
-    //                     time: formatTime(newComment.createdAt),
-    //                     profileImg: response.data.profileImg || Logo,
-    //                 };
-
-    //                 // 상태에 즉시 추가
-    //                 setComments((prevComments) => [...prevComments, addedComment]);
-    //                 setCommentText(""); // 입력 필드 초기화
-    //             }
-    //         } catch (error) {
-    //             console.error("댓글 추가 중 오류 발생:", error);
-    //         }
-    //     }
-    // };
-
     const handleCommentSubmit = async () => {
         if (commentText.trim()) {
             try {
@@ -463,12 +446,12 @@ const DetailPage = ({ propUserId, propListId }) => {
                 <HeaderComponent />
             </MainBenner>
             <MainContainer showCommentInput={showCommentInput}> {/* showCommentInput 전달 */}
-                <CancelButton>
+                <CancelButton onClick={handleCancelClick}>
                     <lord-icon
-                        src="https://cdn.lordicon.com/zxvuvcnc.json"
+                        src="https://cdn.lordicon.com/xebodhob.json"
                         trigger="hover"
                         colors="primary:#5ba8fb"
-                        style={{ width: "80px", height: "80px" }}>
+                        style={{ width: "60px", height: "60px" }}>
                     </lord-icon>
                 </CancelButton>
                 <CategoryRow>
@@ -479,8 +462,8 @@ const DetailPage = ({ propUserId, propListId }) => {
                         <Title>categories:</Title>
                         <CategoryButton>{category?.name || "없음"}</CategoryButton>
                     </TitleButtonBox>
-                    <EditButton onClick={handleEditToggle}>
-                        Add
+                    <EditButton onClick={moveToCategory}>
+                        Edit
                     </EditButton>
                 </CategoryRow>
                 <InfoContainer>

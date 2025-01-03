@@ -15,13 +15,26 @@ export const getListAPI = async (listId) => {
 };
 
 // GET => lists/all/{categoryId}
+// export const getAllListAPI = async (categoryId) => {
+//     try{
+//         //const response = await axios.get(`${server}/lists/all/${categoryId}`);
+//         const response = await axios.get(`${server}/lists/all/15`);
+//         return response.data;
+//     } catch (error){
+//         console.error("Error fetching(categoryId) list data:", error);
+//         throw error;
+//     }
+// };
+
+// GET all lists by categoryId
 export const getAllListAPI = async (categoryId) => {
-    try{
-        //const response = await axios.get(`${server}/lists/all/${categoryId}`);
-        const response = await axios.get(`${server}/lists/all/${categoryId}`);
+    try {
+        const response = await axios.get(`${server}/lists/all/15`, {
+            params: { categoryId }, // Optional: If the API requires query parameters
+        });
         return response.data;
-    } catch (error){
-        console.error("Error fetching(categoryId) list data:", error);
+    } catch (error) {
+        console.error("Error fetching lists by categoryId:", error);
         throw error;
     }
 };

@@ -11,6 +11,14 @@ export const HamburgerIcon = () => {
     navigate("/mypage");
   };
 
+  const handleNavigateMain = () => {
+    navigate("/main/{userId}");
+  };
+
+  const handleLogout = () => {
+    navigate("/login");
+  };
+
   const handleIconClick = () => {
     setShowBanners(!showBanners);
   };
@@ -43,9 +51,21 @@ export const HamburgerIcon = () => {
         onClick={handleIconClick}
       ></LordIcon>
       <BannersContainer show={showBanners}>
-        {["마이 페이지", "진행 중 링크", "지난 링크"].map((category, index) => (
-          <Banner key={index} onClick={index === 0 ? handleConnectMyInfo : undefined} // 첫 번째 카테고리 클릭 시 네비게이트
-          >{category}</Banner>
+        {["마이 페이지", "진행 중 링크", "로그아웃"].map((category, index) => (
+          <Banner
+          key={index}
+          onClick={
+            index === 0
+              ? handleConnectMyInfo // 마이 페이지로 이동
+              : index === 1
+              ? handleNavigateMain // 진행 중 링크 -> main 페이지 이동
+              : index === 2
+              ? handleLogout // 로그아웃 시 login 페이지로 이동
+              : undefined
+          }
+        >
+          {category}
+        </Banner>
         ))}
       </BannersContainer>
     </Container>
