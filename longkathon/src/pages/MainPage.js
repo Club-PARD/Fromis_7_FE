@@ -18,6 +18,7 @@ const MainPage = () => {
   const navigate = useNavigate();
   const [filteredPieces, setFilteredPieces] = useState([]); // 새로 생성된 데이터 상태
   const [loading, setLoading] = useState(true); // 로딩 상태
+  const [isDeleted, setIsDeleted] = useState(false); // 삭제 상태 추가
 
   const userId = 2; // 예시로 1을 사용
 
@@ -98,7 +99,7 @@ const MainPage = () => {
 
 
   return (
-    <PageContainer>
+    <PageContainer style={{ filter: isDeleted ? "grayscale(100%)" : "none" }}>
       <Container>
         <MainBenner>
           <SideBar />

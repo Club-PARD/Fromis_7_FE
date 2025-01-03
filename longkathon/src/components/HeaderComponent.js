@@ -59,10 +59,11 @@ position: fixed;
 width: 100%;
 height: 60px;
 background-color: white;
+
 top: 0;
   left: 0;
   right: 0;
-  z-index: ${(props) => (props.isButtonClicked ? 200 : 900)};  
+  z-index: ${(props) => (props.isButtonClicked ? 100 : 200)};  
   padding: 0 20px;  /* 좌우 여백 추가 */
    align-items: center;
   justify-content: space-between;

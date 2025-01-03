@@ -16,6 +16,7 @@ const AllPiecePage = () => {
   const [alertActive, setAlertActive] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false); // 삭제 경고 상태
   const [titleToDelete, setTitleToDelete] = useState(null); // 삭제할 카테고리
+  const [isOverlayActive, setIsOverlayActive] = useState(false); // 음영 처리 상태 추가
 
   const activateAlert = () => {
     setAlertActive(true); // Alert 활성화
@@ -110,6 +111,9 @@ const AllPiecePage = () => {
         setCategories((prevCategories) =>
           prevCategories.filter((category) => category.pieceId !== titleToDelete.pieceId)
         );
+
+        // 음영 처리 활성화
+        setIsOverlayActive(true);
       } catch (error) {
         console.error("Error deleting piece from the server:", error);
       }
@@ -161,11 +165,11 @@ const AllPiecePage = () => {
     console.log("정렬 버튼 클릭 전 상태:", categories);
 
     setCategories((prev) =>
-      [...prev].sort((a, b) => {
-        const dateA = new Date(a.startYear, a.startMonth - 1, a.startDay);
-        const dateB = new Date(b.startYear, b.startMonth - 1, b.startDay);
-        return dateA - dateB;
-      })
+        [...prev].sort((a, b) => {
+            const dateA = new Date(a.startYear, a.startMonth - 1, a.startDay);
+            const dateB = new Date(b.startYear, b.startMonth - 1, b.startDay);
+            return dateA - dateB;
+        })
     );
     console.log("정렬 버튼 클릭 후 상태:", categories);
   };
@@ -173,16 +177,16 @@ const AllPiecePage = () => {
   // 정렬 (가장 오래된 생성순으로)
   const handleSortCreatedAt = () => {
     setCategories((prev) =>
-      [...prev].sort((a, b) => {
-        const createdAtA = new Date(a.createdAt); // createdAt 필드 사용
-        const createdAtB = new Date(b.createdAt);
-        return createdAtB - createdAtA; // 생성일 순으로 정렬
-      })
+        [...prev].sort((a, b) => {
+            const createdAtA = new Date(a.createdAt); // createdAt 필드 사용
+            const createdAtB = new Date(b.createdAt);
+            return createdAtB - createdAtA; // 생성일 순으로 정렬
+        })
     );
   };
 
   return (
-    <AllPageContainer >
+    <AllPageContainer style={{ filter: isOverlayActive ? "grayscale(100%)" : "none" }}> {/* 전체 페이지 음영 처리 */}
       {/* 삭제 경고창 */}
       <AlertManagerDelete
         triggerCondition={showDeleteAlert}
@@ -200,9 +204,12 @@ const AllPiecePage = () => {
           <BackgroundTitle>여행의 시작, 함께 소통의 조각을 생성해요!</BackgroundTitle>
         </>
       )}
-      <CategorySideBar isButtonClicked={isButtonClicked} />
+      <div style={{ zIndex: 1 }}>
       <HeaderComponent isButtonClicked={isButtonClicked} />
       <Dropdown isButtonClicked={isButtonClicked} onSortClosest={handleSortClosest} onSortCreatedAt={handleSortCreatedAt} />
+      </div>
+      <CategorySideBar isButtonClicked={isButtonClicked} />
+    
       <AllCategoryContainer>
         <CategoryTitle>다가올 <span className="Link">&nbsp;링크</span>를 확인 해보세요!</CategoryTitle>
         <CustomCategoryText1>L:nk</CustomCategoryText1>
@@ -319,9 +326,8 @@ const CustomCategoryButton = styled.button`
   }
 `;
 
-
-
 const AllCategoryContainer = styled.div`
+/* border: 10px solid red; */
   position: relative;
   top: 60px;
   margin-left: 210px;
@@ -331,6 +337,7 @@ const AllCategoryContainer = styled.div`
   flex-direction: column;
   align-items: center;
   text-align: center;
+  z-index: 100;
 `;
 
 const CategoryTitle = styled.div`
@@ -406,7 +413,7 @@ const BackgroundTitle = styled.div`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    z-index: 300;
+    z-index: 0;
 
     /* 반응형 스타일 */
     @media (max-width: 768px) {
