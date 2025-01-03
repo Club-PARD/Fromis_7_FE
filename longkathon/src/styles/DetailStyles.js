@@ -276,7 +276,6 @@ const ImageBox = styled.div`
         !props.isEditable &&
         `
         pointer-events: none; /* 클릭 막기 */
-        opacity: 0.5; /* 비활성화 스타일 */
     `}
 `;
 
@@ -285,6 +284,7 @@ const UploadedImage = styled.img`
     height: 100%;
     object-fit: cover; /* 이미지가 박스에 맞도록 조정 */
     z-index: 100; /* 다른 요소 위에 표시되도록 설정 */
+    
 `;
 
 const PlaceholderText = styled.div`

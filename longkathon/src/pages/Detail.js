@@ -11,8 +11,9 @@ import { getListAPI, updateListAPI } from "../API/List";
 import { getUserAPI } from "../API/User";
 import { getImageByColor } from "../components/ColorImageMap";
 import { getCategoryAPI } from "../API/Category";
-import { getAllListAPI } from "../API/List";
+import AddCategoryPage from '../pages/AddCategory'; // Adjust the path accordingly
 
+import { useNavigate } from "react-router-dom"; 
 
 // 스타일 컴포넌트 임포트
 import {
@@ -22,10 +23,10 @@ import {
     Div1, ThumbUp, Count, Div2, ThumbDown, Div3, Comment, Div4, Align, ShareImg, CommentList,
     CommentItem, CommentItemContainer, ProfileImage, CommentTextContainer, CommentHeader, CommentUser,
     CommentText, CommentTime, CommentInputContainer, Divider, CommentInputWrapper, CommentInput,
-    SubmitStyledButton, InputBox, ScrollableInfoContainer
+    SubmitStyledButton, InputBox
 } from "../styles/DetailStyles";
 
-const DetailPage = ({ propUserId, propListId, propCategoryId }) => {
+const DetailPage = ({ propUserId, propListId }) => {
     const [userId, setUserId] = useState(propUserId || 2);
     const [listId, setListId] = useState(propListId || 5); // 동적 할당 가능하도록 설정 -> 동적 하게 하려면 1대신 null로 설정
 
@@ -60,8 +61,18 @@ const DetailPage = ({ propUserId, propListId, propCategoryId }) => {
         return storedCategory ? JSON.parse(storedCategory) : null;
     });
 
-    const [categoryId, setCategoryId] = useState(propCategoryId || 15); // 기본 categoryId 설정
-    const [infoDataList, setInfoDataList] = useState([]); // 불러온 데이터 저장
+    const [categoryId, setCategoryId] = useState(null); // 초기화
+
+    const navigate = useNavigate();
+
+    const handleCancelClick = () => {
+        navigate("/addcategory"); // "/addcategory" 경로로 이동
+    };
+
+    const moveToCategory = () => {
+        navigate("/category"); // category 페이지로 이동
+    }
+
 
     const handleEditToggle = () => {
         setIsEditable((prev) => !prev); // 수정 가능 여부를 토글
@@ -173,19 +184,6 @@ const DetailPage = ({ propUserId, propListId, propCategoryId }) => {
         };
         fetchUserName(); // 함수 호출
     }, [userId]); // userId가 변경될 때만 실행
-
-    useEffect(() => {
-        const fetchAllLists = async () => {
-            try {
-                const data = await getAllListAPI(categoryId); // API 호출
-                setInfoDataList(data); // 데이터 상태 업데이트
-            } catch (error) {
-                console.error("Error fetching all lists:", error);
-            }
-        };
-
-        fetchAllLists();
-    }, [categoryId]); // categoryId 변경 시 다시 호출
 
     const saveSharedStateToLocalStorage = (newState) => {
         localStorage.setItem("sharedState", JSON.stringify(newState));
@@ -302,35 +300,6 @@ const DetailPage = ({ propUserId, propListId, propCategoryId }) => {
         }
     };
 
-    // const handleCommentSubmit = async () => {
-    //     if (commentText.trim()) {
-    //         try {
-    //             const newComment = {
-    //                 content: commentText,
-    //                 createdAt: new Date().toISOString(),
-    //             };
-
-    //             // 서버에 새 댓글 저장
-    //             const response = await postCommentAPI(listId, userId, newComment);
-
-    //             if (response.status === 201) {
-    //                 const addedComment = {
-    //                     name: userName || "익명",
-    //                     content: commentText,
-    //                     time: formatTime(newComment.createdAt),
-    //                     profileImg: response.data.profileImg || Logo,
-    //                 };
-
-    //                 // 상태에 즉시 추가
-    //                 setComments((prevComments) => [...prevComments, addedComment]);
-    //                 setCommentText(""); // 입력 필드 초기화
-    //             }
-    //         } catch (error) {
-    //             console.error("댓글 추가 중 오류 발생:", error);
-    //         }
-    //     }
-    // };
-
     const handleCommentSubmit = async () => {
         if (commentText.trim()) {
             try {
@@ -338,10 +307,10 @@ const DetailPage = ({ propUserId, propListId, propCategoryId }) => {
                     content: commentText,
                     createdAt: new Date().toISOString(),
                 };
-
+    
                 // 서버에 새 댓글 저장
                 const response = await postCommentAPI(listId, userId, newComment);
-
+    
                 if (response.status === 201) {
                     // 서버 응답에서 댓글 데이터를 추출
                     const addedComment = {
@@ -350,7 +319,7 @@ const DetailPage = ({ propUserId, propListId, propCategoryId }) => {
                         time: formatTime(newComment.createdAt), // 작성 시간
                         profileImg: response.data?.profileImg || Logo, // 프로필 이미지 기본값 설정
                     };
-
+    
                     // 댓글 상태 업데이트
                     setComments((prevComments) => [...prevComments, addedComment]);
                     setCommentText(""); // 댓글 입력 필드 초기화
@@ -366,7 +335,7 @@ const DetailPage = ({ propUserId, propListId, propCategoryId }) => {
             alert("댓글 내용을 입력해주세요.");
         }
     };
-
+    
 
     const toggleCommentInput = () => {
         setShowCommentInput((prev) => !prev);
@@ -476,154 +445,153 @@ const DetailPage = ({ propUserId, propListId, propCategoryId }) => {
             <MainBenner>
                 <HeaderComponent />
             </MainBenner>
-            {infoDataList.map((info, index) => (
-                <MainContainer key={index}> {/* showCommentInput 전달 */}
-                    <CancelButton>
-                        <lord-icon
-                            src="https://cdn.lordicon.com/xebodhob.json"
-                            trigger="hover"
-                            colors="primary:#5ba8fb"
-                            style={{ width: "50px", height: "50px" }}>
-                        </lord-icon>
-                    </CancelButton>
-                    <CategoryRow>
-                        <CategoryBox>
-                            {image && <UploadedImage src={image} alt="카테고리 이미지" />}
-                        </CategoryBox>
-                        <TitleButtonBox>
-                            <Title>categories:</Title>
-                            <CategoryButton>{category?.name || "없음"}</CategoryButton>
-                        </TitleButtonBox>
-                        <EditButton onClick={handleEditToggle}>
-                            Edit
-                        </EditButton>
-                    </CategoryRow>
-                    <InfoContainer>
-                        <InputLabel>URL:</InputLabel>
-                        <InputBox
-                            value={info.url || "No URL"} // 데이터 사용
-                            placeholder="wwww.example.com"
-                            readOnly // 수정 불가능하게 하기 위해서
-                        />
-                        <ImageBox>
-                            {info.image ? (
-                                <UploadedImage src={info.image} alt="Uploaded Image" />
-                            ) : (
-                                <PlaceholderText>No Image</PlaceholderText>
-                            )}
-                        </ImageBox>
-
-                        <InputBox
-                            value={info.name || "No Name"} // 데이터 사용
-                            placeholder="Name"
-                            readOnly
-                        />
-                    </InfoContainer>
-                    <MemoWrapper>
-                        <MemoContainer>
-                            <MemoHeader>
-                                <MemoLabel>메모</MemoLabel>
-                                <MemoEdit onClick={() => setIsEditable(true)}>
-                                    <lord-icon
-                                        src="https://cdn.lordicon.com/uwbjfiwe.json"
-                                        trigger="click"
-                                        style={{ width: "40px", height: "40px" }}
-                                    ></lord-icon>
-                                </MemoEdit>
-                                {isEditable && (
-                                    <MemoSave onClick={handleMemoSave}>
-                                        저장
-                                    </MemoSave>
-                                )}
-                            </MemoHeader>
-                            <InputMemo
-                                name="memo"
-                                value={info.memo} // 배열 데이터 사용
-                                onChange={(e) => setTempMemo(e.target.value)} // tempMemo 업데이트
-                                disabled={!isEditable} // 수정 가능 여부에 따라 입력 비활성화
-                            />
-                        </MemoContainer>
-                        <IconContainer>
-                            <Div1>
-                                <ThumbUp onClick={handleLike}>
-                                    <lord-icon
-                                        src="https://cdn.lordicon.com/svtwhayb.json"
-                                        trigger="hover"
-                                        colors={`primary:${thumbUpColor}`}
-                                        style={{ width: "40px", height: "40px" }}
-                                    ></lord-icon>
-                                </ThumbUp>
-                                <Count>{likeCount || 0}</Count>
-                            </Div1>
-                            <Div2>
-                                <ThumbDown onClick={handleDislike}>
-                                    <lord-icon
-                                        src="https://cdn.lordicon.com/wgquubqx.json"
-                                        trigger="hover"
-                                        colors={`primary:${thumbDownColor}`}
-                                        style={{ width: "40px", height: "40px" }}
-                                    ></lord-icon>
-                                    <Count>{dislikeCount || 0}</Count>
-                                </ThumbDown>
-                            </Div2>
-                            <Div3>
-                                <Comment onClick={toggleCommentInput}>
-                                    <lord-icon
-                                        src="https://cdn.lordicon.com/ayhtotha.json"
-                                        trigger="hover"
-                                        colors={`primary:${commentColor}`}
-                                        style={{ width: "40px", height: "40px" }}
-                                    ></lord-icon>
-                                    <Count>{commentCount}</Count>
-                                </Comment>
-                            </Div3>
-                            <Div4>
-                                <Align onClick={handleSharedClick}>
-                                    <ShareImg
-                                        src={isShared ? AfterShare : BeforeShare}
-                                        alt={isShared ? "after share" : "before share"}
-                                    />
-                                    <Count>{sharedCount}</Count>
-                                </Align>
-                            </Div4>
-                        </IconContainer>
-                        {showCommentInput && (
-                            <>
-                                <CommentList>
-                                    {comments.map((comment, commentIndex) => (
-                                        <CommentItem key={commentIndex}>
-                                            <CommentItemContainer>
-                                                <ProfileImage src={comment.profileImg} alt={`${comment.name}의 프로필`} />
-                                                <CommentTextContainer>
-                                                    <CommentHeader>
-                                                        <CommentUser>{comment.name}</CommentUser>
-                                                    </CommentHeader>
-                                                    <CommentText>{comment.content}</CommentText>
-                                                    <CommentTime>{comment.time}</CommentTime>
-                                                </CommentTextContainer>
-                                            </CommentItemContainer>
-                                        </CommentItem>
-                                    ))}
-                                    <CommentInputContainer>
-                                        <Divider />
-                                        <CommentInputWrapper>
-                                            <ProfileImage src="https://via.placeholder.com/50" alt="사용자 프로필" />
-                                            <CommentInput
-                                                value={commentText}
-                                                onChange={(e) => setCommentText(e.target.value)}
-                                                placeholder="댓글 달기..."
-                                            />
-                                            <SubmitStyledButton onClick={handleCommentSubmit} />
-                                        </CommentInputWrapper>
-                                    </CommentInputContainer>
-                                </CommentList>
-                            </>
+            <MainContainer showCommentInput={showCommentInput}> {/* showCommentInput 전달 */}
+                <CancelButton onClick={handleCancelClick}>
+                    <lord-icon
+                        src="https://cdn.lordicon.com/xebodhob.json"
+                        trigger="hover"
+                        colors="primary:#5ba8fb"
+                        style={{ width: "60px", height: "60px" }}>
+                    </lord-icon>
+                </CancelButton>
+                <CategoryRow>
+                    <CategoryBox>
+                        {image && <UploadedImage src={image} alt="카테고리 이미지" />}
+                    </CategoryBox>
+                    <TitleButtonBox>
+                        <Title>categories:</Title>
+                        <CategoryButton>{category?.name || "없음"}</CategoryButton>
+                    </TitleButtonBox>
+                    <EditButton onClick={moveToCategory}>
+                        Edit
+                    </EditButton>
+                </CategoryRow>
+                <InfoContainer>
+                    <InputLabel>URL:</InputLabel>
+                    <InputBox
+                        value={infoData.url} // 서버에서 URL 값 불러온 거
+                        placeholder="wwww.example.com"
+                        readOnly // 수정 불가능하게 하기 위해서
+                    />
+                    <ImageBox>
+                        {infoData.image ? (
+                            <UploadedImage src={infoData.image} alt="업로드된 이미지" />
+                        ) : (
+                            <PlaceholderText>이미지를 업로드 해주세요</PlaceholderText>
                         )}
-                    </MemoWrapper>
-                </MainContainer>
-            ))}
+                    </ImageBox>
+
+                    <InputBox
+                        value={infoData.name}
+                        placeholder="숙소 이름"
+                        readOnly // 수정 불가능하게 하기 위해서
+                    />
+                </InfoContainer>
+                <MemoWrapper>
+                    <MemoContainer>
+                        <MemoHeader>
+                            <MemoLabel>메모</MemoLabel>
+                            <MemoEdit onClick={() => setIsEditable(true)}>
+                                <lord-icon
+                                    src="https://cdn.lordicon.com/uwbjfiwe.json"
+                                    trigger="click"
+                                    style={{ width: "40px", height: "40px" }}
+                                ></lord-icon>
+                            </MemoEdit>
+                            {isEditable && (
+                                <MemoSave onClick={handleMemoSave}>
+                                    저장
+                                </MemoSave>
+                            )}
+                        </MemoHeader>
+                        <InputMemo
+                            name="memo"
+                            value={tempMemo} // tempMemo를 사용하여 수정 중인 내용 표시
+                            onChange={(e) => setTempMemo(e.target.value)} // tempMemo 업데이트
+                            disabled={!isEditable} // 수정 가능 여부에 따라 입력 비활성화
+                        />
+                    </MemoContainer>
+                    <IconContainer>
+                        <Div1>
+                            <ThumbUp onClick={handleLike}>
+                                <lord-icon
+                                    src="https://cdn.lordicon.com/svtwhayb.json"
+                                    trigger="hover"
+                                    colors={`primary:${thumbUpColor}`}
+                                    style={{ width: "40px", height: "40px" }}
+                                ></lord-icon>
+                            </ThumbUp>
+                            <Count>{likeCount || 0}</Count>
+                        </Div1>
+                        <Div2>
+                            <ThumbDown onClick={handleDislike}>
+                                <lord-icon
+                                    src="https://cdn.lordicon.com/wgquubqx.json"
+                                    trigger="hover"
+                                    colors={`primary:${thumbDownColor}`}
+                                    style={{ width: "40px", height: "40px" }}
+                                ></lord-icon>
+                                <Count>{dislikeCount || 0}</Count>
+                            </ThumbDown>
+                        </Div2>
+                        <Div3>
+                            <Comment onClick={toggleCommentInput}>
+                                <lord-icon
+                                    src="https://cdn.lordicon.com/ayhtotha.json"
+                                    trigger="hover"
+                                    colors={`primary:${commentColor}`}
+                                    style={{ width: "40px", height: "40px" }}
+                                ></lord-icon>
+                                <Count>{commentCount}</Count>
+                            </Comment>
+                        </Div3>
+                        <Div4>
+                            <Align onClick={handleSharedClick}>
+                                <ShareImg
+                                    src={isShared ? AfterShare : BeforeShare}
+                                    alt={isShared ? "after share" : "before share"}
+                                />
+                                <Count>{sharedCount}</Count>
+                            </Align>
+                        </Div4>
+
+                    </IconContainer>
+                    {showCommentInput && (
+                        <>
+                            <CommentList>
+                                {comments.map((comment, index) => (
+                                    <CommentItem key={index}>
+                                        <CommentItemContainer>
+                                            <ProfileImage src={comment.profileImg} alt={`${comment.name}의 프로필`} />
+                                            <CommentTextContainer>
+                                                <CommentHeader>
+                                                    <CommentUser>{comment.name}</CommentUser>
+                                                </CommentHeader>
+                                                <CommentText>{comment.content}</CommentText>
+                                                <CommentTime>{comment.time}</CommentTime>
+                                            </CommentTextContainer>
+                                        </CommentItemContainer>
+                                    </CommentItem>
+                                ))}
+                                <CommentInputContainer>
+                                    <Divider />
+                                    <CommentInputWrapper>
+                                        <ProfileImage src="https://via.placeholder.com/50" alt="사용자 프로필" />
+                                        <CommentInput
+                                            value={commentText}
+                                            onChange={(e) => setCommentText(e.target.value)}
+                                            placeholder="댓글 달기..."
+                                        />
+                                        <SubmitStyledButton onClick={handleCommentSubmit} />
+                                    </CommentInputWrapper>
+                                </CommentInputContainer>
+                            </CommentList>
+                        </>
+                    )}
+                </MemoWrapper>
+            </MainContainer>
         </Container>
     );
-}
+};
 
 export default DetailPage;
