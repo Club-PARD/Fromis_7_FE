@@ -68,7 +68,7 @@ function LoginPage() {
           <FindPW>비밀번호 찾기</FindPW>
         </FindIdPassWord>
         <LoginButton onClick={handleLogin}>로그인</LoginButton>
-        <RegisterButton onClick={() => navigate("/Register")}>회원가입</RegisterButton>
+        <RegisterButton onClick={() => navigate("/register")}>회원가입</RegisterButton>
       </GoogleLoginSection>
     </LoginContainer>
   );
