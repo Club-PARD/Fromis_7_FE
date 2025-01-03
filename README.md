@@ -15,7 +15,7 @@
   <p align="center">
     참여자와 주최자가 여행 준비를 원활하게 할 수 있도록 돕는 양방향 소통 플랫폼
         <br />
-            <a href="https://github.com/4th-PARD-WEB-PART/shortkathon?tab=readme-ov-file"><strong>Explore the docs »</strong></a>
+            <a href="https://github.com/Club-PARD/Fromis_7_FE?tab=readme-ov-file"><strong>Explore the docs »</strong></a>
         <br />
     <br />
   </p>
@@ -128,7 +128,21 @@ Link는 여행 준비 과정에서 주최자와 참여자가 여행 정보를 �
 
   - 기능: 카테고리별 비동기 커뮤니케이션 페이지
 
+# 기술 스텍
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+### FrontEnd
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+
+### BackEnd
+![bedge](https://img.shields.io/badge/SpringBoot-6DB33F?style=flat&logo=springboot&logoColor=white)
+![bedge](https://img.shields.io/badge/JAVA-ED8B00?style=flat&logo=Openjdk&logoColor=white)
+![bedge](https://img.shields.io/badge/MySQL-4479A1?style=flat&logo=MySQL&logoColor=white)
+
+### 협업도구
+![bedge](https://img.shields.io/badge/Figma-F24E1E?style=flat&logo=Figma&logoColor=white)
+![bedge](https://img.shields.io/badge/Notion-FFFFFF?style=flat&logo=notion&logoColor=black)
+![bedge](https://img.shields.io/badge/slack-FFFFFF?style=flat&logo=slack&logoColor=skyblue)<br />
+![bedge](https://img.shields.io/badge/git-black?style=flat&logo=git&logoColor=red)
+![bedge](https://img.shields.io/badge/github-black?style=flat&logo=github&logoColor=white)
 
 <br>
