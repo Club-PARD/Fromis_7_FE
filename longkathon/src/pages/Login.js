@@ -4,25 +4,9 @@ import LoginLogoImage from "../Image/LoginLogo.png";
 import { useNavigate } from "react-router-dom";
 import { postLoginAPI, postRegisterAPI } from "../API/Login";
 
-// CSS수정해야 합니다. -Sehyun-
 function LoginPage() {
   const [credentials, setCredentials] = useState({ id: "", password: "" });
   const navigate = useNavigate();
-
-  // //회원가입
-  // const handleRegister = async () => {
-  //   const userData = {
-  //     name: nickname,
-  //     email: credentials.id,
-  //     password: credentials.password,
-  //   };
-  //   try {
-  //     await postRegisterAPI(userData);
-  //     navigate("/login");
-  //   } catch (error) {
-  //     console.error("회원가입 실패:", error);
-  //   }
-  // };
 
   //login flow
   const handleLogin = async () => {
@@ -143,7 +127,7 @@ const InputId = styled.input`
   border-radius: 10px;
   border: 1px solid #afb8c1;
   background: #fff;
-  color: #e1e1e1;
+  color: #000;
   font-family: "Product Sans";
   font-size: 20px;
   font-style: normal;
@@ -219,13 +203,11 @@ const FindPW = styled.button`
 const RegisterButton = styled.button`
   width: 100%;
   height: 84px;
-  background: #007bff;
-  color: #fff;
+  background: #FFF;
+  color: #5BA8FB;
   font-weight: 400;
   cursor: pointer;
   margin-top: 20px;
-  color: #fff;
-  color: #5ba8fb;
   font-family: "Product Sans";
   font-size: 20px;
   font-style: normal;
@@ -238,7 +220,7 @@ const RegisterButton = styled.button`
 const LoginButton = styled.button`
   width: 100%;
   height: 84px;
-  background: #007bff;
+  background: #5BA8FB;
   color: #fff;
   font-weight: 400;
   cursor: pointer;
@@ -249,7 +231,7 @@ const LoginButton = styled.button`
   font-weight: 400;
   line-height: normal;
   border-radius: 10px;
-  border: 1px solid #007bff;
+  border: 1px solid #5BA8FB;
 `;
 
 export default LoginPage;

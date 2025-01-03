@@ -10,6 +10,7 @@ import MainPage from './pages/MainPage.js';
 import HistoryPage from './pages/History.js';
 import Register from "./pages/Register.js";
 import LoginPage from './pages/Login.js';
+import AddCategory from './pages/AddCategory.js';
 
 function App() {
   return (
@@ -22,8 +23,9 @@ function App() {
         <Route path="/:userId/main" element={<MainPage />} />
         <Route path="/:userId/emptymain" element={<EmptyMainPage />} />
         <Route path="/main/:pieceId" element={<PiecePage />} />
+        <Route path="/addcategory" element={<AddCategory />} />
 
-        <Route path="/main/:pieceId/category/13" element={<DetailPage />} />
+        <Route path="/main/:pieceId/category/5" element={<DetailPage />} />
         <Route path="/main/:pieceId/category" element={<CategoryPage />} />
         <Route path="/:userId/mypage" element={<MyInfoPage />} />
         {/* <Route path="/:userId/history" element={<HistoryPage />} /> */}

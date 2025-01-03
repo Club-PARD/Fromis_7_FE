@@ -51,7 +51,7 @@ const CategoryPage = () => {
       try {
 
         //userId
-        const response = await getPieceAPI(2); //pieceId
+        const response = await getPieceAPI(pieceId); //pieceId
         // console.log("category-title", response);
 
 
@@ -321,7 +321,7 @@ const CategoryPage = () => {
             activateAlert={activateAlert}
             cateId={item.cateId}
             updateTotalCount={updateTotalCount}
-            onClick={() => navigate(`/main/:pieceId/category/13`)}
+            onClick={() => navigate(`/main/${pieceId}/category/5`)}
           />
             ))}
             {/* </CategoryContainer> */}
@@ -335,7 +335,7 @@ const CategoryPage = () => {
       {/* AddCategory 모달 */}
       {isModalOpen && (
         <ModalContainer>
-          <ModalOverlay >
+          <ModalOverlay>
             <ModalContent>
               <AddCategory pieceTitle={pieceTitle} findPieceId={findPieceId} onClose={closeModal} />
             </ModalContent>
@@ -356,7 +356,7 @@ const CategorySideBar = styled(SideBar)`
 const ModalContainer = styled.div`
 position: fixed;
 width: 100%;
-height: 2000px;
+height: 100vh;
 z-index: 900;
 `;
 
@@ -389,11 +389,12 @@ const ModalOverlayComponent = ({ toggleButtonClick }) => {
 
 const ModalContent = styled.div`
   position: fixed;
-  top:0px;
+  top: 0px;
   max-height: 95%; /* 모달 내용의 최대 높이 설정 */
   overflow-y: auto; /* 스크롤 가능하도록 설정 */
   border-radius: 20px; /* 모달 모서리 둥글게 */
   z-index: 1100;
+  pointer-events: auto; /* 모달 내용 클릭 가능 */
 `;
 
 const AllPageContainer = styled.div`

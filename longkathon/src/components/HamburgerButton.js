@@ -108,7 +108,7 @@ const BannersContainer = styled.div`
   position: absolute;
   top: 45px;
   left: 0px;
-  z-index: 1000;
+  z-index: 1005;
 
 `;
 
