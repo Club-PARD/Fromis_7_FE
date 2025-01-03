@@ -15,6 +15,7 @@ import CategoryPage from "./CategoryPage.js";
 
 const PiecePage = () => {
   const { userId, pieceId } = useParams(); // URL 파라미터에서 pieceId를 받기
+  console.log(pieceId);
 
   const navigate = useNavigate();
   const [filteredPieces, setFilteredPieces] = useState([]); // 새로 생성된 데이터 상태

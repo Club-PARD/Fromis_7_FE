@@ -22,6 +22,8 @@ const CategoryPage = () => {
   const [categoryCount, setCategoryCount] = useState(0); // 카테고리 카드 개수
   const navigate = useNavigate();
 
+  
+
 
   console.log("pieceIdCategory", pieceId);
 
@@ -51,7 +53,7 @@ const CategoryPage = () => {
       try {
 
         //userId
-        const response = await getPieceAPI(pieceId); //pieceId
+        const response = await getPieceAPI(1); 
         // console.log("category-title", response);
 
 
@@ -321,7 +323,7 @@ const CategoryPage = () => {
             activateAlert={activateAlert}
             cateId={item.cateId}
             updateTotalCount={updateTotalCount}
-            onClick={() => navigate(`/main/${pieceId}/category/5`)}
+            onClick={() => navigate(`/main/${pieceId}/category/6`)}
           />
             ))}
             {/* </CategoryContainer> */}

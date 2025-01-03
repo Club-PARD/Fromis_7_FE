@@ -6,8 +6,13 @@ import AlertManagerDelete from "../components/AlertManagerDelete";
 import Dropdown from "../components/CategoryButton";
 import PieceCard from "../components/PieceCard";
 import { deletePieceAPI, getPieceAPI } from "../API/Piece";
+import { useParams } from "react-router-dom";
 
 const MainPage = () => {
+
+  const { userId } = useParams(); // URL 파라미터에서 pieceId를 받기
+  console.log(userId);
+
 
   const [categories, setCategories] = useState([]); // 카테고리 상태
   const [expiredPieces, setExpiredPieces] = useState([]); // 만료된 카테고리 상태
@@ -72,8 +77,8 @@ const MainPage = () => {
   //get기능
   const fetchCategories = async () => {
     try {
-      const response = await getPieceAPI(2); // 서버 API 엔드포인트
-
+      const response = await getPieceAPI(userId); // 서버 API 엔드포인트
+        console.log("Id: ", userId);
       if (response && Array.isArray(response)) {
 
         response.forEach((item, index) => {
@@ -214,6 +219,7 @@ const MainPage = () => {
           <CategoryContainer>
             {categories.map((item) => (
               <PieceCard
+                userId={userId}
                 pieceId={item.pieceId} // pieceId를 전달
                 key={item.pieceId}
                 colorkey={getColorKey(item.color)}// 색상 전달
