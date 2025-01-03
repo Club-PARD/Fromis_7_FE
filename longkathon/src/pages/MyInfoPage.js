@@ -63,15 +63,15 @@ const MyInfoPage = () => {
     setShowSaveNameButton((prev) => !prev); // 이름 저장 버튼 상태 토글
     setShowSavePhotoButton(false); // 프로필 저장 버튼 숨김
   };
-  
+
   const handleSaveImage = async () => {
     try {
       const formData = new FormData();
       formData.append("image", image); // 이미지 추가
 
-      console.log("FormData 확인:", Array.from(formData.entries())); 
+      console.log("FormData 확인:", Array.from(formData.entries()));
       const response = await patchUserImageAPI(1, formData);
-      
+
       alert("프로필 이미지가 저장되었습니다.");
       console.log("서버 응답:", response.data);
     } catch (error) {
@@ -81,7 +81,7 @@ const MyInfoPage = () => {
   };
 
   const handleSaveName = async () => {
-    try{
+    try {
       const formData = new FormData();
       formData.append("name", name);
 
@@ -90,7 +90,7 @@ const MyInfoPage = () => {
 
       alert("이름이 저장되었습니다.");
       console.log("서버 응답:", response.data);
-    } catch (error){
+    } catch (error) {
       alert("이름을 저장하는 도중 문제가 발생했습니다.");
       console.error(error);
     }
@@ -146,7 +146,7 @@ const MyInfoPage = () => {
 
           <EditBox2>
             <EditText1>이메일 주소:</EditText1>
-            <InputInfo type="email" placeholder="기존 이메일" />
+            <InputInfo type="email" placeholder="기존 이메일" readOnly />
           </EditBox2>
         </InfoEditContainer>
         <LogOutContainer onClick={handleLogOut}>
@@ -301,14 +301,15 @@ left: 245px;
 width: 439px;
 height: 47px;
 border-radius: 20px;
-border: 1px solid #AFB8C1;
+border: 0px solid #AFB8C1;
 text-indent: 30px;
-color: #AFB8C1;
+color: #040404;
 font-family: "Product Sans";
 font-size: 16px;
 font-style: normal;
 font-weight: 700;
 line-height: 20px; 
+background: linear-gradient(to bottom right, #F0F8FF, #F2F1F8);
 `;
 
 const LogOutContainer = styled.div`

@@ -3,6 +3,7 @@ import HeaderComponent from "../components/HeaderComponent";
 import BeforeShare from "../Image/BeforeShare.png";
 import AfterShare from "../Image/AfterShare.png";
 import Logo from "../Image/Logo.png"
+import BasicImage from "../Image/BasicImg.png";
 
 import { postLikeAPI, postUnlikeAPI, postAlignAPI } from "../API/State";
 import { postCommentAPI } from "../API/Comment";
@@ -134,7 +135,7 @@ const DetailPage = ({ propUserId, propListId }) => {
                     url: listData.url || "http://fromis_7.link", // 기본값 유지
                     name: listData.name || "빈칸을 채워주세요...",
                     memo: listData.description || "메모를 입력해주세요",
-                    image: listData.image || Logo, // listData.image를 사용하여 이미지 설정
+                    image: listData.image || BasicImage, // listData.image를 사용하여 이미지 설정
                 });
 
 
@@ -287,6 +288,35 @@ const DetailPage = ({ propUserId, propListId }) => {
         }
     };
 
+    // const handleCommentSubmit = async () => {
+    //     if (commentText.trim()) {
+    //         try {
+    //             const newComment = {
+    //                 content: commentText,
+    //                 createdAt: new Date().toISOString(),
+    //             };
+
+    //             // 서버에 새 댓글 저장
+    //             const response = await postCommentAPI(listId, userId, newComment);
+
+    //             if (response.status === 201) {
+    //                 const addedComment = {
+    //                     name: userName || "익명",
+    //                     content: commentText,
+    //                     time: formatTime(newComment.createdAt),
+    //                     profileImg: response.data.profileImg || Logo,
+    //                 };
+
+    //                 // 상태에 즉시 추가
+    //                 setComments((prevComments) => [...prevComments, addedComment]);
+    //                 setCommentText(""); // 입력 필드 초기화
+    //             }
+    //         } catch (error) {
+    //             console.error("댓글 추가 중 오류 발생:", error);
+    //         }
+    //     }
+    // };
+
     const handleCommentSubmit = async () => {
         if (commentText.trim()) {
             try {
@@ -294,27 +324,35 @@ const DetailPage = ({ propUserId, propListId }) => {
                     content: commentText,
                     createdAt: new Date().toISOString(),
                 };
-
+    
                 // 서버에 새 댓글 저장
                 const response = await postCommentAPI(listId, userId, newComment);
-
+    
                 if (response.status === 201) {
+                    // 서버 응답에서 댓글 데이터를 추출
                     const addedComment = {
-                        name: userName || "익명",
-                        content: commentText,
-                        time: formatTime(newComment.createdAt),
-                        profileImg: response.data.profileImg || Logo,
+                        name: userName || "익명", // 현재 사용자의 이름
+                        content: commentText, // 입력한 댓글 내용
+                        time: formatTime(newComment.createdAt), // 작성 시간
+                        profileImg: response.data?.profileImg || Logo, // 프로필 이미지 기본값 설정
                     };
-
-                    // 상태에 즉시 추가
+    
+                    // 댓글 상태 업데이트
                     setComments((prevComments) => [...prevComments, addedComment]);
-                    setCommentText(""); // 입력 필드 초기화
+                    setCommentText(""); // 댓글 입력 필드 초기화
+                } else {
+                    console.error("댓글 저장 실패:", response.data);
+                    alert("댓글 저장에 실패했습니다.");
                 }
             } catch (error) {
                 console.error("댓글 추가 중 오류 발생:", error);
+                alert("댓글을 추가하는 중 문제가 발생했습니다.");
             }
+        } else {
+            alert("댓글 내용을 입력해주세요.");
         }
     };
+    
 
     const toggleCommentInput = () => {
         setShowCommentInput((prev) => !prev);
@@ -351,6 +389,8 @@ const DetailPage = ({ propUserId, propListId }) => {
             console.log("메모 업데이트 중 오류 발생:", error);
         }
     };
+
+
 
     // 댓글 데이터 가져오기
     useEffect(() => {
