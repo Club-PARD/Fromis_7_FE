@@ -34,12 +34,13 @@ const MainContainer = styled.div`
     padding-bottom: ${(props) => (props.showCommentInput ? "230px" : "33px")}; /* 댓글 창 여부에 따라 패딩 조정 */
     transition: padding-bottom 0.3s ease; /* 부드러운 애니메이션 효과 */
     position: relative;
+    overflow-y: auto;
 `;
 
 const CancelButton = styled.button`
     position: absolute; /* MainContainer를 기준으로 배치 */
-    top: -30px; /* 위쪽 위치 조정 */
-    right: -30px; /* 오른쪽 위치 조정 */
+    top: 5px; /* 위쪽 위치 조정 */
+    right: 5px; /* 오른쪽 위치 조정 */
     background: none;
     border: none;
     cursor: pointer;
@@ -440,6 +441,13 @@ const MemoHeader = styled.div`
     // margin-bottom: 8px;
 `;
 
+export const ScrollableInfoContainer = styled.div`
+    max-height: 300px; /* 높이 제한 */
+    overflow-y: auto; /* 세로 스크롤 활성화 */
+    border: 1px solid #ddd; /* 스크롤 컨테이너 구분 */
+    padding: 10px;
+    margin-top: 20px;
+`;
 
 export {
     Container,
@@ -490,4 +498,5 @@ export {
     CommentInput,
     SubmitStyledButton,
     InputBox
+    
 };
