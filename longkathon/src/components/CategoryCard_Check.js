@@ -13,7 +13,8 @@ const CategoryCard_Check = ({
   cateId,
   onCountChange, // 상위 컴포넌트로 상태를 변경할 때 호출되는 함수
   onIsMarkedChange,
-  totalCount
+  totalCount,
+  onClick,
 }) => {
   
   const [isMarkedLocal, setIsMarkedLocal] = useState(isMarked);
@@ -65,7 +66,7 @@ const CategoryCard_Check = ({
   const isCursorDisabled = totalCount >= 4 && !isMarkedLocal;
 
   return (
-    <CategoryBox clicked={clicked}>
+    <CategoryBox clicked={clicked} onClick={onClick}>
       <StyledCard />
       <CategoryPiece background={backgroundImage} />
       <CategoryText>categories:</CategoryText>

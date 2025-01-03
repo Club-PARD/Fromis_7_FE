@@ -15,14 +15,26 @@ function LoginPage() {
       password: credentials.password,
     };
     try {
-      await postLoginAPI(loginData);
-      navigate("/main");
+      const result = await postLoginAPI(loginData); // API 호출 결과를 변수에 저장
+      console.log("로그인 성공 데이터:", result); // 성공적으로 받은 데이터를 콘솔에 출력
+
+      // userId 추출
+      const userId = result.data.userId;
+
+      // userId 확인
+      console.log("로그인한 사용자 ID:", userId);
+
+      // 네비게이션
+      navigate(`/${userId}/main`);
+
     } catch (error) {
       alert("계정 정보가 없거나 데이터가 잘못되었습니다.");
       console.error("로그인 실패:", error);
     }
   };
-   
+
+  // console.log("login -",response);
+  // navigate("/main");
 
   return (
     <LoginContainer>

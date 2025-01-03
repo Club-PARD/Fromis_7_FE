@@ -20,7 +20,7 @@ const SideBar = () => {
   const [modalContent, setModalContent] = useState([]);
 
   const handleConnectHome = () => {
-    navigate("/piece");
+    navigate("/main");
   };
 
   const handleConnectMakeTitle = () => {

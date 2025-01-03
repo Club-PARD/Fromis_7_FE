@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import HeaderComponent from "../components/HeaderComponent";
 import BeforeShare from "../Image/BeforeShare.png";
 import AfterShare from "../Image/AfterShare.png";
-import Logo from "../Image/Logo.png"
+import Logo from "../Image/b_red.png"
 import BasicImage from "../Image/BasicImg.png";
 
 import { postLikeAPI, postUnlikeAPI, postAlignAPI } from "../API/State";
@@ -13,7 +13,7 @@ import { getImageByColor } from "../components/ColorImageMap";
 import { getCategoryAPI } from "../API/Category";
 import AddCategoryPage from '../pages/AddCategory'; // Adjust the path accordingly
 
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate, useParams } from "react-router-dom"; 
 
 // 스타일 컴포넌트 임포트
 import {
@@ -27,6 +27,10 @@ import {
 } from "../styles/DetailStyles";
 
 const DetailPage = ({ propUserId, propListId }) => {
+
+    const { pieceId } = useParams(); // URL 파라미터에서 pieceId를 받기
+
+
     const [userId, setUserId] = useState(propUserId || 2);
     const [listId, setListId] = useState(propListId || 5); // 동적 할당 가능하도록 설정 -> 동적 하게 하려면 1대신 null로 설정
 
@@ -66,11 +70,11 @@ const DetailPage = ({ propUserId, propListId }) => {
     const navigate = useNavigate();
 
     const handleCancelClick = () => {
-        navigate("/addcategory"); // "/addcategory" 경로로 이동
+        navigate(`/main/${pieceId}/category`); // category 페이지로 이동
     };
 
     const moveToCategory = () => {
-        navigate("/category"); // category 페이지로 이동
+        navigate("/addcategory"); // "/addcategory" 경로로 이동
     }
 
 
@@ -460,11 +464,11 @@ const DetailPage = ({ propUserId, propListId }) => {
                     </CategoryBox>
                     <TitleButtonBox>
                         <Title>categories:</Title>
-                        <CategoryButton>{category?.name || "없음"}</CategoryButton>
+                        <CategoryButton>{category?.name || "숙소"}</CategoryButton>
                     </TitleButtonBox>
-                    <EditButton onClick={moveToCategory}>
+                    {/* <EditButton onClick={moveToCategory}>
                         Edit
-                    </EditButton>
+                    </EditButton> */}
                 </CategoryRow>
                 <InfoContainer>
                     <InputLabel>URL:</InputLabel>

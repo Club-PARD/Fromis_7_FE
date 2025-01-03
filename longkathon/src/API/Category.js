@@ -22,10 +22,10 @@ export const postCategoryAPI = async (pieceId, data) => {
 };
 
 //GET
-export const getCategoryAPI = async (pieceIdCategory) => { //
+export const getCategoryAPI = async (pieceId) => { //
     try {
                 // const response = await axios.get(`${server}/categories/all/${pieceId}`);
-        const response = await axios.get(`${server}/categories/all/${pieceIdCategory}`);
+        const response = await axios.get(`${server}/categories/all/${pieceId}`);
         return response.data;
     } catch (error) {
         console.error("Error fetching categories error:", error);

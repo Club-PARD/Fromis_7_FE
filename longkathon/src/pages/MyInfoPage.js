@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import HeaderComponent from "../components/HeaderComponent";
 import SideBar from "../components/SideBar";
-import { CategoryText1, CategoryText2, Container, MainBenner } from "./MainPage";
+// import {  MainBenner } from "./PiecePage.js";
 import { useNavigate } from "react-router-dom";
 
 import { patchUserNameAPI } from "../API/User.js";
@@ -160,6 +160,16 @@ const MyInfoPage = () => {
   );
 };
 
+const Container = styled.div`
+  overflow-y: scroll;
+  height: 110vh;
+`;
+
+
+const MainBenner =styled.div`
+  z-index: 2000px;
+`;
+
 const MainContainer = styled.div`
 position: relative;
 margin-left: 82px;
@@ -169,7 +179,14 @@ text-align: center;
 height: 824px;
 `;
 
-const CustomCategoryText1 = styled(CategoryText1)`
+const CustomCategoryText1 = styled.div`
+  border-radius: 20px;
+  background: #fff;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 position: absolute;
 top:138px;
 left: 128px;
@@ -181,7 +198,17 @@ font-weight: 700;
 line-height: 20px; 
 `;
 
-const CustomCategoryText2 = styled(CategoryText2)`
+const CustomCategoryText2 = styled.div`
+  color: #040404;
+  font-family: Inter;
+  font-size: 20px;
+  font-weight: 700;
+  width: 127px;
+  height: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 position: absolute;
 top: 138px;
 left: 181px;
