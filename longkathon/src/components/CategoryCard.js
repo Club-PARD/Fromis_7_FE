@@ -2,6 +2,20 @@ import React from "react";
 import styled from "styled-components";
 import CategoryCardImage from "../Image/CategoryCard.png";
 
+
+const colorNameMap = {
+  '#EA7E7A': 'red',
+  '#FBA96F': 'orange',
+  '#5BA8FB': 'lightblue',
+  '#002ED1': 'darkblue',
+  '#9ED4B6': 'green',
+  '#927CFF': 'purple',
+  '#D9A9ED': 'pink',
+  '#BDBDBD': 'gray',
+  '#424242': 'black',
+};
+
+
 // 키와 이미지 경로를 매핑하는 객체
 const imageMap = {
   purple: require("../Image/CategoryPiece_Purple.png"),  // 이미지 경로 예시
@@ -12,7 +26,7 @@ const imageMap = {
   black: require("../Image/CategoryPiece_Black.png"),
   orange: require("../Image/CategoryPiece_Orange.png"),
   red: require("../Image/CategoryPiece_Red.png"),
-  white: require("../Image/CategoryPiece_White.png"),
+  gray: require("../Image/CategoryPiece_White.png"),
 };
 
 const StyledCard = styled.div`
@@ -50,14 +64,21 @@ const CategoryIcon = styled.div`
 `;
 
 const CategoryCard = ({ category, colorKey }) => {
-  // colorKey에 맞는 이미지를 imageMap에서 가져오기
-  const imageKey = colorKey ? colorKey.toLowerCase() : null;
-  const image = imageKey ? imageMap[imageKey] : null; // colorKey가 유효하지 않으면 null
+  console.log("CategoryCard props:", { category, colorKey }); // 전달된 값 확인
+
+  const colorName = colorNameMap[colorKey];
+
+  const imagePath = imageMap[colorName] || null; // 매핑되지 않으면 null
+
+
+  // // colorKey에 맞는 이미지를 imageMap에서 가져오기
+  // const imageKey = colorKey ? colorKey.toLowerCase() : null;
+  // const image = imageKey ? imageMap[imageKey] : null; // colorKey가 유효하지 않으면 null
 
   return (
     <CategoryBox>
       <StyledCard />  {/* StyledCard는 배경 이미지로 설정됨 */}
-      <CategoryPiece image={image} />  {/* CategoryPiece에 배경 이미지 전달 */}
+      <CategoryPiece image={imagePath} />  {/* CategoryPiece에 배경 이미지 전달 */}
       <CategoryText>categories:</CategoryText>
       <DisplayedText hasText={!!category}>{category || ""}</DisplayedText>
       <CategoryIcon>

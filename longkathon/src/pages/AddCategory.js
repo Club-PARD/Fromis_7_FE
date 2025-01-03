@@ -4,10 +4,10 @@ import styled from "styled-components";
 import ColorPalette from "../components/ColorPalette";
 import InfoCard from "../components/InfoCard";
 import AddContentBox from "../components/AddContentBox";
-import { postPieceAPI } from "../API/Category";
+import { postCategoryAPI } from "../API/Category";
 
 
-function AddCategory({ clicked, onClose, pieceTitle }) {
+function AddCategory({ clicked, onClose, findPieceId, pieceTitle }) {
   const buttonsArray = ["숙소", "식당", "카페", "교통", "장소", "준비물"];
   const [activeIndex, setActiveIndex] = useState(null);
   const [infoCards, setInfoCards] = useState([{ id: 0 }]); // 첫 번째 인포박스를 항상 포함
@@ -64,7 +64,7 @@ function AddCategory({ clicked, onClose, pieceTitle }) {
     };
   
     try {
-      const response = await postPieceAPI(2, PostArray); // 지금 userId 하드 코딩 되어 있음 바꿔야함;;
+      const response = await postCategoryAPI(findPieceId, PostArray); // 지금 userId 하드 코딩 되어 있음 바꿔야함;;
       const savedData = response.data;
       alert("저장 성공");
       if (onClose) onClose(savedData);
@@ -83,8 +83,6 @@ function AddCategory({ clicked, onClose, pieceTitle }) {
       onClose();
     }
   };
-
-  console.log("제목",pieceTitle);
 
   return (
     <BaseContainer clicked={clicked}>
