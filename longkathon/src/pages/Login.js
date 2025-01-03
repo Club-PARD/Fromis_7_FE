@@ -3,6 +3,7 @@ import styled from "styled-components";
 import LoginLogoImage from "../Image/LoginLogo.png";
 import { useNavigate } from "react-router-dom";
 import { postLoginAPI, postRegisterAPI } from "../API/Login";
+
 // CSS수정해야 합니다. -Sehyun-
 function LoginPage() {
   const [credentials, setCredentials] = useState({ id: "", password: "" });
