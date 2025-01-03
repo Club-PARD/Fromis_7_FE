@@ -25,12 +25,18 @@ const ModalAdd = ({ isOpen, onClose, initialData, onAddPiece }) => {
     const navigate = useNavigate();
 
     const handleBlur = (field, value) => {
+        if (!/^\d+$/.test(value)) {
+            alert("숫자만 입력해주세요."); // 경고창 표시
+            setDates((prevDates) => ({
+                ...prevDates,
+                [field]: "", // 잘못된 값을 초기화
+            }));
+            return;
+        }
+    
+        // 유효한 값이라면 포맷팅 수행
         let formattedValue = value;
-
-        if (field.includes("Year") && value.endsWith("년")) return;
-        if (field.includes("Month") && value.endsWith("월")) return;
-        if (field.includes("Day") && value.endsWith("일")) return;
-
+    
         if (field.includes("Year")) {
             formattedValue = `${value}년`;
         } else if (field.includes("Month")) {
@@ -38,13 +44,13 @@ const ModalAdd = ({ isOpen, onClose, initialData, onAddPiece }) => {
         } else if (field.includes("Day")) {
             formattedValue = value.padStart(2, "0") + "일";
         }
-
+    
         setDates((prevDates) => ({
             ...prevDates,
             [field]: formattedValue,
         }));
     };
-
+    
     const handleChange = (field, value) => {
         setDates((prevDates) => ({
             ...prevDates,

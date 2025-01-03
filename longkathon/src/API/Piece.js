@@ -7,7 +7,7 @@ export const postPieceAPI = async (userId, data) => {
     try {
         console.log("POST 데이터:", data);
         // const response = await axios.post(`${server}/piece/${userId}`, data);
-        const response = await axios.post(`${server}/pieces/2`, data);
+        const response = await axios.post(`${server}/pieces/${userId}`, data);
         return response;
     } catch (error) {
         console.error("Error while saving piece data:", error);

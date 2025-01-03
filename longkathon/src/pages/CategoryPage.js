@@ -1,35 +1,35 @@
 import React, { useEffect, useState } from "react";
-import { Container } from "./MainPage";
+import { Container } from "./PiecePage";
 import SideBar from "../components/SideBar";
 import HeaderComponent from "../components/HeaderComponent";
 import CategoryAddContainer from "../components/CategoryAddContainer";
 import AlertManager from "../components/AlertManager";
 import AlertManagerDelete from "../components/AlertManagerDelete";
-import AddCategory from "../pages/AddCategory";
+import AddCategory from "./AddCategory";
 import CategoryCard_Check from "../components/CategoryCard_Check";
 import { useMemo } from "react";
 import styled from 'styled-components';
 import { deleteCategoryAPI, getCategoryAPI } from "../API/Category";
 import AlertManagerDeleteCategory from "../components/AlertManagerDeleteCategory";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getPieceAPI } from "../API/Piece";
 
 
-const AllCategoryPage = () => {
+const CategoryPage = () => {
   const [categories, setCategories] = useState([]);
-  const { pieceIdCategory } = useParams(); // URL 파라미터에서 pieceId를 받기
+  const { pieceId } = useParams(); // URL 파라미터에서 pieceId를 받기
   const [pieceTitle, setPieceTitle] = useState(""); // pieceTitle 상태 추가
   const [categoryCount, setCategoryCount] = useState(0); // 카테고리 카드 개수
+  const navigate = useNavigate();
 
 
-
-  console.log("pieceIdCategory", pieceIdCategory);
+  console.log("pieceIdCategory", pieceId);
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
 
-        const data = await getCategoryAPI(pieceIdCategory); //pieceId
+        const data = await getCategoryAPI(pieceId); //pieceId
         console.log("category", data);
         setCategories(data); // 서버에서 가져온 데이터를 상태로 설정
         setCategoryCount(data.length); // 카테고리 개수 설정
@@ -56,7 +56,7 @@ const AllCategoryPage = () => {
 
 
 
-        const findPieceTitle = response.filter(item => pieceIdCategory.includes(item.pieceId));
+        const findPieceTitle = response.filter(item => pieceId.includes(item.pieceId));
         console.log("finetitle", findPieceTitle)
 
 
@@ -105,7 +105,7 @@ const AllCategoryPage = () => {
     }
   };
 
-  const findPieceId = parseInt(pieceIdCategory, 10);
+  const findPieceId = parseInt(pieceId, 10);
 
   const [totalCount, setTotalCount] = useState(0); // 카운트의 총합
 
@@ -302,24 +302,27 @@ const AllCategoryPage = () => {
           {isButtonClicked && <ModalOverlayComponent toggleButtonClick={toggleButtonClick} />} {/* ModalOverlay가 활성화되었을 때만 보임 */}
           <CategoryContainer>
             {categoriesWithImages.map((item) => ( // categoriesWithImages 사용
-              <CategoryCard_Check
-                key={item.id}
-                index={item.id}
-                category={item.name} // AddCategory.js에서 입력한 이름
-                colorKey={item.color} // AddCategory.js에서 선택한 색상
-                backgroundImage={item.backgroundImage} // 이미지 전달
-                totalCount={totalCount}
-                isMarked={item.isHighlighted}
-                isSelected={!!selectedCategories[item.id]}
-                isDisabled={!selectedCategories[item.id] && totalCount >= 4}
-                onCountChange={handleCountChange}
-                onIsMarkedChange={handleIsMarkedChange}
-                clicked={isButtonClicked}
-                onDelete={handleDelete}
-                activateAlert={activateAlert}
-                cateId={item.cateId}
-                updateTotalCount={updateTotalCount}
-              />
+            // <goToDetailBox onClick={() => navigate(`/main/${pieceId}/category`)} >
+            // </goToDetailBox>
+            <CategoryCard_Check
+            key={item.id}
+            index={item.id}
+            category={item.name} // AddCategory.js에서 입력한 이름
+            colorKey={item.color} // AddCategory.js에서 선택한 색상
+            backgroundImage={item.backgroundImage} // 이미지 전달
+            totalCount={totalCount}
+            isMarked={item.isHighlighted}
+            isSelected={!!selectedCategories[item.id]}
+            isDisabled={!selectedCategories[item.id] && totalCount >= 4}
+            onCountChange={handleCountChange}
+            onIsMarkedChange={handleIsMarkedChange}
+            clicked={isButtonClicked}
+            onDelete={handleDelete}
+            activateAlert={activateAlert}
+            cateId={item.cateId}
+            updateTotalCount={updateTotalCount}
+            onClick={() => navigate(`/main/:pieceId/category/13`)}
+          />
             ))}
             {/* </CategoryContainer> */}
             <CategoryAddContainer_AddCard
@@ -376,6 +379,10 @@ const ModalOverlay = styled.div`
   z-index: 200;
 `;
 
+// const goToDetailBox = styled.div`
+// border: 10px solid black;
+// `;
+
 const ModalOverlayComponent = ({ toggleButtonClick }) => {
   return <ModalOverlay onClick={toggleButtonClick} />;
 };
@@ -389,7 +396,9 @@ const ModalContent = styled.div`
   z-index: 1100;
 `;
 
-const AllPageContainer = styled(Container)`
+const AllPageContainer = styled.div`
+  overflow-y: scroll;
+  height: 110vh;
   background: ${(props) => (props.$highlight ? "rgba(4, 4, 4, 0.6)" : "transparent")};
   pointer-events: ${(props) => (props.$highlight ? "none" : "auto")};
   
@@ -540,4 +549,4 @@ const BackgroundTitle = styled.div`
     }
 `;
 
-export default AllCategoryPage;
+export default CategoryPage;
