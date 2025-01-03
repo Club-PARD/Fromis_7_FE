@@ -13,12 +13,13 @@ const CategoryCard_Check = ({
   cateId,
   onCountChange, // 상위 컴포넌트로 상태를 변경할 때 호출되는 함수
   onIsMarkedChange,
+  totalCount
 }) => {
-
+  
   const [isMarkedLocal, setIsMarkedLocal] = useState(isMarked);
 
-   // isMarked 상태가 변경되었을 때, 상위 컴포넌트에 상태를 전달하는 함수
-   const handleBookMarkClick = () => {
+  // isMarked 상태가 변경되었을 때, 상위 컴포넌트에 상태를 전달하는 함수
+  const handleBookMarkClick = () => {
     console.log("북마크 클릭됨, 상태 변경 중...");
     // isMarked 상태 토글
     const newMarkedState = !isMarkedLocal;
@@ -30,10 +31,8 @@ const CategoryCard_Check = ({
 
     // 상태 토글에 따른 totalCount 변화
     if (newMarkedState) {
-      console.log("북마크 추가됨, count 증가");
       onCountChange(1); // 증가
     } else {
-      console.log("북마크 제거됨, count 감소");
       onCountChange(-1); // 감소
     }
   };
@@ -41,19 +40,15 @@ const CategoryCard_Check = ({
   useEffect(() => {
     // isMarked가 변경될 때마다 서버에 PATCH 요청 보내기
     if (isMarkedLocal !== isMarked) {
-      console.log(`isMarked 상태 변경됨: ${isMarkedLocal} (서버에 반영 중...)`);
 
       // 서버에 요청을 보내는 함수 (예시로 axios 사용)
       const updateIsHighlighted = async () => {
         try {
           const response = updateCategoryAPI(cateId, isMarkedLocal);
-          console.log("서버 응답: ", response.isHightlighted); // 서버 응답 확인
-          console.log("서버에 성공적으로 업데이트됨");
         } catch (error) {
           console.error("서버 업데이트 실패: ", error); // 오류 발생 시 로그
         }
       };
-
       updateIsHighlighted(); // 요청 실행
     }
   }, [isMarkedLocal, cateId]); // isMarkedLocal이 변경될 때마다 실행
@@ -67,6 +62,7 @@ const CategoryCard_Check = ({
     activateAlert();
   };
 
+  const isCursorDisabled = totalCount >= 4 && !isMarkedLocal;
 
   return (
     <CategoryBox clicked={clicked}>
@@ -77,7 +73,8 @@ const CategoryCard_Check = ({
       <CategoryIcon>
         {clicked ? (
           <DeleteIcon onClick={handleDelete} />) : (<BookMarkIcon onClick={handleBookMarkClick} isMarked={isMarkedLocal}
-            isDisabled={isDisabled} />)}
+            isDisabled={isDisabled || isCursorDisabled} // 커서 비활성화
+          />)}
       </CategoryIcon>
     </CategoryBox>
   );
@@ -192,11 +189,11 @@ const StyledCard = styled.div`
 export const BookMarkIcon = ({ onClick, isMarked, isDisabled }) => {
   return (
     <lord-icon
-    // key로 강제 리렌더링
       onClick={(e) => {
         e.preventDefault(); // 기본 동작 방지
         e.stopPropagation(); // 이벤트 전파 방지
-        if (!isDisabled) onClick(); // 상태 변경
+        // if (!isDisabled) 
+        onClick(); // 상태 변경
       }}
       src="https://cdn.lordicon.com/oiiqgosg.json"
       trigger="click"
@@ -205,8 +202,8 @@ export const BookMarkIcon = ({ onClick, isMarked, isDisabled }) => {
       style={{
         width: "40px",
         height: "40px",
-        cursor: isDisabled ? "not-allowed" : "pointer",
-        // zIndex:"0",
+        // cursor: isDisabled ? "not-allowed" : "pointer",
+        zIndex:"0",
       }}
     ></lord-icon>
   );

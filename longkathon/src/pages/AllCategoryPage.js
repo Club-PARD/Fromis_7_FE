@@ -75,7 +75,7 @@ const AllCategoryPage = () => {
 
         // totalCount 상태 업데이트 (0 + HighlightCount)
         setTotalCount(totalHighlightCount);
-        console.log("초기 totalCount: ", totalHighlightCount);
+        // console.log("초기 totalCount: ", totalHighlightCount);
 
       } catch (error) {
         console.error("카테고리 데이터를 가져오는 중 오류 발생:", error);
@@ -120,13 +120,14 @@ const AllCategoryPage = () => {
   const [showDeleteAlert, setShowDeleteAlert] = useState(false); // 삭제 경고 상태
   const [categoryToDelete, setCategoryToDelete] = useState(null); // 삭제할 카테고리
 
-  useEffect(() => {
-    if (totalCount === 4) {
-      setAlertActive(true); // Alert 활성화
-    } else {
-      setAlertActive(false); // Alert 비활성화
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (totalCount === 4) {
+  //     setAlertActive(true); // Alert 활성화
+  //   } else {
+  //     setAlertActive(false); // Alert 비활성화
+  //   }
+  // }, []);
+    
 
   const activateAlert = () => {
     setAlertActive(true); // Alert 활성화
@@ -240,6 +241,22 @@ const AllCategoryPage = () => {
     console.log(`Updated totalCount: ${totalCount}`);
   };
 
+  // useEffect(() => {
+  //   console.log("showDeleteAlert:", showDeleteAlert);
+  //   console.log("alertActive:", alertActive);
+  // }, [showDeleteAlert, alertActive]);
+
+
+  const [showAlert, setShowAlert] = useState(false); // Alert 창 활성화 여부
+
+  useEffect(() => {
+    if (totalCount >= 4) {
+      setShowAlert(true);
+    } else {
+      setShowAlert(false);
+    }
+  }, [totalCount]);
+
   return (
     <AllPageContainer>
       {/* 삭제 경고창 */}
@@ -257,12 +274,11 @@ const AllCategoryPage = () => {
       )}
       {/* AlertManager: 최대 선택 개수 도달 시 경고 */}
       {/* 최대 선택 개수 초과 경고 */}
-      {!showDeleteAlert && alertActive && (
+      { (totalCount >=4) &&
         <AlertManager
-          triggerCondition={alertActive}
           message="최대 4개 카테고리만 즐겨찾기 할 수 있습니다."
         />
-      )}
+      }
 
       {/* 배경 이미지: categories.length가 0일 때만 표시 */}
       {categories.length === 0 && (
@@ -279,7 +295,7 @@ const AllCategoryPage = () => {
         <CategoryTitle clicked={isModalOpen}>{pieceTitle}</CategoryTitle>
         <CustomCategoryText1>{totalCount}/4</CustomCategoryText1>
         <CustomCategoryText2>highlight</CustomCategoryText2>
-        <CustomCategoryButton onClick={toggleButtonClick} clicked={isButtonClicked} alertActive={alertActive}>
+        <CustomCategoryButton onClick={toggleButtonClick} clicked={isButtonClicked}>
           edit
         </CustomCategoryButton>
         <ContainerBox>

@@ -137,7 +137,7 @@ const MainPage = () => {
               <div>Loading...</div>
             ) : (
               // 부족한 부분을 null로 채운 확장된 배열 생성
-              [...categoriesToRender, ...Array(4 - categoriesToRender.length).fill(null)].map((category, index) => {
+              [...categoriesToRender, ...Array(Math.max(0, 4 - categoriesToRender.length)).fill(null)].map((category, index) => {
                 console.log(`렌더링되는 카테고리 ${index}:`, category); // 각 항목 확인
                 if (category) {
                   // 실제 데이터가 있는 경우

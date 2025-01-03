@@ -1,32 +1,10 @@
-// {/* AlertManager: 최대 선택 개수 도달 시 경고 */}
-// <AlertManager
-//   triggerCondition={totalCount === 4}
-//   message="최대 선택 개수에 도달했습니다!"
-// />
-
-// {/* AlertManager: 삭제 버튼 누른 후 경고 */}
-// <AlertManager
-//   triggerCondition={showDeleteAlert}
-//   message="카드가 삭제되었습니다."
-//   onTrigger={() => setShowDeleteAlert(false)} // 경고 후 상태 초기화
-// />
-
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { CategoryPiece } from "./CategoryCard_Check";
 import background from "../Image/X_purple.png";
 
-const AlertManager = ({ triggerCondition, message, onTrigger }) => {
+const AlertManager = ({  message }) => {
   const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    if (triggerCondition) {
-      setTimeout(() => {
-        setIsVisible(true); // 0.5초 딜레이 후 알림창 표시
-        if (onTrigger) onTrigger(); // 추가 동작 실행 (선택사항)
-      }, 500);
-    }
-  }, [triggerCondition, onTrigger]);
 
   const handleClose = () => {
     setIsVisible(false);
