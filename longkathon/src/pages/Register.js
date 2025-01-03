@@ -3,6 +3,8 @@ import styled from "styled-components";
 import LoginLogoImage from "../Image/LoginLogo.png";
 import { useNavigate } from "react-router-dom";
 import { postLoginAPI, postDUPAPI, postRegisterAPI } from "../API/Login";
+import Done from "../Image/Done.png";
+
 //등록
 function Register() {
   const [nickname, setNickname] = useState("");
@@ -29,6 +31,7 @@ function Register() {
       setIsEmailValid(false);
       return;
     } else {
+      //display: none설정, 
       setIsEmailValid(true);
     }
     try {
@@ -94,12 +97,17 @@ function Register() {
         <Container>
           <FlexDiv>
             <Label>아이디</Label>
-            {isIdDuplicated && <RedLabel>중복된 이메일 주소에요</RedLabel>}
+            {isIdDuplicated ? (
+              <RedLabel>중복된 이메일 주소에요</RedLabel>
+            ) : isIdAvailable ? (
+              <CheckImg src={Done} alt="Check" />
+            ) : null}
+            <CheckImg/>
           </FlexDiv>
           <InputIdContainer>
             <InputId
               type="text"
-              placeholder="이메일 주소를 입력해주세요."
+              placeholder="이메일 주소를 입력해주세요."set kmqsw
               value={credentials.id}
               onChange={(e) =>
                 setCredentials({ ...credentials, id: e.target.value })
@@ -118,6 +126,10 @@ function Register() {
                 올바르지 않은 비밀번호 형식이에요
               </RedLabel>
             )}
+            {isPasswordValid && (
+              <CheckImg src={Done} alt="Check" />
+            )}
+            <CheckImg/>
           </FlexDiv>
           <InputPassword
             type="password"
@@ -145,6 +157,10 @@ function Register() {
             {!isPasswordMatch && (
               <RedLabel>비밀번호가 일치하지 않아요</RedLabel>
             )}
+            {isPasswordMatch && (
+              <CheckImg src={Done} alt="Check" />
+            )}
+            <CheckImg/>
           </FlexDiv>
           <CheckPassword
             type="password"
@@ -239,6 +255,11 @@ const Container = styled.div`
 const FlexDiv = styled.div`
   display: flex;
   align-items: center;
+`;
+
+const CheckImg = styled.img`
+  width: 20px;
+  height: 20px;
 `;
 
 const InputIdContainer = styled.div`
