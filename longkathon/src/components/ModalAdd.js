@@ -103,7 +103,7 @@ const ModalAdd = ({ isOpen, onClose, initialData, onAddPiece }) => {
 
         setIsLoading(true);
         try {
-            const response = await postPieceAPI(2, payload); // userId를 1로 고정
+            const response = await postPieceAPI(1, payload); // userId를 1로 고정
             console.log("Payload saved:", response.data);
             alert("저장이 완료되었습니다.");
 

@@ -42,6 +42,7 @@ const PieceCard = ({
   date,
   members,
   pieceId, // pieceId 추가
+  userId,
 }) => {
   const navigate = useNavigate(); // 네비게이트 훅 사용
 
@@ -57,7 +58,7 @@ const PieceCard = ({
 
     // 카드 클릭 시 네비게이션 처리
     const handleCardClick = () => {
-      navigate(`/main/${pieceId}`, { state: { pieceId} });
+      navigate(`/${userId}/main/${pieceId}`, { state: { pieceId} });
     };
 
   return (

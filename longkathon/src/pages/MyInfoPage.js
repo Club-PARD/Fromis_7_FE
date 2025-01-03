@@ -70,7 +70,7 @@ const MyInfoPage = () => {
       formData.append("image", image); // 이미지 추가
 
       console.log("FormData 확인:", Array.from(formData.entries()));
-      const response = await patchUserImageAPI(1, formData);
+      const response = await patchUserImageAPI(2, formData);
 
       alert("프로필 이미지가 저장되었습니다.");
       console.log("서버 응답:", response.data);
@@ -86,7 +86,7 @@ const MyInfoPage = () => {
       formData.append("name", name);
 
       const data = { name }; // JSON 데이터로 전송
-      const response = await patchUserNameAPI(1, data); // userId를 적절히 설정;
+      const response = await patchUserNameAPI(2, data); // userId를 적절히 설정;
 
       alert("이름이 저장되었습니다.");
       console.log("서버 응답:", response.data);

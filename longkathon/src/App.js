@@ -22,12 +22,12 @@ function App() {
 
         <Route path="/:userId/main" element={<MainPage />} />
         <Route path="/:userId/emptymain" element={<EmptyMainPage />} />
-        <Route path="/main/:pieceId" element={<PiecePage />} />
+        <Route path="/:userId/main/:pieceId" element={<PiecePage />} />
         <Route path="/addcategory" element={<AddCategory />} />
 
-        <Route path="/main/:pieceId/category/5" element={<DetailPage />} />
+        <Route path="/main/:pieceId/category/:listId" element={<DetailPage />} />
         <Route path="/main/:pieceId/category" element={<CategoryPage />} />
-        <Route path="/:userId/mypage" element={<MyInfoPage />} />
+        <Route path="/mypage" element={<MyInfoPage />} />
         {/* <Route path="/:userId/history" element={<HistoryPage />} /> */}
         {/* <Route path="/practice" element={<FetchPractice />} /> */}
       </Routes>
