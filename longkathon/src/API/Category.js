@@ -6,6 +6,7 @@ const server = process.env.REACT_APP_API_URL;
 export const postCategoryAPI = async (pieceId, data) => {
     try {
         console.log("POST 데이터:", data);
+        //const response = await axios.post(`${sercer}/pieces/${userId}`, data{뭐시기뭐시기로 보내야함})
         const response = await axios.post(`${server}/categories/${pieceId}`, data, {
             headers: {
                 "Content-Type": "application/json",
@@ -23,6 +24,7 @@ export const postCategoryAPI = async (pieceId, data) => {
 //GET
 export const getCategoryAPI = async (pieceIdCategory) => { //
     try {
+                // const response = await axios.get(`${server}/categories/all/${pieceId}`);
         const response = await axios.get(`${server}/categories/all/${pieceIdCategory}`);
         return response.data;
     } catch (error) {

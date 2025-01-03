@@ -93,11 +93,11 @@ const InputMemo = styled.textarea`
     width: 423px;
     height: 227px;
     border-radius: 20px;
-    border: 1px solid #5ba8fb;
+    border: 0px solid #5ba8fb;
+    background: linear-gradient(to bottom right, #F0F8FF, #F2F1F8);
     margin-left: 35px;
     font-size: 14px;
     font-family: "Product Sans", sans-serif;
-    background: #FFF;
     color: ${(props) => (props.disabled ? "black" : "#a0a0a0")};
     pointer-events: ${(props) => (props.disabled ? "none" : "auto")}; /* 비활성화 상태일 때 클릭 막기 */
     padding-left: 16px; /* 왼쪽 여백 */
@@ -246,11 +246,11 @@ const MemoLabel = styled.div`
 const InputBox = styled.input`
     width: 423px;
     height: 47px;
-    border: 1px solid #5ba8fb;
+    border: 0px solid #5ba8fb;
     border-radius: 20px;
     font-size: 14px;
     margin-left: 40px;
-    background: #FFF;
+    background: linear-gradient(to bottom right, #F0F8FF, #F2F1F8);
     color: black; /* 비활성화된 텍스트 색상 */
     pointer-events: none; /* 비활성화 상태에서 클릭 및 입력 불가 */
     padding-left: 16px;
@@ -283,6 +283,7 @@ const UploadedImage = styled.img`
     width: 100%;
     height: 100%;
     object-fit: cover; /* 이미지가 박스에 맞도록 조정 */
+    z-index: 100; /* 다른 요소 위에 표시되도록 설정 */
 `;
 
 const PlaceholderText = styled.div`
@@ -405,6 +406,7 @@ const MemoEdit = styled.div`
     display: flex; /* MemoLabel 옆에 가로로 배치 */
     margin-left: 290px; /* 라벨과의 간격 */
     cursor: pointer;
+    
 `;
 
 
@@ -437,6 +439,8 @@ const MemoHeader = styled.div`
     margin-top: 42px;
     // margin-bottom: 8px;
 `;
+
+
 export {
     Container,
     MainBenner,

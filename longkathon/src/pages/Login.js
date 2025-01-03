@@ -3,6 +3,7 @@ import styled from "styled-components";
 import LoginLogoImage from "../Image/LoginLogo.png";
 import { useNavigate } from "react-router-dom";
 import { postLoginAPI, postRegisterAPI } from "../API/Login";
+
 // CSS수정해야 합니다. -Sehyun-
 function LoginPage() {
   const [credentials, setCredentials] = useState({ id: "", password: "" });
@@ -68,7 +69,7 @@ function LoginPage() {
           <FindPW>비밀번호 찾기</FindPW>
         </FindIdPassWord>
         <LoginButton onClick={handleLogin}>로그인</LoginButton>
-        <RegisterButton onClick={() => navigate("/Register")}>회원가입</RegisterButton>
+        <RegisterButton onClick={() => navigate("/register")}>회원가입</RegisterButton>
       </GoogleLoginSection>
     </LoginContainer>
   );
