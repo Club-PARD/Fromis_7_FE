@@ -25,3 +25,26 @@ export const getAllListAPI = async (categoryId) => {
         throw error;
     }
 };
+
+// PATCH
+export const updateListAPI = async (listId, data) => {
+    try {
+        const response = await axios.patch(`${server}/lists/${listId}`, data);
+        return response;
+    } catch (error) {
+        console.error("Error updating list data:", error);
+        throw error;
+    }
+};
+
+
+// DELETE
+export const deleteListAPI = async (listId) => {
+    try{
+        const response = await axios.delete(`${server}/lists/${listId}`);
+        return response;
+    } catch (error){
+        console.error("Error deleting list data:", error);
+        throw error;
+    }
+}

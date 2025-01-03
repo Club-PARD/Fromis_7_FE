@@ -283,6 +283,7 @@ const UploadedImage = styled.img`
     width: 100%;
     height: 100%;
     object-fit: cover; /* 이미지가 박스에 맞도록 조정 */
+    z-index: 100; /* 다른 요소 위에 표시되도록 설정 */
 `;
 
 const PlaceholderText = styled.div`
@@ -437,6 +438,8 @@ const MemoHeader = styled.div`
     margin-top: 42px;
     // margin-bottom: 8px;
 `;
+
+
 export {
     Container,
     MainBenner,
