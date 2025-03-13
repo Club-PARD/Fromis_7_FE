@@ -5,8 +5,10 @@ import UrlShareButton from "../Image/UrlShareButton.png";
 import { useNavigate } from "react-router-dom";
 import ModalAdd from "./ModalAdd";
 import { getPieceAPI } from "../API/Piece";
-import axios from 'axios';
-import { getAlarmAPI } from "../API/Notification"
+import axios from "axios";
+import { getAlarmAPI } from "../API/Notification";
+import { userIdState } from "../recoil/recoilState";
+import { useRecoilValue } from "recoil";
 
 // Sidebar Component
 const SideBar = () => {
@@ -18,9 +20,17 @@ const SideBar = () => {
   const [createdAt, setCreatedAt] = useState("");
   const [isCustomModalOpen, setIsCustomModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState([]);
+  const userId = useRecoilValue(userIdState); // Recoil에서 userId 값 가져오기
 
+  console.log("User ID:", userId);
+
+  // 페이지 이동 함수
   const handleConnectHome = () => {
-    navigate("/main");
+    if (userId) {
+      navigate(`/${userId}/main`);
+    } else {
+      console.error("User ID is not available");
+    }
   };
 
   const handleConnectMakeTitle = () => {
@@ -56,10 +66,12 @@ const SideBar = () => {
   // 알림 데이터를 가져오는 함수
   const fetchNotifications = async () => {
     try {
-      const response = await axios.get("http://fromis7.store:8080/notifications?userId=2");
+      const response = await axios.get(
+        "http://fromis7.store:8080/notifications?userId=2"
+      );
       console.log("알림 데이터:", response.data); // 서버에서 받은 데이터 로그
-      setNotifications(response.data.map(item => item.data)); // 알림 데이터 저장
-      setCreatedAt(response.data.map(item => item.createdAt)); // 모든 생성 시간 저장
+      setNotifications(response.data.map((item) => item.data)); // 알림 데이터 저장
+      setCreatedAt(response.data.map((item) => item.createdAt)); // 모든 생성 시간 저장
     } catch (error) {
       console.error("Error fetching notifications:", error);
     }
@@ -348,7 +360,7 @@ const ModalContent = styled.div`
   overflow-y: auto;
   background-color: white;
   border-radius: 20px 0px 20px 20px;
-  background: linear-gradient(149deg, #F0F8FF 0.77%, #F2F1F8 99.23%);
+  background: linear-gradient(149deg, #f0f8ff 0.77%, #f2f1f8 99.23%);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   z-index: 900;
   position: relative;

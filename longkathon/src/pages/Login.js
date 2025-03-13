@@ -14,6 +14,7 @@ function LoginPage() {
       email: credentials.id,
       password: credentials.password,
     };
+    console.log("로그인 데이터", loginData);
     try {
       const result = await postLoginAPI(loginData); // API 호출 결과를 변수에 저장
       console.log("로그인 성공 데이터:", result); // 성공적으로 받은 데이터를 콘솔에 출력
@@ -26,7 +27,6 @@ function LoginPage() {
 
       // 네비게이션
       navigate(`/${userId}/main`);
-
     } catch (error) {
       alert("계정 정보가 없거나 데이터가 잘못되었습니다.");
       console.error("로그인 실패:", error);
@@ -65,7 +65,9 @@ function LoginPage() {
           <FindPW>비밀번호 찾기</FindPW>
         </FindIdPassWord>
         <LoginButton onClick={handleLogin}>로그인</LoginButton>
-        <RegisterButton onClick={() => navigate("/register")}>회원가입</RegisterButton>
+        <RegisterButton onClick={() => navigate("/register")}>
+          회원가입
+        </RegisterButton>
       </GoogleLoginSection>
     </LoginContainer>
   );
@@ -203,8 +205,8 @@ const FindPW = styled.button`
 const RegisterButton = styled.button`
   width: 100%;
   height: 84px;
-  background: #FFF;
-  color: #5BA8FB;
+  background: #fff;
+  color: #5ba8fb;
   font-weight: 400;
   cursor: pointer;
   margin-top: 20px;
@@ -220,7 +222,7 @@ const RegisterButton = styled.button`
 const LoginButton = styled.button`
   width: 100%;
   height: 84px;
-  background: #5BA8FB;
+  background: #5ba8fb;
   color: #fff;
   font-weight: 400;
   cursor: pointer;
@@ -231,7 +233,7 @@ const LoginButton = styled.button`
   font-weight: 400;
   line-height: normal;
   border-radius: 10px;
-  border: 1px solid #5BA8FB;
+  border: 1px solid #5ba8fb;
 `;
 
 export default LoginPage;

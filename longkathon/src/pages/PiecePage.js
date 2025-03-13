@@ -12,15 +12,27 @@ import PieceMap from "../components/PieceMap.js";
 import { getPieceAPI } from "../API/Piece.js"; // 적절한 경로로 수정
 import { getCategoryAPI } from "../API/Category.js";
 import CategoryPage from "./CategoryPage.js";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { userIdState } from "../recoil/recoilState.js";
 
 const PiecePage = () => {
-  const { userId, pieceId } = useParams(); // URL 파라미터에서 pieceId를 받기
-  console.log(pieceId);
+  const { pieceId } = useParams(); // URL 파라미터에서 pieceId를 받기
+
+  const { userId } = useParams(); // URL 파라미터에서 pieceId를 받기
+  console.log(userId);
+  const [userIdStateValue, setUserIdState] = useRecoilState(userIdState); // Recoil state hook
+
+  // Set userId to Recoil state
+  useEffect(() => {
+    console.log("userEffect recoil:", userId);
+    if (userId && userIdStateValue !== userId) {
+      setUserIdState(userId); // URL에서 가져온 userId를 Recoil 상태에 저장
+    }
+  }, [userId, userIdStateValue, setUserIdState]);
 
   const navigate = useNavigate();
   const [filteredPieces, setFilteredPieces] = useState([]); // 새로 생성된 데이터 상태
   const [loading, setLoading] = useState(true); // 로딩 상태
-
 
   // pieceId 값에 따라 필터링된 데이터 요청
   useEffect(() => {
@@ -31,44 +43,43 @@ const PiecePage = () => {
       }
 
       try {
-        setLoading(true); // 로딩 시작
-        const response = await getPieceAPI(userId); // API 요청
-
-        console.log("API 응답:", response); // 응답 콘솔 출력
-
-        // pieceId와 일치하는 데이터만 필터링
-        const filteredData = response.filter(item => item.pieceId === parseInt(pieceId)); // pieceId 비교 시 숫자로 변환
+        setLoading(true);
+        const response = await getPieceAPI(userId);
+        console.log("API 응답:", response);
+        const filteredData = response.filter(
+          (item) => item.pieceId === parseInt(pieceId)
+        );
 
         if (filteredData.length === 0) {
           console.warn("일치하는 pieceId가 없습니다.");
         } else {
-
-          setFilteredPieces(filteredData); // 필터링된 데이터 상태 업데이트
+          setFilteredPieces(filteredData);
         }
       } catch (error) {
-        console.error("데이터 가져오기 오류:", error); // 오류 처리
+        console.error("데이터 가져오기 오류:", error);
       } finally {
-        setLoading(false); // 로딩 종료
+        setLoading(false);
       }
     };
 
-    fetchPieceData(); // 데이터 요청
-  }, [userId, pieceId]); // userId와 pieceId가 변경될 때마다 실행
+    fetchPieceData();
+  }, [userId, pieceId]);
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const response = await getCategoryAPI(pieceId);
-        const filteredCategories = response.filter(category => category.isHighlighted);
+        const filteredCategories = response.filter(
+          (category) => category.isHighlighted
+        );
         setCategoriesToRender(filteredCategories); // 상태 업데이트
-        console.log('상태 업데이트 완료:', filteredCategories); // 상태로 설정된 데이터 확인
+        console.log("상태 업데이트 완료:", filteredCategories); // 상태로 설정된 데이터 확인
       } catch (error) {
-        console.error('API 호출 실패:', error);
+        console.error("API 호출 실패:", error);
       }
     };
     fetchCategories();
   }, []);
-
 
   // `StartDay`, `StartMonth`, `StartYear`로 `targetDate`를 포맷팅
   const formatDate = (day, month, year) => {
@@ -78,16 +89,16 @@ const PiecePage = () => {
   };
 
   // categories가 없으면 빈 배열로 처리하고, 4개의 CategoryCard를 항상 표시
-  const categoriesToDisplay = filteredPieces.length > 0
-    ? filteredPieces[0].categories || [] // filteredPieces가 있으면 그 첫 번째 항목의 categories 사용
-    : [];
+  const categoriesToDisplay =
+    filteredPieces.length > 0
+      ? filteredPieces[0].categories || [] // filteredPieces가 있으면 그 첫 번째 항목의 categories 사용
+      : [];
 
   // 기본 4개 항목, categories 데이터가 부족하면 기본값으로 채운다
   const defaultCategories = ["", "", "", ""]; // 기본 4개 항목
 
-
-
-  const backgroundColor = filteredPieces.length > 0 ? filteredPieces[0].color : null;
+  const backgroundColor =
+    filteredPieces.length > 0 ? filteredPieces[0].color : null;
 
   console.log("BackGround color:", backgroundColor);
 
@@ -96,7 +107,6 @@ const PiecePage = () => {
   // useEffect(() => {
   //   console.log('categoriesToRender 상태:', categoriesToRender); // 상태 업데이트 이후 값 확인
   // }, [categoriesToRender]);
-
 
   return (
     <PageContainer>
@@ -111,22 +121,24 @@ const PiecePage = () => {
             <PieceMapWrapper>
               <PieceMap pieceId={pieceId} />
             </PieceMapWrapper>
-            <ViewButton onClick={() => navigate(`/main/${pieceId}/category`)}>
+            <ViewButton
+              onClick={() => navigate(`/${userId}/main/${pieceId}/category`)}
+            >
               전체 조각 보러가기
             </ViewButton>
             <MainRightViewContainer
               users={
                 filteredPieces.length > 0
                   ? filteredPieces.map((piece) => ({
-                    title: piece.title || "제목 없음",
-                    startYear: piece.startYear || "0000",
-                    startMonth: piece.startMonth || "01",
-                    startDay: piece.startDay || "01",
-                    endYear: piece.endYear || "0000",
-                    endMonth: piece.endMonth || "01",
-                    endDay: piece.endDay || "01",
-                    memberNames: piece.memberNames || [],
-                  }))
+                      title: piece.title || "제목 없음",
+                      startYear: piece.startYear || "0000",
+                      startMonth: piece.startMonth || "01",
+                      startDay: piece.startDay || "01",
+                      endYear: piece.endYear || "0000",
+                      endMonth: piece.endMonth || "01",
+                      endDay: piece.endDay || "01",
+                      memberNames: piece.memberNames || [],
+                    }))
                   : []
               }
             />
@@ -138,7 +150,10 @@ const PiecePage = () => {
               <div>Loading...</div>
             ) : (
               // 부족한 부분을 null로 채운 확장된 배열 생성
-              [...categoriesToRender, ...Array(Math.max(0, 4 - categoriesToRender.length)).fill(null)].map((category, index) => {
+              [
+                ...categoriesToRender,
+                ...Array(Math.max(0, 4 - categoriesToRender.length)).fill(null),
+              ].map((category, index) => {
                 console.log(`렌더링되는 카테고리 ${index}:`, category); // 각 항목 확인
                 if (category) {
                   // 실제 데이터가 있는 경우
@@ -170,9 +185,7 @@ const PiecePage = () => {
                   piece.startMonth,
                   piece.startYear
                 );
-                return (
-                  <DayCard key={index} targetDate={targetDate} />
-                );
+                return <DayCard key={index} targetDate={targetDate} />;
               })
             )}
           </CategoryContainer>

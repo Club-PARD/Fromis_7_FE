@@ -7,12 +7,21 @@ import Dropdown from "../components/CategoryButton";
 import PieceCard from "../components/PieceCard";
 import { deletePieceAPI, getPieceAPI } from "../API/Piece";
 import { useParams } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { userIdState } from "../recoil/recoilState";
 
 const MainPage = () => {
-
   const { userId } = useParams(); // URL 파라미터에서 pieceId를 받기
   console.log(userId);
+  const [userIdStateValue, setUserIdState] = useRecoilState(userIdState); // Recoil state hook
 
+  // Set userId to Recoil state
+  useEffect(() => {
+    console.log("userEffect recoil:", userId);
+    if (userId && userIdStateValue !== userId) {
+      setUserIdState(userId); // URL에서 가져온 userId를 Recoil 상태에 저장
+    }
+  }, [userId, userIdStateValue, setUserIdState]);
 
   const [categories, setCategories] = useState([]); // 카테고리 상태
   const [expiredPieces, setExpiredPieces] = useState([]); // 만료된 카테고리 상태
@@ -28,28 +37,28 @@ const MainPage = () => {
 
   // 색상 코드와 이미지 키 매핑
   const colorNameMap = {
-    '#EA7E7A': 'red',
-    '#FBA96F': 'orange',
-    '#5BA8FB': 'lightblue',
-    '#002ED1': 'darkblue',
-    '#9ED4B6': 'green',
+    "#EA7E7A": "red",
+    "#FBA96F": "orange",
+    "#5BA8FB": "lightblue",
+    "#002ED1": "darkblue",
+    "#9ED4B6": "green",
     "#927CFF": "purple",
     "#D9A9ED": "pink",
-    '#BDBDBD': 'gray',
-    '#424242': 'black',
+    "#BDBDBD": "gray",
+    "#424242": "black",
   };
 
   //이미지 매핑
   const imageMap = {
-    purple: require('../Image/X_purple.png'),
-    green: require('../Image/X_green.png'),
-    pink: require('../Image/X_pink.png'),
-    orange: require('../Image/X_orange.png'),
-    lightblue: require('../Image/X_skyblue.png'),
-    darkblue: require('../Image/X_blue.png'),
-    black: require('../Image/X_black.png'),
-    red: require('../Image/X_red.png'),
-    gray: require('../Image/X_gray.png'),
+    purple: require("../Image/X_purple.png"),
+    green: require("../Image/X_green.png"),
+    pink: require("../Image/X_pink.png"),
+    orange: require("../Image/X_orange.png"),
+    lightblue: require("../Image/X_skyblue.png"),
+    darkblue: require("../Image/X_blue.png"),
+    black: require("../Image/X_black.png"),
+    red: require("../Image/X_red.png"),
+    gray: require("../Image/X_gray.png"),
   };
 
   const getColorKey = (colorCode) => {
@@ -68,7 +77,7 @@ const MainPage = () => {
     setShowDeleteAlert(false); // 경고창 닫기
   };
 
-  const BackgroundImage = require('../Image/MainIcon.png'); // 배경 이미지 추가
+  const BackgroundImage = require("../Image/MainIcon.png"); // 배경 이미지 추가
 
   const toggleButtonClick = () => {
     setIsButtonClicked((prev) => !prev); // Toggle button clicked state
@@ -78,9 +87,8 @@ const MainPage = () => {
   const fetchCategories = async () => {
     try {
       const response = await getPieceAPI(userId); // 서버 API 엔드포인트
-        console.log("Id: ", userId);
+      console.log("Id: ", userId);
       if (response && Array.isArray(response)) {
-
         response.forEach((item, index) => {
           console.log(`카테고리 ${index + 1}:`, item);
         });
@@ -99,9 +107,7 @@ const MainPage = () => {
     fetchCategories(); // 컴포넌트가 마운트되면 서버에서 데이터 가져옴
   }, []);
 
-
-  useEffect(() => {
-  }, [categories]); // categories가 변경될 때마다 실행되는 useEffect
+  useEffect(() => {}, [categories]); // categories가 변경될 때마다 실행되는 useEffect
 
   //delete기능
   const confirmDelete = async () => {
@@ -112,7 +118,9 @@ const MainPage = () => {
 
         // Remove the deleted category from the state
         setCategories((prevCategories) =>
-          prevCategories.filter((category) => category.pieceId !== titleToDelete.pieceId)
+          prevCategories.filter(
+            (category) => category.pieceId !== titleToDelete.pieceId
+          )
         );
       } catch (error) {
         console.error("Error deleting piece from the server:", error);
@@ -133,10 +141,16 @@ const MainPage = () => {
     console.log("서버에서 받은 데이터:", data); // 서버에서 받은 원본 데이터
 
     data.forEach((item) => {
-      const startDate = new Date(item.startYear, item.startMonth - 1, item.startDay);
+      const startDate = new Date(
+        item.startYear,
+        item.startMonth - 1,
+        item.startDay
+      );
       const endDate = new Date(item.endYear, item.endMonth - 1, item.endDay);
 
-      console.log(`카드 ${item.title} 시작일: ${startDate}, 종료일: ${endDate}`);
+      console.log(
+        `카드 ${item.title} 시작일: ${startDate}, 종료일: ${endDate}`
+      );
 
       if (endDate < now) {
         expiredPieces.push(item); // 만료된 카테고리로 분류
@@ -144,7 +158,6 @@ const MainPage = () => {
         activePieces.push(item); // 활성 카테고리로 분류
       }
     });
-
 
     // 활성 카테고리를 시작 날짜 순으로 정렬
     activePieces.sort((a, b) => {
@@ -186,14 +199,14 @@ const MainPage = () => {
   };
 
   return (
-    <AllPageContainer >
+    <AllPageContainer>
       {/* 삭제 경고창 */}
       <AlertManagerDelete
         triggerCondition={showDeleteAlert}
         onTrigger={() => setShowDeleteAlert(false)} // 경고창 닫을 때 초기화
         onDelete={confirmDelete}
         onCancel={cancelDelete} // onCancel 프롭을 전달
-        backgroundImage={imageMap[getColorKey(titleToDelete?.color)]}  // 해당 카테고리의 colorKey에 맞는 배경 이미지 전달
+        backgroundImage={imageMap[getColorKey(titleToDelete?.color)]} // 해당 카테고리의 colorKey에 맞는 배경 이미지 전달
         message={`${titleToDelete?.title} 카드를 삭제할까요?`} // 직접 전달된 메시지
         titleToDelete={titleToDelete} // 삭제할 카테고리 전달
       />
@@ -201,28 +214,43 @@ const MainPage = () => {
       {categories.length === 0 && (
         <>
           <PageBackgroundImage src={BackgroundImage} alt="배경 이미지" />
-          <BackgroundTitle>여행의 시작, 함께 소통의 조각을 생성해요!</BackgroundTitle>
+          <BackgroundTitle>
+            여행의 시작, 함께 소통의 조각을 생성해요!
+          </BackgroundTitle>
         </>
       )}
-      <CategorySideBar isButtonClicked={isButtonClicked} />
+      <CategorySideBar isButtonClicked={isButtonClicked} userId={userId} />
       <HeaderComponent isButtonClicked={isButtonClicked} />
-      <Dropdown isButtonClicked={isButtonClicked} onSortClosest={handleSortClosest} onSortCreatedAt={handleSortCreatedAt} />
+      <Dropdown
+        isButtonClicked={isButtonClicked}
+        onSortClosest={handleSortClosest}
+        onSortCreatedAt={handleSortCreatedAt}
+      />
       <AllCategoryContainer>
-        <CategoryTitle>다가올 <span className="Link">&nbsp;링크</span>를 확인 해보세요!</CategoryTitle>
+        <CategoryTitle>
+          다가올 <span className="Link">&nbsp;링크</span>를 확인 해보세요!
+        </CategoryTitle>
         <CustomCategoryText1>L:nk</CustomCategoryText1>
         <CustomCategoryText2>pages</CustomCategoryText2>
-        <CustomCategoryButton onClick={toggleButtonClick} clicked={isButtonClicked} alertActive={alertActive} >
+        <CustomCategoryButton
+          onClick={toggleButtonClick}
+          clicked={isButtonClicked}
+          alertActive={alertActive}
+        >
           delete
         </CustomCategoryButton>
         <ContainerBox>
-          {isButtonClicked && <ModalOverlayComponent toggleButtonClick={toggleButtonClick} />} {/* ModalOverlay가 활성화되었을 때만 보임 */}
+          {isButtonClicked && (
+            <ModalOverlayComponent toggleButtonClick={toggleButtonClick} />
+          )}{" "}
+          {/* ModalOverlay가 활성화되었을 때만 보임 */}
           <CategoryContainer>
             {categories.map((item) => (
               <PieceCard
                 userId={userId}
                 pieceId={item.pieceId} // pieceId를 전달
                 key={item.pieceId}
-                colorkey={getColorKey(item.color)}// 색상 전달
+                colorkey={getColorKey(item.color)} // 색상 전달
                 clicked={isButtonClicked}
                 onDelete={() => handleDelete(item.pieceId, item)}
                 activateAlert={activateAlert}
@@ -238,10 +266,7 @@ const MainPage = () => {
   );
 };
 
-const CategorySideBar = styled(SideBar)`
-
-`;
-
+const CategorySideBar = styled(SideBar)``;
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -262,7 +287,7 @@ const ModalOverlayComponent = ({ toggleButtonClick }) => {
 };
 
 const AllPageContainer = styled.div`
-    overflow-y: scroll;
+  overflow-y: scroll;
   height: 110vh;
 `;
 
@@ -277,7 +302,7 @@ const CustomCategoryText1 = styled.div`
 
 const CustomCategoryText2 = styled.div`
   border-radius: 20px;
-  background: linear-gradient(149deg, #F0F8FF 0.77%, #F2F1F8 99.23%);
+  background: linear-gradient(149deg, #f0f8ff 0.77%, #f2f1f8 99.23%);
   font-family: Inter;
   font-size: 20px;
   font-style: normal;
@@ -313,19 +338,16 @@ const CustomCategoryButton = styled.button`
   text-align: center;
   position: absolute;
   top: 114px;
-  right:0px;
+  right: 0px;
   cursor: pointer; /* 항상 클릭 가능 */
   transition: background-color 0.2s, color 0.2s;
   z-index: ${(props) => (props.clicked ? "330" : "100")};
-  
 
   &:hover {
-    background:#5ba8fb;
+    background: #5ba8fb;
     border: solid 1px #afb8c1;
   }
 `;
-
-
 
 const AllCategoryContainer = styled.div`
   position: relative;
@@ -343,29 +365,33 @@ const CategoryTitle = styled.div`
   width: 412px;
   height: 88px;
   border-radius: 20px;
-  background: linear-gradient(149deg, rgba(240, 248, 255, 0.7) 0.77%, rgba(242, 241, 248, 0.7) 99.23%);
+  background: linear-gradient(
+    149deg,
+    rgba(240, 248, 255, 0.7) 0.77%,
+    rgba(242, 241, 248, 0.7) 99.23%
+  );
   position: absolute;
   top: 36px;
-  color: #3597FF;
-text-align: center;
-font-family: "Product Sans";
-font-size: 26px;
-font-style: normal;
-font-weight: 400;
-line-height: 26px; /* 100% */
+  color: #3597ff;
+  text-align: center;
+  font-family: "Product Sans";
+  font-size: 26px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 26px; /* 100% */
   display: flex;
   justify-content: center;
   text-align: center;
-  align-items: center; 
-  
+  align-items: center;
+
   .Link {
-    color: #3597FF;
-font-family: "Product Sans";
-font-size: 26px;
-font-style: normal;
-font-weight: 700;
-line-height: 26px;
-}
+    color: #3597ff;
+    font-family: "Product Sans";
+    font-size: 26px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 26px;
+  }
 `;
 
 const CategoryContainer = styled.div`
@@ -387,38 +413,37 @@ const ContainerBox = styled.div`
 
 const PageBackgroundImage = styled.img`
   position: absolute;
-  top:263px;
-  left:469px;
+  top: 263px;
+  left: 469px;
   width: 467px;
   height: auto;
   display: flex;
-    justify-content: center;
-    align-items: center;
+  justify-content: center;
+  align-items: center;
   z-index: -1; /* 컨텐츠 뒤에 배경이 오도록 설정 */
   border-radius: 12px;
 `;
 
 const BackgroundTitle = styled.div`
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: #3597ff;
-    font-family: "Product Sans Thin";
-    font-size: 40px;
-    font-style: normal;
-    font-weight: 350;
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    z-index: 300;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #3597ff;
+  font-family: "Product Sans Thin";
+  font-size: 40px;
+  font-style: normal;
+  font-weight: 350;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  z-index: 300;
 
-    /* 반응형 스타일 */
-    @media (max-width: 768px) {
-        font-size: 24px;
-    }
+  /* 반응형 스타일 */
+  @media (max-width: 768px) {
+    font-size: 24px;
+  }
 `;
 
 export default MainPage;
-

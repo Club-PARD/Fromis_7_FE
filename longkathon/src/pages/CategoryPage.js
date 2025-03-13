@@ -8,12 +8,13 @@ import AlertManagerDelete from "../components/AlertManagerDelete";
 import AddCategory from "./AddCategory";
 import CategoryCard_Check from "../components/CategoryCard_Check";
 import { useMemo } from "react";
-import styled from 'styled-components';
+import styled from "styled-components";
 import { deleteCategoryAPI, getCategoryAPI } from "../API/Category";
 import AlertManagerDeleteCategory from "../components/AlertManagerDeleteCategory";
 import { useNavigate, useParams } from "react-router-dom";
 import { getPieceAPI } from "../API/Piece";
-
+import { useRecoilState } from "recoil";
+import { userIdState } from "../recoil/recoilState";
 
 const CategoryPage = () => {
   const [categories, setCategories] = useState([]);
@@ -21,16 +22,23 @@ const CategoryPage = () => {
   const [pieceTitle, setPieceTitle] = useState(""); // pieceTitle 상태 추가
   const [categoryCount, setCategoryCount] = useState(0); // 카테고리 카드 개수
   const navigate = useNavigate();
+  const { userId } = useParams(); // URL 파라미터에서 pieceId를 받기
+  console.log(userId);
+  const [userIdStateValue, setUserIdState] = useRecoilState(userIdState); // Recoil state hook
 
-  
-
+  // Set userId to Recoil state
+  useEffect(() => {
+    console.log("userEffect recoil:", userId);
+    if (userId && userIdStateValue !== userId) {
+      setUserIdState(userId); // URL에서 가져온 userId를 Recoil 상태에 저장
+    }
+  }, [userId, userIdStateValue, setUserIdState]);
 
   console.log("pieceIdCategory", pieceId);
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-
         const data = await getCategoryAPI(pieceId); //pieceId
         console.log("category", data);
         setCategories(data); // 서버에서 가져온 데이터를 상태로 설정
@@ -44,32 +52,33 @@ const CategoryPage = () => {
     fetchCategories();
   }, []);
 
-
   const [HighlightCount, setHighlightCount] = useState(0);
-
 
   useEffect(() => {
     const fetchTitle = async () => {
       try {
-
         //userId
-        const response = await getPieceAPI(1); 
+        const response = await getPieceAPI(1);
         // console.log("category-title", response);
 
+        const findPieceTitle = response.filter((item) =>
+          pieceId.includes(item.pieceId)
+        );
+        console.log("finetitle", findPieceTitle);
 
-
-        const findPieceTitle = response.filter(item => pieceId.includes(item.pieceId));
-        console.log("finetitle", findPieceTitle)
-
-
-        setPieceTitle(findPieceTitle.map(item => item.title));
+        setPieceTitle(findPieceTitle.map((item) => item.title));
 
         // highlightCount 설정
-        const highlightCounts = findPieceTitle.map(item => item.highlightCount || 0); // undefined 방지
+        const highlightCounts = findPieceTitle.map(
+          (item) => item.highlightCount || 0
+        ); // undefined 방지
         console.log("highlightCounts 배열: ", highlightCounts);
 
         // highlightCount 배열의 총합 계산
-        const totalHighlightCount = highlightCounts.reduce((sum, count) => sum + count, 0);
+        const totalHighlightCount = highlightCounts.reduce(
+          (sum, count) => sum + count,
+          0
+        );
         console.log("HighlightCount 총합: ", totalHighlightCount);
 
         // HighlightCount 상태 업데이트
@@ -78,7 +87,6 @@ const CategoryPage = () => {
         // totalCount 상태 업데이트 (0 + HighlightCount)
         setTotalCount(totalHighlightCount);
         // console.log("초기 totalCount: ", totalHighlightCount);
-
       } catch (error) {
         console.error("카테고리 데이터를 가져오는 중 오류 발생:", error);
       }
@@ -129,7 +137,6 @@ const CategoryPage = () => {
   //     setAlertActive(false); // Alert 비활성화
   //   }
   // }, []);
-    
 
   const activateAlert = () => {
     setAlertActive(true); // Alert 활성화
@@ -137,15 +144,15 @@ const CategoryPage = () => {
   };
 
   const colorNameMap = {
-    '#EA7E7A': 'red',
-    '#FBA96F': 'orange',
-    '#5BA8FB': 'lightblue',
-    '#002ED1': 'darkblue',
-    '#9ED4B6': 'green',
-    '#927CFF': 'purple',
-    '#D9A9ED': 'pink',
-    '#BDBDBD': 'gray',
-    '#424242': 'black',
+    "#EA7E7A": "red",
+    "#FBA96F": "orange",
+    "#5BA8FB": "lightblue",
+    "#002ED1": "darkblue",
+    "#9ED4B6": "green",
+    "#927CFF": "purple",
+    "#D9A9ED": "pink",
+    "#BDBDBD": "gray",
+    "#424242": "black",
   };
 
   const categoriesWithImages = useMemo(() => {
@@ -160,7 +167,9 @@ const CategoryPage = () => {
   }, [categories]);
 
   const handleDelete = async (cateId) => {
-    const categoryToBeDeleted = categoriesWithImages.find((category) => category.cateId === cateId);
+    const categoryToBeDeleted = categoriesWithImages.find(
+      (category) => category.cateId === cateId
+    );
 
     if (categoryToBeDeleted) {
       console.log("삭제하려는 카테고리:", categoryToBeDeleted);
@@ -181,7 +190,9 @@ const CategoryPage = () => {
 
         // 상태 업데이트: 삭제된 카테고리 제거
         setCategories((prevCategories) =>
-          prevCategories.filter((category) => category.cateId !== categoryToDelete.cateId)
+          prevCategories.filter(
+            (category) => category.cateId !== categoryToDelete.cateId
+          )
         );
         console.log("카테고리 삭제 후 남은 목록:", categories); // 삭제 후 상태 확인
         // 상태 초기화
@@ -200,16 +211,14 @@ const CategoryPage = () => {
     console.log("showDeleteAlert 상태:", false);
   };
 
-
   // 페이지 스크롤 비활성화
   useEffect(() => {
     if (isModalOpen) {
-      document.body.style.overflow = 'hidden'; // 전체 페이지 스크롤 비활성화
+      document.body.style.overflow = "hidden"; // 전체 페이지 스크롤 비활성화
     } else {
-      document.body.style.overflow = 'auto'; // 전체 페이지 스큜롤 활성화
+      document.body.style.overflow = "auto"; // 전체 페이지 스큜롤 활성화
     }
   }, [isModalOpen]);
-
 
   const cancelDelete = () => {
     console.log("삭제 취소된 카테고리:", categoryToDelete); // 삭제 취소 로그
@@ -217,8 +226,7 @@ const CategoryPage = () => {
     setShowDeleteAlert(false); // 경고창 닫기
   };
 
-
-  const backgroundImage = require('../Image/MainIcon.png'); // 배경 이미지 추가
+  const backgroundImage = require("../Image/MainIcon.png"); // 배경 이미지 추가
 
   const getAddCardPosition = () => {
     // 카드가 4개씩 한 줄에 배치되므로, categoryCount에 맞춰 적절한 위치 계산
@@ -231,11 +239,11 @@ const CategoryPage = () => {
     setIsButtonClicked((prev) => !prev); // Toggle button clicked state
   };
 
+  useEffect(() => {}, [categories]); // categories가 변경될 때마다 실행되는 useEffect
 
-  useEffect(() => {
-  }, [categories]); // categories가 변경될 때마다 실행되는 useEffect
-
-  const handleIsMarkedChange = (newMarkedState) => { console.log(`isMarked changed to: ${newMarkedState}`); };
+  const handleIsMarkedChange = (newMarkedState) => {
+    console.log(`isMarked changed to: ${newMarkedState}`);
+  };
 
   // totalCount를 증가 또는 감소시키는 함수
   const handleCountChange = (change) => {
@@ -247,7 +255,6 @@ const CategoryPage = () => {
   //   console.log("showDeleteAlert:", showDeleteAlert);
   //   console.log("alertActive:", alertActive);
   // }, [showDeleteAlert, alertActive]);
-
 
   const [showAlert, setShowAlert] = useState(false); // Alert 창 활성화 여부
 
@@ -267,8 +274,10 @@ const CategoryPage = () => {
           triggerCondition={showDeleteAlert}
           onDelete={confirmDelete} // 삭제 버튼 클릭 시 삭제 수행
           onCancel={cancelDelete} // 취소 버튼 클릭 시 경고창 닫기
-          DeleteBackgroundColor={categoryToDelete ? categoryToDelete.DeleteBackgroundColor : ""}  // 삭제할 카테고리의 이미지 전달
-          message={categoryToDelete ? `${categoryToDelete.name}` : ""}  // 삭제할 카테고리의 이름 전달
+          DeleteBackgroundColor={
+            categoryToDelete ? categoryToDelete.DeleteBackgroundColor : ""
+          } // 삭제할 카테고리의 이미지 전달
+          message={categoryToDelete ? `${categoryToDelete.name}` : ""} // 삭제할 카테고리의 이름 전달
           categoryToDelete={categoryToDelete} // 삭제할 카테고리 전달
           clicked={isButtonClicked} // 카드를 클릭할 수 있는지 여부 설정
           onClick={() => handleCardClick()} // 카드 클릭 시 모달 열기
@@ -276,17 +285,17 @@ const CategoryPage = () => {
       )}
       {/* AlertManager: 최대 선택 개수 도달 시 경고 */}
       {/* 최대 선택 개수 초과 경고 */}
-      { (totalCount >=4) &&
-        <AlertManager
-          message="최대 4개 카테고리만 즐겨찾기 할 수 있습니다."
-        />
-      }
+      {totalCount >= 4 && (
+        <AlertManager message="최대 4개 카테고리만 즐겨찾기 할 수 있습니다." />
+      )}
 
       {/* 배경 이미지: categories.length가 0일 때만 표시 */}
       {categories.length === 0 && (
         <>
           <BackgroundImage src={backgroundImage} alt="배경 이미지" />
-          <BackgroundTitle>카테고리가 생성될 때마다 조각을 링크해요!</BackgroundTitle>
+          <BackgroundTitle>
+            카테고리가 생성될 때마다 조각을 링크해요!
+          </BackgroundTitle>
         </>
       )}
       <FixContainer>
@@ -297,35 +306,45 @@ const CategoryPage = () => {
         <CategoryTitle clicked={isModalOpen}>{pieceTitle}</CategoryTitle>
         <CustomCategoryText1>{totalCount}/4</CustomCategoryText1>
         <CustomCategoryText2>highlight</CustomCategoryText2>
-        <CustomCategoryButton onClick={toggleButtonClick} clicked={isButtonClicked}>
+        <CustomCategoryButton
+          onClick={toggleButtonClick}
+          clicked={isButtonClicked}
+        >
           edit
         </CustomCategoryButton>
         <ContainerBox>
-          {isButtonClicked && <ModalOverlayComponent toggleButtonClick={toggleButtonClick} />} {/* ModalOverlay가 활성화되었을 때만 보임 */}
+          {isButtonClicked && (
+            <ModalOverlayComponent toggleButtonClick={toggleButtonClick} />
+          )}{" "}
+          {/* ModalOverlay가 활성화되었을 때만 보임 */}
           <CategoryContainer>
-            {categoriesWithImages.map((item) => ( // categoriesWithImages 사용
-            // <goToDetailBox onClick={() => navigate(`/main/${pieceId}/category`)} >
-            // </goToDetailBox>
-            <CategoryCard_Check
-            key={item.id}
-            index={item.id}
-            category={item.name} // AddCategory.js에서 입력한 이름
-            colorKey={item.color} // AddCategory.js에서 선택한 색상
-            backgroundImage={item.backgroundImage} // 이미지 전달
-            totalCount={totalCount}
-            isMarked={item.isHighlighted}
-            isSelected={!!selectedCategories[item.id]}
-            isDisabled={!selectedCategories[item.id] && totalCount >= 4}
-            onCountChange={handleCountChange}
-            onIsMarkedChange={handleIsMarkedChange}
-            clicked={isButtonClicked}
-            onDelete={handleDelete}
-            activateAlert={activateAlert}
-            cateId={item.cateId}
-            updateTotalCount={updateTotalCount}
-            onClick={() => navigate(`/main/${pieceId}/category/6`)}
-          />
-            ))}
+            {categoriesWithImages.map(
+              (
+                item // categoriesWithImages 사용
+              ) => (
+                // <goToDetailBox onClick={() => navigate(`/main/${pieceId}/category`)} >
+                // </goToDetailBox>
+                <CategoryCard_Check
+                  key={item.id}
+                  index={item.id}
+                  category={item.name} // AddCategory.js에서 입력한 이름
+                  colorKey={item.color} // AddCategory.js에서 선택한 색상
+                  backgroundImage={item.backgroundImage} // 이미지 전달
+                  totalCount={totalCount}
+                  isMarked={item.isHighlighted}
+                  isSelected={!!selectedCategories[item.id]}
+                  isDisabled={!selectedCategories[item.id] && totalCount >= 4}
+                  onCountChange={handleCountChange}
+                  onIsMarkedChange={handleIsMarkedChange}
+                  clicked={isButtonClicked}
+                  onDelete={handleDelete}
+                  activateAlert={activateAlert}
+                  cateId={item.cateId}
+                  updateTotalCount={updateTotalCount}
+                  onClick={() => navigate(`/main/${pieceId}/category/6`)}
+                />
+              )
+            )}
             {/* </CategoryContainer> */}
             <CategoryAddContainer_AddCard
               onClickHandler={handleAddCard} // 수정된 부분
@@ -339,7 +358,11 @@ const CategoryPage = () => {
         <ModalContainer>
           <ModalOverlay>
             <ModalContent>
-              <AddCategory pieceTitle={pieceTitle} findPieceId={findPieceId} onClose={closeModal} />
+              <AddCategory
+                pieceTitle={pieceTitle}
+                findPieceId={findPieceId}
+                onClose={closeModal}
+              />
             </ModalContent>
           </ModalOverlay>
         </ModalContainer>
@@ -348,24 +371,18 @@ const CategoryPage = () => {
   );
 };
 
-const FixContainer = styled.div`
-  `;
+const FixContainer = styled.div``;
 
-const CategorySideBar = styled(SideBar)`
-
-`;
+const CategorySideBar = styled(SideBar)``;
 
 const ModalContainer = styled.div`
-position: fixed;
-width: 100%;
-height: 100vh;
-z-index: 900;
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  z-index: 900;
 `;
 
-const CategoryAddContainer_AddCard = styled(CategoryAddContainer)`
-
-`;
-
+const CategoryAddContainer_AddCard = styled(CategoryAddContainer)``;
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -402,9 +419,9 @@ const ModalContent = styled.div`
 const AllPageContainer = styled.div`
   overflow-y: scroll;
   height: 110vh;
-  background: ${(props) => (props.$highlight ? "rgba(4, 4, 4, 0.6)" : "transparent")};
+  background: ${(props) =>
+    props.$highlight ? "rgba(4, 4, 4, 0.6)" : "transparent"};
   pointer-events: ${(props) => (props.$highlight ? "none" : "auto")};
-  
 `;
 
 const CustomCategoryText1 = styled.div`
@@ -454,7 +471,7 @@ const CustomCategoryButton = styled.button`
   text-align: center;
   position: absolute;
   top: 114px;
-  right:0px;
+  right: 0px;
   cursor: pointer; /* 항상 클릭 가능 */
   transition: background-color 0.2s, color 0.2s;
   z-index: 310;
@@ -466,7 +483,7 @@ const CustomCategoryButton = styled.button`
 `;
 
 const AllCategoryContainer = styled.div`
-/* border: 10px solid black; */
+  /* border: 10px solid black; */
   position: relative;
   top: 80px;
   margin-left: 210px;
@@ -483,7 +500,11 @@ const CategoryTitle = styled.div`
   height: 88px;
   border-radius: 20px;
   color: rgba(4, 4, 4, 1);
-  background: linear-gradient(149deg, rgba(240, 248, 255, 0.7) 0.77%, rgba(242, 241, 248, 0.7) 99.23%);
+  background: linear-gradient(
+    149deg,
+    rgba(240, 248, 255, 0.7) 0.77%,
+    rgba(242, 241, 248, 0.7) 99.23%
+  );
   position: absolute;
   top: 36px;
   font-family: Inter;
@@ -494,7 +515,7 @@ const CategoryTitle = styled.div`
   justify-content: center;
   text-align: center;
   align-items: center;
-  z-index:${(props) => (props.clicked ? "900" : "100")};
+  z-index: ${(props) => (props.clicked ? "900" : "100")};
 `;
 
 const CategoryContainer = styled.div`
@@ -507,8 +528,7 @@ const CategoryContainer = styled.div`
   align-content: flex-start;
 `;
 
-const CategoryCard = styled.div`
-`;
+const CategoryCard = styled.div``;
 
 const ContainerBox = styled.div`
   position: relative;
@@ -519,37 +539,37 @@ const ContainerBox = styled.div`
 
 const BackgroundImage = styled.img`
   position: absolute;
-  top:263px;
-  left:469px;
+  top: 263px;
+  left: 469px;
   width: 467px;
   height: auto;
   display: flex;
-    justify-content: center;
-    align-items: center;
+  justify-content: center;
+  align-items: center;
   z-index: -1; /* 컨텐츠 뒤에 배경이 오도록 설정 */
   border-radius: 12px;
 `;
 
 const BackgroundTitle = styled.div`
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: #3597ff;
-    font-family: "Product Sans Thin";
-    font-size: 40px;
-    font-style: normal;
-    font-weight: 350;
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    z-index: 300;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #3597ff;
+  font-family: "Product Sans Thin";
+  font-size: 40px;
+  font-style: normal;
+  font-weight: 350;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  z-index: 300;
 
-    /* 반응형 스타일 */
-    @media (max-width: 768px) {
-        font-size: 24px;
-    }
+  /* 반응형 스타일 */
+  @media (max-width: 768px) {
+    font-size: 24px;
+  }
 `;
 
 export default CategoryPage;
