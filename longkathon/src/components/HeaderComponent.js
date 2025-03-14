@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import logoImg from '../Image/Logo.png';
+import logoImg from "../Image/Logo.png";
 import styled from "styled-components";
 import HamburgerIcon from "./HamburgerButton";
 import { useNavigate } from "react-router-dom";
 
-const HeaderComponent = ({ disabled, isButtonClicked }) => { // 외부에서 disabled 값을 받아옴
+const HeaderComponent = ({ disabled, isButtonClicked }) => {
+  // 외부에서 disabled 값을 받아옴
   const navigate = useNavigate();
 
   const handleConnectHome = () => {
@@ -23,49 +24,49 @@ const HeaderComponent = ({ disabled, isButtonClicked }) => { // 외부에서 dis
   };
 
   return (
-      <HeaderBackground isButtonClicked={isButtonClicked}>
-        <HamburgerContainer>
-          <HamburgerIcon />
-        </HamburgerContainer>
+    <HeaderBackground isButtonClicked={isButtonClicked}>
+      <HamburgerContainer>
+        <HamburgerIcon />
+      </HamburgerContainer>
 
-        <LogoGroup onClick={handleConnectHome}>
-          <LogoImg src={logoImg} alt='LogoImg' />
-          <LogoText> L:nk</LogoText>
-        </LogoGroup>
+      <LogoGroup onClick={handleConnectHome}>
+        <LogoImg src={logoImg} alt="LogoImg" />
+        <LogoText> L:nk</LogoText>
+      </LogoGroup>
 
-        <RightContainer>
-          <SearchBox>
-            <Search
-              type="text"
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-              placeholder="Search"
-              disabled={disabled} // 외부에서 받은 disabled 값으로 배경색을 변경
-            />
-            <SearchButton onClick={handleSearchClick}>
-              <SearchIcon disabled={disabled} />
-            </SearchButton>
-          </SearchBox>
-          <UserBox onClick={handleConnectMyInfo}>
-            <User />
-          </UserBox>
-        </RightContainer>
-      </HeaderBackground>
+      <RightContainer>
+        <SearchBox>
+          <Search
+            type="text"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            placeholder="Search"
+            disabled={disabled} // 외부에서 받은 disabled 값으로 배경색을 변경
+          />
+          <SearchButton onClick={handleSearchClick}>
+            <SearchIcon disabled={disabled} />
+          </SearchButton>
+        </SearchBox>
+        <UserBox onClick={handleConnectMyInfo}>
+          <User />
+        </UserBox>
+      </RightContainer>
+    </HeaderBackground>
   );
 };
 
 const HeaderBackground = styled.div`
-position: fixed;
-width: 100%;
-height: 60px;
-background-color: white;
+  position: fixed;
+  width: 100%;
+  height: 60px;
+  background-color: white;
 
-top: 0;
+  top: 0;
   left: 0;
   right: 0;
-  z-index: ${(props) => (props.isButtonClicked ? 100 : 200)};  
-  padding: 0 20px;  /* 좌우 여백 추가 */
-   align-items: center;
+  z-index: ${(props) => (props.isButtonClicked ? 100 : 1000)};
+  padding: 0 20px; /* 좌우 여백 추가 */
+  align-items: center;
   justify-content: space-between;
   display: flex;
 `;
@@ -76,7 +77,7 @@ const HamburgerContainer = styled.div`
 `;
 
 const LogoGroup = styled.div`
-position: absolute;
+  position: absolute;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -92,7 +93,7 @@ const LogoImg = styled.img`
 `;
 
 const LogoText = styled.span`
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-weight: bold;
   font-size: 40px;
   line-height: 40px;
@@ -115,15 +116,19 @@ const SearchBox = styled.div`
 `;
 
 const Search = styled.input`
-  border: ${(props) => (props.disabled ? "1px solid rgba(4, 4, 4, 0.3)" : "1px solid #afb8c1")};
+  border: ${(props) =>
+    props.disabled ? "1px solid rgba(4, 4, 4, 0.3)" : "1px solid #afb8c1"};
   border-radius: 10px;
   width: 192px;
   height: 38px;
   padding-left: 12px;
-  background: ${(props) => (props.disabled ? "rgba(104,104,104)" : "#fff")};  /* 외부에서 받은 disabled 값에 따라 배경색 변경 */
-  
+  background: ${(props) =>
+    props.disabled
+      ? "rgba(104,104,104)"
+      : "#fff"}; /* 외부에서 받은 disabled 값에 따라 배경색 변경 */
+
   &::placeholder {
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     font-size: 16px;
     line-height: 20px;
     color: ${(props) => (props.disabled ? "rgba(4, 4, 4, 0.3)" : "#afb8c1")};
@@ -149,7 +154,7 @@ const SearchIcon = () => {
   );
 };
 
-const UserBox = styled.div` 
+const UserBox = styled.div`
   margin-right: 103px;
 `;
 

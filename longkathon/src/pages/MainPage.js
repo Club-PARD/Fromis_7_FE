@@ -87,7 +87,7 @@ const MainPage = () => {
   const fetchCategories = async () => {
     try {
       const response = await getPieceAPI(userId); // 서버 API 엔드포인트
-      console.log("Id: ", userId);
+      console.log("Piece data: ", response);
       if (response && Array.isArray(response)) {
         response.forEach((item, index) => {
           console.log(`카테고리 ${index + 1}:`, item);

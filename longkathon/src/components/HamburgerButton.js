@@ -53,19 +53,19 @@ export const HamburgerIcon = () => {
       <BannersContainer show={showBanners}>
         {["마이 페이지", "진행 중 링크", "로그아웃"].map((category, index) => (
           <Banner
-          key={index}
-          onClick={
-            index === 0
-              ? handleConnectMyInfo // 마이 페이지로 이동
-              : index === 1
-              ? handleNavigateMain // 진행 중 링크 -> main 페이지 이동
-              : index === 2
-              ? handleLogout // 로그아웃 시 login 페이지로 이동
-              : undefined
-          }
-        >
-          {category}
-        </Banner>
+            key={index}
+            onClick={
+              index === 0
+                ? handleConnectMyInfo // 마이 페이지로 이동
+                : index === 1
+                ? handleNavigateMain // 진행 중 링크 -> main 페이지 이동
+                : index === 2
+                ? handleLogout // 로그아웃 시 login 페이지로 이동
+                : undefined
+            }
+          >
+            {category}
+          </Banner>
         ))}
       </BannersContainer>
     </Container>
@@ -73,7 +73,7 @@ export const HamburgerIcon = () => {
 };
 
 const Container = styled.div`
-  z-index: 299;
+  z-index: 1000;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -100,7 +100,8 @@ const BannersContainer = styled.div`
   border: ${(props) => (props.show ? "1px solid #AFB8C1" : "none")};
   border-radius: 20px;
   background-color: #ffffff;
-  display: ${(props) => (props.show ? "flex" : "none")}; /* 드롭박스 표시 여부 */
+  display: ${(props) =>
+    props.show ? "flex" : "none"}; /* 드롭박스 표시 여부 */
   flex-direction: column;
   overflow: hidden;
   box-shadow: 2px 2px 4px 0px rgba(217, 217, 217, 1),
@@ -108,8 +109,7 @@ const BannersContainer = styled.div`
   position: absolute;
   top: 45px;
   left: 0px;
-  z-index: 1005;
-
+  z-index: 999;
 `;
 
 const Banner = styled.div`
@@ -123,7 +123,7 @@ const Banner = styled.div`
   cursor: pointer;
 
   &:hover {
-    border: 0.5px solid #AFB8C1;
+    border: 0.5px solid #afb8c1;
   }
 `;
 
