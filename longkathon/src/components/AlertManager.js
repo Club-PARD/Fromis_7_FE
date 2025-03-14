@@ -3,9 +3,9 @@ import styled from "styled-components";
 import { CategoryPiece } from "./CategoryCard_Check";
 import background from "../Image/X_purple.png";
 
-const AlertManager = ({  message }) => {
+const AlertManager = ({ message }) => {
   const [isVisible, setIsVisible] = useState(false);
-
+  console.log("🔔 AlertManager 렌더링됨:", isVisible);
   const handleClose = () => {
     setIsVisible(false);
   };
@@ -16,7 +16,7 @@ const AlertManager = ({  message }) => {
     <AlertOverlay>
       <AlertBox>
         <AlertMessage>{message}</AlertMessage>
-        <AlertBackGround $image={background}/>
+        <AlertBackGround $image={background} />
         <CloseButton onClick={handleClose}>확인</CloseButton>
       </AlertBox>
     </AlertOverlay>
@@ -46,51 +46,50 @@ const AlertBox = styled.div`
   border-radius: 20px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   display: flex;
-align-content: center;
-justify-content: center;
-text-align: center;
+  align-content: center;
+  justify-content: center;
+  text-align: center;
 `;
 
 const AlertMessage = styled.div`
-position: absolute;
-top: 110px;
-color: #3597FF;
-text-align: center;
-font-family: "Product Sans";
-font-size: 24px;
-font-style: normal;
-font-weight: 400;
-line-height: normal;
+  position: absolute;
+  top: 110px;
+  color: #3597ff;
+  text-align: center;
+  font-family: "Product Sans";
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
 `;
 
 const CloseButton = styled.button`
-position: absolute;
-top: 428px;
-width: 224px;
-height: 58px;
+  position: absolute;
+  top: 428px;
+  width: 224px;
+  height: 58px;
   cursor: pointer;
   border-radius: 20px;
-background: #5BA8FB;
+  background: #5ba8fb;
   transition: background-color 0.2s;
-  color: #FFF;
-text-align: center;
-font-family: "Product Sans";
-font-size: 20px;
-font-style: normal;
-font-weight: 400;
-line-height: normal;
-border: none;
+  color: #fff;
+  text-align: center;
+  font-family: "Product Sans";
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  border: none;
   &:hover {
     background-color: #927cff;
   }
 `;
 
-const AlertBackGround=styled(CategoryPiece)`
-width: 294px;
-height: 165px;
-position: absolute;
-top:175px;
-left: 111px;
-background-image: ${(props) => `url(${props.$image})`};
+const AlertBackGround = styled(CategoryPiece)`
+  width: 294px;
+  height: 165px;
+  position: absolute;
+  top: 175px;
+  left: 111px;
+  background-image: ${(props) => `url(${props.$image})`};
 `;
-

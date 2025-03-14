@@ -23,24 +23,24 @@ const CategoryPage = () => {
   const [categoryCount, setCategoryCount] = useState(0); // 카테고리 카드 개수
   const navigate = useNavigate();
   const { userId } = useParams(); // URL 파라미터에서 pieceId를 받기
-  console.log(userId);
+  // console.log(userId);
   const [userIdStateValue, setUserIdState] = useRecoilState(userIdState); // Recoil state hook
 
   // Set userId to Recoil state
   useEffect(() => {
-    console.log("userEffect recoil:", userId);
+    // console.log("userEffect recoil:", userId);
     if (userId && userIdStateValue !== userId) {
       setUserIdState(userId); // URL에서 가져온 userId를 Recoil 상태에 저장
     }
   }, [userId, userIdStateValue, setUserIdState]);
 
-  console.log("pieceIdCategory", pieceId);
+  // console.log("pieceIdCategory", pieceId);
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const data = await getCategoryAPI(pieceId); //pieceId
-        console.log("category", data);
+        // console.log("category", data);
         setCategories(data); // 서버에서 가져온 데이터를 상태로 설정
         setCategoryCount(data.length); // 카테고리 개수 설정
         // setPieceTitle(data[0].pieceTitle);
@@ -58,13 +58,13 @@ const CategoryPage = () => {
     const fetchTitle = async () => {
       try {
         //userId
-        const response = await getPieceAPI(1);
+        const response = await getPieceAPI(userId);
         // console.log("category-title", response);
 
         const findPieceTitle = response.filter((item) =>
           pieceId.includes(item.pieceId)
         );
-        console.log("finetitle", findPieceTitle);
+        // console.log("finetitle:", findPieceTitle);
 
         setPieceTitle(findPieceTitle.map((item) => item.title));
 
@@ -72,14 +72,15 @@ const CategoryPage = () => {
         const highlightCounts = findPieceTitle.map(
           (item) => item.highlightCount || 0
         ); // undefined 방지
-        console.log("highlightCounts 배열: ", highlightCounts);
+        // console.log("highlightCounts 배열: ", highlightCounts);
 
         // highlightCount 배열의 총합 계산
         const totalHighlightCount = highlightCounts.reduce(
           (sum, count) => sum + count,
           0
         );
-        console.log("HighlightCount 총합: ", totalHighlightCount);
+        // console.log("HighlightCount 총합: ", totalHighlightCount);
+        console.log("HighlightCount:", HighlightCount);
 
         // HighlightCount 상태 업데이트
         setHighlightCount(totalHighlightCount);
@@ -91,7 +92,6 @@ const CategoryPage = () => {
         console.error("카테고리 데이터를 가져오는 중 오류 발생:", error);
       }
     };
-
     fetchTitle();
   }, []);
 
@@ -256,6 +256,10 @@ const CategoryPage = () => {
   //   console.log("alertActive:", alertActive);
   // }, [showDeleteAlert, alertActive]);
 
+  useEffect(() => {
+    console.log("🟢 totalCount 값 업데이트:", totalCount);
+  }, [totalCount]);
+
   const [showAlert, setShowAlert] = useState(false); // Alert 창 활성화 여부
 
   useEffect(() => {
@@ -268,6 +272,13 @@ const CategoryPage = () => {
 
   return (
     <AllPageContainer>
+      {/* AlertManager: 최대 선택 개수 도달 시 경고 */}
+      {/* 최대 선택 개수 초과 경고 */}
+      {totalCount >= 5 && (
+        <AlertManager message="최대 4개 카테고리만 즐겨찾기 할 수 있습니다." />
+        //안에 isVisible 활용해야지 모달창이 뜸
+      )}
+
       {/* 삭제 경고창 */}
       {showDeleteAlert && (
         <AlertManagerDeleteCategory
@@ -282,11 +293,6 @@ const CategoryPage = () => {
           clicked={isButtonClicked} // 카드를 클릭할 수 있는지 여부 설정
           onClick={() => handleCardClick()} // 카드 클릭 시 모달 열기
         />
-      )}
-      {/* AlertManager: 최대 선택 개수 도달 시 경고 */}
-      {/* 최대 선택 개수 초과 경고 */}
-      {totalCount >= 4 && (
-        <AlertManager message="최대 4개 카테고리만 즐겨찾기 할 수 있습니다." />
       )}
 
       {/* 배경 이미지: categories.length가 0일 때만 표시 */}
