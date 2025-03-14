@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { updateCategoryAPI } from "../API/Category";
+import AlertManager from "./AlertManager";
 
 const CategoryCard_Check = ({
   category,
@@ -15,13 +16,22 @@ const CategoryCard_Check = ({
   onIsMarkedChange,
   totalCount,
   onClick,
+  onShowLimitModal,
 }) => {
-  
   const [isMarkedLocal, setIsMarkedLocal] = useState(isMarked);
 
   // isMarked 상태가 변경되었을 때, 상위 컴포넌트에 상태를 전달하는 함수
   const handleBookMarkClick = () => {
     console.log("북마크 클릭됨, 상태 변경 중...");
+
+    // totalCount가 4 이상이고, 현재 북마크가 해제된 상태라면 북마크 추가 불가
+    if (totalCount >= 4 && !isMarkedLocal) {
+      // console.log("❌ 북마크 개수가 4개 이상이므로 추가할 수 없습니다!");
+      onShowLimitModal(); // 부모의 모달 핸들러 호출
+      // console.log("모달 표시");
+      return;
+    }
+
     // isMarked 상태 토글
     const newMarkedState = !isMarkedLocal;
     console.log("새로운 북마크 상태: ", newMarkedState);
@@ -41,7 +51,6 @@ const CategoryCard_Check = ({
   useEffect(() => {
     // isMarked가 변경될 때마다 서버에 PATCH 요청 보내기
     if (isMarkedLocal !== isMarked) {
-
       // 서버에 요청을 보내는 함수 (예시로 axios 사용)
       const updateIsHighlighted = async () => {
         try {
@@ -73,18 +82,22 @@ const CategoryCard_Check = ({
       <DisplayedText>{category}</DisplayedText>
       <CategoryIcon>
         {clicked ? (
-          <DeleteIcon onClick={handleDelete} />) : (<BookMarkIcon onClick={handleBookMarkClick} isMarked={isMarkedLocal}
+          <DeleteIcon onClick={handleDelete} />
+        ) : (
+          <BookMarkIcon
+            onClick={handleBookMarkClick}
+            isMarked={isMarkedLocal}
             isDisabled={isDisabled || isCursorDisabled} // 커서 비활성화
-          />)}
+          />
+        )}
       </CategoryIcon>
     </CategoryBox>
   );
 };
 
-
 // Styled Components
 const CategoryBox = styled.div`
-/* border: 1px solid black; */
+  /* border: 1px solid black; */
   position: relative;
   /* z-index: 300; */
   z-index: ${(props) => (props.clicked ? "310" : "298")};
@@ -148,7 +161,6 @@ export const CategoryPiece = styled.div`
   z-index: 1;
 `;
 
-
 // 키와 이미지 경로를 매핑하는 객체
 const imageMap = {
   purple: require("../Image/CategoryPiece_Purple.png"),
@@ -164,15 +176,15 @@ const imageMap = {
 
 // 색상 코드와 색상 이름을 매핑하는 객체
 const colorCodeMap = {
-  '#EA7E7A': 'red',
-  '#FBA96F': 'orange',
-  '#5BA8FB': 'lightblue',
-  '#002ED1': 'darkblue',
-  '#9ED4B6': 'green',
-  '#927CFF': 'purple',
-  '#D9A9ED': 'pink',
-  '#BDBDBD': 'gray',
-  '#424242': 'black',
+  "#EA7E7A": "red",
+  "#FBA96F": "orange",
+  "#5BA8FB": "lightblue",
+  "#002ED1": "darkblue",
+  "#9ED4B6": "green",
+  "#927CFF": "purple",
+  "#D9A9ED": "pink",
+  "#BDBDBD": "gray",
+  "#424242": "black",
 };
 
 const StyledCard = styled.div`
@@ -187,13 +199,19 @@ const StyledCard = styled.div`
   z-index: 0;
 `;
 
-export const BookMarkIcon = ({ onClick, isMarked, isDisabled }) => {
+export const BookMarkIcon = ({ onClick, isMarked, isDisabled, totalCount }) => {
   return (
     <lord-icon
       onClick={(e) => {
         e.preventDefault(); // 기본 동작 방지
         e.stopPropagation(); // 이벤트 전파 방지
-        // if (!isDisabled) 
+
+        // 북마크 개수가 5개 이상이고 현재 체크가 해제된 상태라면 클릭 무효화
+        if (totalCount >= 5 && !isMarked) {
+          // console.log("❌ 북마크 개수가 5개를 초과하여 추가 불가!");
+          return;
+        }
+
         onClick(); // 상태 변경
       }}
       src="https://cdn.lordicon.com/oiiqgosg.json"
@@ -204,7 +222,7 @@ export const BookMarkIcon = ({ onClick, isMarked, isDisabled }) => {
         width: "40px",
         height: "40px",
         // cursor: isDisabled ? "not-allowed" : "pointer",
-        zIndex:"0",
+        zIndex: "0",
       }}
     ></lord-icon>
   );

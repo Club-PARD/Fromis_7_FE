@@ -25,6 +25,8 @@ const CategoryPage = () => {
   const { userId } = useParams(); // URL 파라미터에서 pieceId를 받기
   // console.log(userId);
   const [userIdStateValue, setUserIdState] = useRecoilState(userIdState); // Recoil state hook
+  const [showLimitModal, setShowLimitModal] = useState(false);
+  // console.log("showLimitModal:", showLimitModal);
 
   // Set userId to Recoil state
   useEffect(() => {
@@ -270,13 +272,34 @@ const CategoryPage = () => {
     }
   }, [totalCount]);
 
+  // const handleConfirm = () => {
+  //   setTotalCount((prevCount) => prevCount - 1); // totalCount 감소
+  // };
+
+  // 자식이 모달을 열도록 요청하는 함수
+  const handleShowLimitModal = () => {
+    setShowLimitModal(true);
+  };
+
+  useEffect(() => {
+    console.log("모달 상태 변경 감지:", showLimitModal);
+    if (showLimitModal) {
+      setTimeout(() => {
+        console.log("모달이 정상적으로 열려야 함");
+      }, 100);
+    }
+  }, [showLimitModal]);
+
   return (
     <AllPageContainer>
       {/* AlertManager: 최대 선택 개수 도달 시 경고 */}
       {/* 최대 선택 개수 초과 경고 */}
-      {totalCount >= 5 && (
-        <AlertManager message="최대 4개 카테고리만 즐겨찾기 할 수 있습니다." />
-        //안에 isVisible 활용해야지 모달창이 뜸
+      {showLimitModal && (
+        <AlertManager
+          message="최대 4개 카테고리만 즐겨찾기 할 수 있습니다."
+          onClose={() => setShowLimitModal(false)} // 모달 닫기 기능 추가
+          checkVisible={showLimitModal}
+        />
       )}
 
       {/* 삭제 경고창 */}
@@ -339,7 +362,7 @@ const CategoryPage = () => {
                   totalCount={totalCount}
                   isMarked={item.isHighlighted}
                   isSelected={!!selectedCategories[item.id]}
-                  isDisabled={!selectedCategories[item.id] && totalCount >= 4}
+                  isDisabled={!selectedCategories[item.id] && totalCount >= 5}
                   onCountChange={handleCountChange}
                   onIsMarkedChange={handleIsMarkedChange}
                   clicked={isButtonClicked}
@@ -348,6 +371,8 @@ const CategoryPage = () => {
                   cateId={item.cateId}
                   updateTotalCount={updateTotalCount}
                   onClick={() => navigate(`/main/${pieceId}/category/6`)}
+                  setShowLimitModal={setShowLimitModal}
+                  onShowLimitModal={handleShowLimitModal}
                 />
               )
             )}

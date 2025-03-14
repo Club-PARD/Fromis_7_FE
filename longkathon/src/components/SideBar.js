@@ -67,7 +67,7 @@ const SideBar = () => {
   const fetchNotifications = async () => {
     try {
       const response = await axios.get(
-        "http://fromis7.store:8080/notifications?userId=2"
+        `http://fromis7.store:8080/notifications?userId=${userId}`
       );
       console.log("알림 데이터:", response.data); // 서버에서 받은 데이터 로그
       setNotifications(response.data.map((item) => item.data)); // 알림 데이터 저장
@@ -345,8 +345,8 @@ const ModalOverlay = styled.div`
   left: 0;
   right: 0;
   background-color: transparent;
-  padding-left: 1280px;
-  padding-top: 225px;
+  padding-left: 1150px;
+  padding-top: 350px;
   z-index: 800;
 `;
 

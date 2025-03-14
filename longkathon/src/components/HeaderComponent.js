@@ -3,13 +3,16 @@ import logoImg from "../Image/Logo.png";
 import styled from "styled-components";
 import HamburgerIcon from "./HamburgerButton";
 import { useNavigate } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import { userIdState } from "../recoil/recoilState";
 
 const HeaderComponent = ({ disabled, isButtonClicked }) => {
   // 외부에서 disabled 값을 받아옴
   const navigate = useNavigate();
+  const userId = useRecoilValue(userIdState); // Recoil에서 userId 값 가져오기
 
   const handleConnectHome = () => {
-    navigate("/piece");
+    navigate(`/${userId}/main`);
   };
 
   const handleConnectMyInfo = () => {

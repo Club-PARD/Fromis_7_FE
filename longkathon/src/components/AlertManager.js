@@ -3,11 +3,21 @@ import styled from "styled-components";
 import { CategoryPiece } from "./CategoryCard_Check";
 import background from "../Image/X_purple.png";
 
-const AlertManager = ({ message }) => {
-  const [isVisible, setIsVisible] = useState(false);
-  console.log("🔔 AlertManager 렌더링됨:", isVisible);
+const AlertManager = ({ message, totalCount, checkVisible, onClose }) => {
+  //onConfirm
+  const [isVisible, setIsVisible] = useState(checkVisible);
+  // console.log("🔔 AlertManager 렌더링됨:", isVisible);
+  useEffect(() => {
+    if (totalCount >= 5) {
+      setIsVisible(true);
+    }
+  }, [totalCount]); // totalCount가 변경될 때 실행
+
   const handleClose = () => {
     setIsVisible(false);
+    onClose();
+    // console.log("🔔 AlertManager 닫기 버튼 클릭됨", totalCount);
+    // onConfirm(); // 부모 컴포넌트에서 totalCount 감소 실행
   };
 
   if (!isVisible) return null;
@@ -33,7 +43,7 @@ const AlertOverlay = styled.div`
   width: 100%;
   height: 100%;
   background: rgba(4, 4, 4, 0.6);
-  z-index: 1000;
+  z-index: 1200;
 `;
 
 const AlertBox = styled.div`
