@@ -1,10 +1,12 @@
-import axios from 'axios';
+import axios from "axios";
 const server = process.env.REACT_APP_API_URL;
 
 // 알림 데이터를 가져오는 함수
 export const getAlarmAPI = async (userId) => {
   try {
-    const response = await axios.get(`${server}/notifications?userId=2`);
+    const response = await axios.get(
+      `${server}/notifications?userId=${userId}`
+    );
     console.log("데이터를 불러오는데 성공했습니다!");
     console.log("유저아이디: ", userId);
     console.log("data", response.data);
