@@ -96,7 +96,7 @@ const SideBar = () => {
 
   const handleAlarmButtonClick = async () => {
     try {
-      const data = await getAlarmAPI(2); // 사용자 ID를 2로 설정
+      const data = await getAlarmAPI(userId); // 사용자 ID를 2로 설정
       console.log("알림 데이터:", data.notifications); // 알림 데이터 출력
       console.log("생성 시간:", data.createdAt); // 생성 시간 출력
       setNotifications(data.notifications); // 알림 데이터를 상태에 저장
