@@ -135,22 +135,51 @@ function LenderPage() {
 const AppContainer = styled.div`
   text-align: center;
   min-height: 100px;
-  height: 745vh;
+  height: 1045vh;
   font-family: "Arial", sans-serif;
   color: #333;
 
   background: linear-gradient(
     to bottom,
     #3597ff 5%,
-    /* 위쪽 파란색이 5%까지만 표시 */ #ffffff 15%,
-    /* 흰색 시작 */ #ffffff 90%,
-    /* 흰색이 대부분 차지 */ #5ba8fb 100%
+    #ffffff 15%,
+    #ffffff 90%,
+    #5ba8fb 100%
   );
+
+  /* 반응형 배경 그라디언트 조정 */
+  @media (max-width: 1024px) {
+    background: linear-gradient(
+      to bottom,
+      #3597ff 3%,
+      #ffffff 10%,
+      #ffffff 61%,
+      #5ba8fb 66%
+    );
+  }
+
+  @media (max-width: 768px) {
+    background: linear-gradient(
+      to bottom,
+      #3597ff 2%,
+      #ffffff 8%,
+      #ffffff 48%,
+      #5ba8fb 55%
+    );
+  }
+
+  @media (max-width: 480px) {
+    background: linear-gradient(
+      to bottom,
+      #3597ff 1%,
+      #ffffff 6%,
+      #ffffff 47%,
+      #5ba8fb 55%
+    );
+  }
 `;
 
-
-const Container = styled.div`
-`;
+const Container = styled.div``;
 
 const Header = styled.div`
   display: flex;
@@ -217,10 +246,22 @@ const CustomImage = styled.img`
   margin-bottom: ${(props) => props.marginBottom || "0px"};
   cursor: pointer;
 
+  @media (max-width: 1024px) {
+    width: 85%;
+    margin-top: 8vh;
+    margin-bottom: 5vh;
+  }
+
   @media (max-width: 768px) {
-    width: ${(props) =>
-      `calc(${props.width} / 1.5)`}; /* 작은 화면에서 이미지 크기 축소 */
-    height: ${(props) => `calc(${props.height} / 1.5)`};
+    width: 95vw; /* 화면 전체 가로 */
+    max-width: none; /* 제한 해제 */
+    margin-top: 6vh;
+    margin-bottom: 4vh;
+  }
+
+  @media (max-width: 480px) {
+    width: 100%;
+    margin-top: 4vh;
   }
 `;
 
@@ -234,22 +275,29 @@ const BelowButton = styled.div`
 
 const Div = styled.div`
   width: auto;
-  background: transparent
+  background: transparent;
 `;
 const BelowLogoImage = styled.img`
-  width: 182px;
+  width: 172px;
   height: 183px;
 `;
 
 const Button = styled.img`
-
   width: 380px;
   height: 80px;
   margin-top: 50px;
+    height: auto;
+    cursor: pointer;
+    transition: transform 0.2s;
+      &:hover {
+      transform: scale(1.1);
+    }
+  }
+    
 `;
 
 const Below = styled.div`
   width: 100%;
-  height: 20vh
+  height: 20vh;
 `;
 export default LenderPage;
