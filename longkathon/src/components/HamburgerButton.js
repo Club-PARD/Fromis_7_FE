@@ -51,6 +51,16 @@ export const HamburgerIcon = () => {
         onClick={handleIconClick}
       ></LordIcon>
       <BannersContainer show={showBanners}>
+        <LordiconBox>
+          <LordIcon
+            src="https://cdn.lordicon.com/lqxfrxad.json"
+            trigger="hover"
+            colors="#040404"
+            width="40px"
+            height="40px"
+            onClick={handleIconClick}
+          ></LordIcon>
+        </LordiconBox>
         {["마이 페이지", "진행 중 링크", "로그아웃"].map((category, index) => (
           <Banner
             key={index}
@@ -80,6 +90,11 @@ const Container = styled.div`
   position: relative;
 `;
 
+const LordiconBox = styled.div`
+  margin-top: 16px;
+  margin-left: 100px;
+`;
+
 const LordIcon = styled.div.attrs((props) => ({
   as: "lord-icon",
   style: {
@@ -95,10 +110,11 @@ const LordIcon = styled.div.attrs((props) => ({
 const BannersContainer = styled.div`
   font-family: "Product Sans", sans-serif;
   font-size: 16px;
-  width: 300px;
-  height: 162px;
+  width: 322px;
+  height: 864px;
   border: ${(props) => (props.show ? "1px solid #AFB8C1" : "none")};
-  border-radius: 20px;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
   background-color: #ffffff;
   display: ${(props) =>
     props.show ? "flex" : "none"}; /* 드롭박스 표시 여부 */
@@ -106,8 +122,8 @@ const BannersContainer = styled.div`
   overflow: hidden;
   box-shadow: 2px 2px 4px 0px rgba(217, 217, 217, 1),
     -2px -2px 4px 0px rgba(217, 217, 217, 1);
-  position: absolute;
-  top: 45px;
+  position: fixed;
+  top: 0px;
   left: 0px;
   z-index: 999;
 `;
@@ -121,6 +137,7 @@ const Banner = styled.div`
   display: flex;
   align-items: center;
   cursor: pointer;
+  margin-left: 80px;
 
   &:hover {
     border: 0.5px solid #afb8c1;
