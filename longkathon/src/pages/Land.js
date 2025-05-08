@@ -152,11 +152,11 @@ const AppContainer = styled.div`
   }
 
   @media (max-width: 768px) {
-    height: 790vh;
+    height: 600vh;
   }
 
   @media (max-width: 480px) {
-    height: 500vh;
+    height: 630vh;
   }
 `;
 
@@ -177,6 +177,11 @@ const LogoImage = styled.img`
   @media (max-width: 768px) {
     max-width: 200px;
     margin-top: 50px;
+  }
+
+  @media (max-width: 480px) {
+    max-width: 150px;
+    margin-top: 20px;
   }
 `;
 
@@ -230,6 +235,12 @@ const CustomImage = styled.img`
   @media (max-width: 768px) {
     width: ${(props) =>
       `calc(${props.width} / 1.5)`}; /* 작은 화면에서 이미지 크기 축소 */
+    height: ${(props) => `calc(${props.height} / 1.5)`};
+  }
+
+  @media (max-width: 480px) {
+    width: ${(props) =>
+      `calc(${props.width} / 3)`}; /* 작은 화면에서 이미지 크기 축소 */
     height: ${(props) => `calc(${props.height} / 1.5)`};
   }
 `;

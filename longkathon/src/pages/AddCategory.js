@@ -7,8 +7,7 @@ import AddContentBox from "../components/AddContentBox";
 import { postCategoryAPI } from "../API/Category";
 import { useParams } from "react-router-dom";
 
-
-function AddCategory({ clicked, onClose, findPieceId ,pieceTitle }) {
+function AddCategory({ clicked, onClose, findPieceId, pieceTitle }) {
   // const {findPieceId} = useParams();
 
   const buttonsArray = ["숙소", "식당", "카페", "교통", "장소", "준비물"];
@@ -34,7 +33,9 @@ function AddCategory({ clicked, onClose, findPieceId ,pieceTitle }) {
     // 첫 번째 인포박스는 삭제하지 않도록 조건 추가
     if (infoCards.length > 1) {
       setInfoCards(infoCards.filter((card) => card.id !== id));
-      infoCardRefs.current = infoCardRefs.current.filter((ref) => ref?.id !== id);
+      infoCardRefs.current = infoCardRefs.current.filter(
+        (ref) => ref?.id !== id
+      );
     }
   };
 
@@ -47,25 +48,27 @@ function AddCategory({ clicked, onClose, findPieceId ,pieceTitle }) {
       alert("색상과 제목을 입력해주세요.");
       return;
     }
-  
-    const allValues = infoCardRefs.current.map(ref =>
+
+    const allValues = infoCardRefs.current.map((ref) =>
       ref?.getValues ? ref.getValues() : { url: "", description: "" }
     );
-  
-    if (allValues.some(value => !value.url.trim() || !value.description.trim())) {
+
+    if (
+      allValues.some((value) => !value.url.trim() || !value.description.trim())
+    ) {
       alert("모든 URL과 설명을 입력해주세요.");
       return;
     }
-  
+
     const PostArray = {
       color: selectedColor,
       name: title,
-      listups: allValues.map(value => ({
+      listups: allValues.map((value) => ({
         url: value.url.trim(),
-        description: value.description.trim()
-      }))
+        description: value.description.trim(),
+      })),
     };
-  
+
     try {
       const response = await postCategoryAPI(findPieceId, PostArray); // 지금 userId 하드 코딩 되어 있음 바꿔야함;;
       console.log("findPieceId", findPieceId);
@@ -80,7 +83,6 @@ function AddCategory({ clicked, onClose, findPieceId ,pieceTitle }) {
       alert("저장 중 오류가 발생했습니다.");
     }
   };
-  
 
   const handleCancel = () => {
     if (onClose) {
@@ -107,14 +109,17 @@ function AddCategory({ clicked, onClose, findPieceId ,pieceTitle }) {
                 </Button>
               ))}
               <EtcDiv>
-              <InputWrapper
-                isActive={activeIndex === buttonsArray.length}
-                onClick={() => handleClick(buttonsArray.length)}
-              >
-                <Label>기타:</Label>
-                <Input type="text" onChange={(e) => setTitle(e.target.value)} />
-              </InputWrapper>
-            </EtcDiv>
+                <InputWrapper
+                  isActive={activeIndex === buttonsArray.length}
+                  onClick={() => handleClick(buttonsArray.length)}
+                >
+                  <Label>기타:</Label>
+                  <Input
+                    type="text"
+                    onChange={(e) => setTitle(e.target.value)}
+                  />
+                </InputWrapper>
+              </EtcDiv>
             </ButtonsDiv>
           </Category>
           <InfoCardContainer>
@@ -152,23 +157,23 @@ function AddCategory({ clicked, onClose, findPieceId ,pieceTitle }) {
   );
 }
 
-const TopSection=styled.div`
-width: 412px;
-height: 88px;
-border-radius: 20px;
-opacity: 1;
-background: linear-gradient(149deg, #F0F8FF 0.77%, #F2F1F8 99.23%);
-margin-top:116px;
-color: #040404;
-font-family: Inter;
-font-size: 26px;
-font-style: normal;
-font-weight: 700;
-line-height: 26px; /* 100% */
-display: flex;
-align-items: center;
-justify-content: center;
-text-align: center;
+const TopSection = styled.div`
+  width: 412px;
+  height: 88px;
+  border-radius: 20px;
+  opacity: 1;
+  background: linear-gradient(149deg, #f0f8ff 0.77%, #f2f1f8 99.23%);
+  margin-top: 116px;
+  color: #040404;
+  font-family: Inter;
+  font-size: 26px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 26px; /* 100% */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 `;
 
 const BaseContainer = styled.div`
@@ -179,11 +184,11 @@ const BaseContainer = styled.div`
   width: 100%;
   min-height: 100vh;
   background-color: none;
-  z-index:${(props) => (props.clicked ? "1000" : "100")};
+  z-index: ${(props) => (props.clicked ? "1000" : "100")};
 `;
 
 const ModalContainer = styled.div`
-margin-top: 32px;
+  margin-top: 32px;
   width: 1280px;
   padding-top: 26px;
   padding-bottom: 42px;
@@ -193,6 +198,20 @@ margin-top: 32px;
   position: relative;
   max-height: 90vh; /* 화면 크기 제한 */
   overflow-y: auto; /* 콘텐츠가 넘치면 수직 스크롤 가능 */
+
+  /* 반응형 스타일 */
+  @media (max-width: 768px) {
+    width: 90%;
+    height: auto;
+    padding: 20px;
+  }
+
+  /* 모바일 (480px 이하) */
+  @media (max-width: 480px) {
+    width: 70%;
+    height: auto;
+    padding: 20px;
+  }
 `;
 
 const Content = styled.div`
@@ -275,7 +294,8 @@ const Button = styled.button`
 
   &:hover {
     background-color: ${(props) => (props.isActive ? "#5ba8fb" : "#e6f7ff")};
-  }`;
+  }
+`;
 
 const InfoCardContainer = styled.div`
   gap: 24px;
