@@ -135,22 +135,32 @@ function LenderPage() {
 const AppContainer = styled.div`
   text-align: center;
   min-height: 100px;
-  height: 745vh;
+  height: 1045vh;
   font-family: "Arial", sans-serif;
   color: #333;
 
   background: linear-gradient(
     to bottom,
     #3597ff 5%,
-    /* 위쪽 파란색이 5%까지만 표시 */ #ffffff 15%,
-    /* 흰색 시작 */ #ffffff 90%,
-    /* 흰색이 대부분 차지 */ #5ba8fb 100%
+    #ffffff 15%,
+    #ffffff 90%,
+    #5ba8fb 100%
   );
+
+  @media (max-width: 1024px) {
+    height: 1030vh;
+  }
+
+  @media (max-width: 768px) {
+    height: 600vh;
+  }
+
+  @media (max-width: 480px) {
+    height: 630vh;
+  }
 `;
 
-
-const Container = styled.div`
-`;
+const Container = styled.div``;
 
 const Header = styled.div`
   display: flex;
@@ -164,9 +174,14 @@ const LogoImage = styled.img`
   height: auto;
   margin-top: 190px;
 
-  @media (max-width: 864px) {
+  @media (max-width: 768px) {
     max-width: 200px;
     margin-top: 50px;
+  }
+
+  @media (max-width: 480px) {
+    max-width: 150px;
+    margin-top: 20px;
   }
 `;
 
@@ -222,6 +237,12 @@ const CustomImage = styled.img`
       `calc(${props.width} / 1.5)`}; /* 작은 화면에서 이미지 크기 축소 */
     height: ${(props) => `calc(${props.height} / 1.5)`};
   }
+
+  @media (max-width: 480px) {
+    width: ${(props) =>
+      `calc(${props.width} / 3)`}; /* 작은 화면에서 이미지 크기 축소 */
+    height: ${(props) => `calc(${props.height} / 1.5)`};
+  }
 `;
 
 const BelowButton = styled.div`
@@ -234,7 +255,7 @@ const BelowButton = styled.div`
 
 const Div = styled.div`
   width: auto;
-  background: transparent
+  background: transparent;
 `;
 const BelowLogoImage = styled.img`
   width: 182px;
@@ -242,7 +263,6 @@ const BelowLogoImage = styled.img`
 `;
 
 const Button = styled.img`
-
   width: 380px;
   height: 80px;
   margin-top: 50px;
@@ -250,6 +270,6 @@ const Button = styled.img`
 
 const Below = styled.div`
   width: 100%;
-  height: 20vh
+  height: 20vh;
 `;
 export default LenderPage;

@@ -230,15 +230,19 @@ const MainPage = () => {
         <CategoryTitle>
           다가올 <span className="Link">&nbsp;링크</span>를 확인 해보세요!
         </CategoryTitle>
-        <CustomCategoryText1>L:nk</CustomCategoryText1>
-        <CustomCategoryText2>pages</CustomCategoryText2>
-        <CustomCategoryButton
-          onClick={toggleButtonClick}
-          clicked={isButtonClicked}
-          alertActive={alertActive}
-        >
-          delete
-        </CustomCategoryButton>
+        {categories.length > 0 && (
+          <>
+            <CustomCategoryText1>L:nk</CustomCategoryText1>
+            <CustomCategoryText2>pages</CustomCategoryText2>
+            <CustomCategoryButton
+              onClick={toggleButtonClick}
+              clicked={isButtonClicked}
+              alertActive={alertActive}
+            >
+              delete
+            </CustomCategoryButton>
+          </>
+        )}
         <ContainerBox>
           {isButtonClicked && (
             <ModalOverlayComponent toggleButtonClick={toggleButtonClick} />
